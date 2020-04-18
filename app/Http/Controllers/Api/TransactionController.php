@@ -76,4 +76,40 @@ class TransactionController extends Controller
       'players' => $players
     ], 200);
   }
+
+  public function detail($nf_id)
+  {
+    $clubs = array();
+
+    $nf = Organization::find($nf_id);
+
+    $orgs = Organization::where('parent_id', $nf->id)->get();
+
+    foreach ($orgs as $org) {
+      if ($org->is_club == 1) {
+        array_push($clubs, $org->id);
+      } else {
+        $club = Organization::where('parent_id', $org->id)->get();
+
+        foreach ($club as $c) {
+          array_push($clubs, $c->id);
+        }
+      }
+    }
+
+    $detail = Transaction::whereIn('club_id', $clubs)
+                    ->leftJoin('organizations AS org1', 'org1.id', '=', 'transactions.club_id')
+                    ->leftJoin('organizations AS org2', 'org2.id', '=', 'org1.parent_id')
+                    ->where('transactions.created_at', 'like', date('Y') . '%')
+                    ->select('transactions.*', 
+                            'org2.id AS reg_id', 'org2.name_o AS reg', 
+                            'org1.id AS club_id', 'org1.name_o AS club')
+                    ->orderBy('transactions.created_at', 'desc')
+                    ->get();
+
+    return response()->json([
+      'status' => 'success',
+      'detail' => $detail,
+    ], 200);
+  }
 }
