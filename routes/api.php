@@ -31,6 +31,9 @@ Route::namespace('Api')->group(function () {
 		// Judoka APIs
 		Route::get('weights', 'PlayerController@weights');
 
+		// User APIs
+		Route::post('resetpass/{token}', 'UserController@reset');
+
 		// Financial APIs
 		Route::get('finance', 'TransactionController@finance');
 		Route::get('transdetail/{id}', 'TransactionController@detail');
