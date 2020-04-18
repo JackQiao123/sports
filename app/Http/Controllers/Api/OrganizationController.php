@@ -186,7 +186,7 @@ class OrganizationController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function list($id)
+  public function orgList($id)
   {
     $org = Organization::find($id);
 
@@ -206,6 +206,50 @@ class OrganizationController extends Controller
     }
 
     return response()->json($result);
+  }
+
+  public function clubList($id)
+  {
+    $myOrg = Organization::find($id);
+
+    $clubs = array();
+
+    if ($myOrg->is_club == 1) {
+      $clubs = Organization::where('id', $id)
+                  ->select('id', 'parent_id', 'name_o')
+                  ->get();
+    } else {
+      $ids = array();
+
+      if ($myOrg->parent_id == 0) {
+        $orgs = Organization::where('parent_id', $myOrg->id)->get();
+
+        foreach ($orgs as $org) {
+          if ($org->is_club == 1) {
+            array_push($ids, $org->id);
+          } else {
+            $children = Organization::where('parent_id', $org->id)->get();
+
+            foreach($children as $child) {
+              array_push($ids, $child->id);
+            }
+          }
+        }
+      } else {
+        $orgs = Organization::where('parent_id', $myOrg->id)->get();
+
+        foreach ($orgs as $org) {
+          array_push($ids, $org->id);
+        }
+      }
+
+      $clubs = Organization::whereIn('id', $ids)
+                  ->select('id', 'parent_id', 'name_o')
+                  ->orderBy('name_o')
+                  ->get();
+    }
+
+    return response()->json($clubs);
   }
 
   /**

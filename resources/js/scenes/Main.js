@@ -18,6 +18,8 @@ import AdminSetting from './Admin/setting';
 
 import OrganizationAdd from './Organizations/add';
 
+import MemberAdd from './Members/add';
+
 import Dashboard from './Dashboard';
 import Reset from './Users/reset';
 
@@ -54,6 +56,8 @@ class Main extends Component {
           <Route exact path="/admin/setting" name="AdminSetting" component={AdminSetting} />
 
           <Route exact path="/organization/create" name="OrganizationAdd" component={OrganizationAdd} />
+
+          <Route exact path="/member/register" name="MemberAdd" component={MemberAdd} />
 
           <Route exact path="/reset" name="Reset" component={Reset} />
           <Route exact path="/" name="Dashboard" component={Dashboard} />
