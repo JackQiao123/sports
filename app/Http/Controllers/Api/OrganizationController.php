@@ -90,6 +90,125 @@ class OrganizationController extends Controller
   }
 
   /**
+   * Store a newly created resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function store(Request $request)
+  {
+    $data = $request->all();
+
+    $validator = Validator::make($data, [
+      'parent_id' => 'required|integer',
+      'register_no' => 'required|string|max:255|unique:organizations',
+      'name_o' => 'required|string|max:255',
+      'name_s' => 'required|string|max:255',
+      'email' => 'required|string|email|max:255|unique:organizations',
+      'mobile_phone' => 'required|string|max:255',
+      'addressline1' => 'required|string|max:255',
+      'state' => 'required|string|max:255',
+      'city' => 'required|string|max:255',
+      'zip_code' => 'required|string|max:255',
+      'level' => 'required|integer',
+      'is_club' => 'required|boolean'
+    ]);
+      
+    if ($validator->fails()) {
+      return response()->json(
+        [
+          'status' => 'fail',
+          'data' => $validator->errors()
+        ],
+        422
+      );
+    } else {
+      $data['logo'] = "";
+
+      $base64_image = $request->input('logo');
+              
+      if ($base64_image != '' && preg_match('/^data:image\/(\w+);base64,/', $base64_image)) {
+        $pos  = strpos($base64_image, ';');
+        $type = explode(':', substr($base64_image, 0, $pos))[1];
+
+        if (substr($type, 0, 5) == 'image') {
+          $filename = date('Ymd') . '_' . $data['register_no'];
+
+          $type = str_replace('image/', '.', $type);
+
+          $image = substr($base64_image, strpos($base64_image, ',') + 1);
+          $image = base64_decode($image);
+          
+          Storage::disk('local')->put($filename . $type, $image);
+
+          $data['logo'] = "photos/" . $filename . $type;
+        } else {
+          return response()->json(
+            [
+              'status' => 'error',
+              'message' => 'File type is not image.'
+            ],
+            406
+          );
+        }
+      }
+
+      if (is_null($data['addressline2'])) {
+        $data['addressline2'] = "";
+      }
+            
+      Organization::create(array(
+        'parent_id' => $data['parent_id'],
+        'register_no' => $data['register_no'],
+        'name_o' => $data['name_o'],
+        'name_s' => $data['name_s'],
+        'logo' => $data['logo'],
+        'email' => $data['email'],
+        'mobile_phone' => $data['mobile_phone'],
+        'addressline1' => $data['addressline1'],
+        'addressline2' => $data['addressline2'],
+        'country' => $data['country'],
+        'state' => $data['state'],
+        'city' => $data['city'],
+        'zip_code' => $data['zip_code'],
+        'level' => $data['level'],
+        'is_club' => $data['is_club']
+      ));
+
+      return response()->json([
+        'status' => 'success'
+      ], 200);
+  }
+  }
+
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function list($id)
+  {
+    $org = Organization::find($id);
+
+    $result = array();
+
+    if ($org->is_club == 0) {
+      array_push($result, $org);
+
+      $children = Organization::where('parent_id', $id)
+                ->where('is_club', 0)
+                ->orderBy('name_o')
+                ->get();
+
+      foreach ($children as $child) {
+        array_push($result, $child);
+      }
+    }
+
+    return response()->json($result);
+  }
+
+  /**
    * Display the child of the resource.
    *
    * @param  int  $id

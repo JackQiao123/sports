@@ -25,8 +25,10 @@ Route::namespace('Api')->group(function () {
 
 		// Organization APIs
 		Route::get('organization/{id}', 'OrganizationController@show');
+		Route::get('organization-list/{id}', 'OrganizationController@list');
 		Route::get('organization-child/{id}', 'OrganizationController@child');
 		Route::get('countryclubs/{id}', 'OrganizationController@country_clubs');
+		Route::post('reg-organization', 'OrganizationController@store');
 
 		// Judoka APIs
 		Route::get('weights', 'PlayerController@weights');

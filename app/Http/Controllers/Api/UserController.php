@@ -72,6 +72,7 @@ class UserController extends Controller
 							'org_name' => $org->name_o,
 							'logo' => $org->logo,
 							'level' => $org->level,
+							'country' => $org->country,
 							'is_nf' => $user->is_nf,
 							'is_super' => 0,
 							'is_club_member' => $org->is_club
