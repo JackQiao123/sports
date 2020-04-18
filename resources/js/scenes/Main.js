@@ -21,6 +21,7 @@ import OrganizationAdd from './Organizations/add';
 import MemberAdd from './Members/add';
 
 import Dashboard from './Dashboard';
+import Search from './Dashboard/search';
 import Reset from './Users/reset';
 
 class Main extends Component {
@@ -59,6 +60,7 @@ class Main extends Component {
 
           <Route exact path="/member/register" name="MemberAdd" component={MemberAdd} />
 
+          <Route exact path="/search" name="Search" component={Search} />
           <Route exact path="/reset" name="Reset" component={Reset} />
           <Route exact path="/" name="Dashboard" component={Dashboard} />
         </Switch>

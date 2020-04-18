@@ -15,6 +15,58 @@ use DB;
 class MemberController extends Controller
 {
   /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index(Request $request)
+  {
+    $input = $request->all();
+    
+    $user_id = $input['user_id'];
+    $org_id = $input['org_id'];
+    $level = $input['level'];
+
+    $org_ids = array((int)$org_id);
+
+    switch ($level) {
+      case 1:
+        $orgs = Organization::where('parent_id', $org_id)->get();
+
+        foreach ($orgs as $org) {
+          array_push($org_ids, $org->id);
+
+          $clubs = Organization::where('parent_id', $org->id)->get();
+
+          foreach ($clubs as $club) {
+            array_push($org_ids, $club->id);
+          }
+        }
+        break;
+      case 2:
+        $clubs = Organization::where('parent_id', $org_id)->get();
+
+        foreach ($clubs as $club) {
+          array_push($org_ids, $club->id);
+        }
+        break;
+      default:
+        break;
+    }
+
+    $members = Member::leftJoin('organizations', 'organizations.id', '=', 'members.organization_id')
+                    ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
+                    ->whereIn('organization_id', $org_ids)
+                    ->where('members.id', '!=', $user_id)
+                    ->select('members.*', 'organizations.name_o', 'organizations.level', 'roles.name AS role_name')
+                    ->orderBy('name')
+                    ->orderBy('surname')
+                    ->get();
+
+    return response()->json($members);
+  }
+
+  /**
    * Store a newly created resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request

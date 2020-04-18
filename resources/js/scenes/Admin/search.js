@@ -17,7 +17,7 @@ import Api from '../../apis/app';
 
 import AdminTopBar from '../../components/TopBar/AdminTopBar';
 import AdminBar from '../../components/AdminBar';
-import DataTable from '../../components/SearchDataTable';
+import DataTable from '../../components/DataTable';
 import {
   Dans, search_genders, search_type_options, member_type_options, referee_type_options
 } from '../../configs/data';

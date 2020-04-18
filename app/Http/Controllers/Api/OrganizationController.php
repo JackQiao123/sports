@@ -285,4 +285,154 @@ class OrganizationController extends Controller
       'clubs' => $clubs
     ], 200);
   }
+
+  /**
+   * Display the search result of the resource.
+   *
+   * 
+   * @return \Illuminate\Http\Response
+   */
+  public function search(Request $request)
+  {
+    $user = JWTAuth::parseToken()->authenticate();
+    
+    $me = array();
+    $myOrg = array();
+
+    if ($user->member_id == 0) {
+      $item = $request->input('item');
+
+      $myOrg = Organization::find($item);
+
+      $manager = User::leftJoin('members', 'members.id', '=', 'users.member_id')
+                  ->where('users.is_nf', 1)
+                  ->where('members.organization_id', $item)
+                  ->select('users.member_id')
+                  ->get();
+
+      $me = Member::find($manager[0]->member_id);
+    } else {
+      $me = Member::find($user->member_id);
+      $myOrg = Organization::find($me->organization_id);
+    }
+
+    $orgArr = array();
+
+    array_push($orgArr, $me->organization_id);
+
+    if (!$myOrg->is_club) {
+      $myOrgs = Organization::where('parent_id', $me->organization_id)->get();
+
+      foreach ($myOrgs as $org) {
+        array_push($orgArr, $org->id);
+
+        $clubs = Organization::where('parent_id', $org->id)->get();
+
+        foreach ($clubs as $club) {
+          array_push($orgArr, $club->id);
+        }
+      }
+    }
+      
+    sort($orgArr);
+
+    $stype = $request->input('stype');
+    $org = $request->input('org');
+    $club = $request->input('club');
+    $mtype = $request->input('mtype');
+    $rtype = $request->input('rtype');
+    $gender = $request->input('gender');
+    $weight = $request->input('weight');
+    $dan = $request->input('dan');
+
+    $result = array();
+
+    switch ($stype) {
+      case 'org':
+        $result = Organization::where('country', $myOrg->country)
+                        ->where('parent_id', '!=', 0)
+                        ->where('is_club', 0);
+        
+        if ($org != '') {
+          $result = $result->where('id', $org);
+        }
+
+        $result = $result->orderBy('name_o')->get();
+        break;
+      case 'club':
+        $result = Organization::where('is_club', 1);
+
+        if ($org != '') {
+          $result = $result->where('parent_id', $org);
+        }
+
+        if ($club != '') {
+          $result = $result->where('id', $club);
+        }
+                        
+        $result = $result->orderBy('name_o')->get();
+        break;
+      case 'member':
+        $result = Member::leftJoin('organizations', 'organizations.id', '=', 'members.organization_id')
+                        ->leftJoin('roles', 'roles.id', '=', 'members.role_id');
+        
+        if ($mtype == 'judoka')
+            $result = $result->leftJoin('players', 'players.member_id', '=', 'members.id')
+                            ->leftJoin('weights', 'weights.id', '=', 'players.weight_id');
+
+        $result = $result->where('members.id', '!=', $me->id)
+                        ->where('roles.description', $mtype);
+
+        if ($club == '') {
+          if ($org == '') {
+            $result = $result->whereIn('organizations.id', $orgArr);
+          } else {
+            $clubArr = array();
+
+            array_push($clubArr, $org);
+
+            $clubs = Organization::where('parent_id', $org)->get();
+
+            foreach($clubs as $club) {
+              array_push($clubArr, $club->id);
+            }
+
+            $result = $result->whereIn('organizations.id', $clubArr);
+          }
+        } else {
+          $result = $result->where('organizations.id', $club);
+        }
+          
+        if ($mtype == 'judoka') {
+          if ($gender == 2 || $gender == 1) {
+            $result = $result->where('members.gender', $gender);
+          }
+
+          if ($weight != '') {
+            $result = $result->where('players.weight_id', $weight);
+          }
+
+          $result = $result->where('players.dan', 'like', '%' . $dan);
+
+          $result = $result->select('members.*', 'organizations.name_o', 'organizations.level', 'weights.weight', 
+                                  'players.dan', 'players.expired_date')
+                          ->orderBy('players.weight_id')
+                          ->orderBy('players.dan')
+                          ->orderBy('members.name')
+                          ->get();
+        } else {
+          if ($mtype == 'referee' && $rtype != '' && $rtype != 'all') {
+            $result = $result->where('members.position', $rtype);
+          }
+              
+          $result = $result->select('members.*', 'organizations.name_o', 'organizations.level', 'roles.name AS role_name')
+                          ->orderBy('members.name')
+                          ->get();
+        }
+          
+        break;
+    }
+
+    return response()->json($result);
+  }
 }

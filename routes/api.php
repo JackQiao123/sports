@@ -24,6 +24,8 @@ Route::namespace('Api')->group(function () {
 		Route::post('create-nf', 'NationalController@store');
 
 		// Organization APIs
+		Route::get('search', 'OrganizationController@search');
+		
 		Route::get('organization/{id}', 'OrganizationController@show');
 		Route::get('organization-list/{id}', 'OrganizationController@orgList');
 		Route::get('organization-child/{id}', 'OrganizationController@child');
@@ -32,6 +34,7 @@ Route::namespace('Api')->group(function () {
 		Route::post('reg-organization', 'OrganizationController@store');
 
 		// Member APIs
+		Route::post('members', 'MemberController@index');
 		Route::get('roles', 'MemberController@roles');
 		Route::post('reg-member', 'MemberController@store');
 
