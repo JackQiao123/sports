@@ -10,6 +10,7 @@ import AdminCreate from './Admin/create';
 import AdminFederation from './Admin/federations';
 import AdminNFProfile from './Admin/federationprofile';
 import AdminDetail from './Admin/detail';
+import AdminSearch from './Admin/search';
 
 import Dashboard from './Dashboard';
 import Reset from './Users/reset';
@@ -40,6 +41,7 @@ class Main extends Component {
           <Route exact path="/admin/federations" name="AdminFederation" component={AdminFederation} />
           <Route exact path="/admin/nfprofile" name="AdminNFProfile" component={AdminNFProfile} />
           <Route exact path="/admin/detail" name="AdminDetail" component={AdminDetail} />
+          <Route exact path="/admin/search" name="Admin" component={AdminSearch} />
 
           <Route exact path="/reset" name="Reset" component={Reset} />
           <Route exact path="/" name="Dashboard" component={Dashboard} />
