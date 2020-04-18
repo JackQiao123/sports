@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import {
   bindActionCreators
 } from 'redux';
@@ -6,18 +6,15 @@ import {
   connect
 } from 'react-redux';
 import {
-  withRouter, Link
+  withRouter
 } from 'react-router-dom';
 import {
   Navbar, NavItem, NavLink,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
-  Badge
+  DropdownItem
 } from 'reactstrap';
-
-import Api from '../../apis/app';
 
 import { logout } from '../../actions/common';
 
