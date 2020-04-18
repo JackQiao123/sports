@@ -21,5 +21,7 @@ Route::namespace('Api')->group(function () {
 	Route::group(['middleware' => ['jwt.verify']], function () {
 		// Super Admin APIs
 		Route::get('finance', 'TransactionController@finance');
+		Route::get('all-nf', 'NationalController@list');
+		Route::post('create-nf', 'NationalController@store');
 	});
 });

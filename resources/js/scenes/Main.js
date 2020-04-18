@@ -6,6 +6,8 @@ import {
 import history from '../history';
 
 import Admin from './Admin';
+import AdminCreate from './Admin/create';
+import AdminFederation from './Admin/federations';
 
 import Dashboard from './Dashboard';
 import Reset from './Users/reset';
@@ -32,6 +34,8 @@ class Main extends Component {
       <Router history={history}>
         <Switch>
           <Route exact path="/admin/home" name="Admin" component={Admin} />
+          <Route exact path="/admin/create" name="AdminCreate" component={AdminCreate} />
+          <Route exact path="/admin/federations" name="AdminFederation" component={AdminFederation} />
 
           <Route exact path="/reset" name="Reset" component={Reset} />
           <Route exact path="/" name="Dashboard" component={Dashboard} />

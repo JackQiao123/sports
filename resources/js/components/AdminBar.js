@@ -29,6 +29,11 @@ class AdminBar extends Component {
               </NavLink>
             </NavItem>
             <NavItem>
+              <NavLink tag={Link} to="/admin/create">
+                <i className="mr-2 fa fa-file"></i> Create New Federation
+              </NavLink>
+            </NavItem>
+            <NavItem>
               <NavLink tag={Link} to="/admin/federations">
                 <i className="mr-2 fa fa-search"></i> Search Federations
               </NavLink>
@@ -36,11 +41,6 @@ class AdminBar extends Component {
             <NavItem>
               <NavLink tag={Link} to="/admin/competitions">
                 <i className="mr-2 fa fa-users"></i> Competitions
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink tag={Link} to="/admin/create">
-                <i className="mr-2 fa fa-file"></i> Create New Federation
               </NavLink>
             </NavItem>
           </Navbar>
