@@ -14,6 +14,7 @@ import AdminSearch from './Admin/search';
 import AdminCompetition from './Admin/competitions';
 import AdminCompDetail from './Admin/compdetail';
 import AdminReset from './Admin/reset';
+import AdminSetting from './Admin/setting';
 
 import Dashboard from './Dashboard';
 import Reset from './Users/reset';
@@ -48,6 +49,7 @@ class Main extends Component {
           <Route exact path="/admin/competitions" name="AdminCompetition" component={AdminCompetition} />
           <Route exact path="/admin/competition/detail" name="AdminCompDetail" component={AdminCompDetail} />
           <Route exact path="/admin/reset" name="AdminReset" component={AdminReset} />
+          <Route exact path="/admin/setting" name="AdminSetting" component={AdminSetting} />
 
           <Route exact path="/reset" name="Reset" component={Reset} />
           <Route exact path="/" name="Dashboard" component={Dashboard} />

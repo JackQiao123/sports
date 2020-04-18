@@ -33,6 +33,8 @@ Route::namespace('Api')->group(function () {
 
 		// User APIs
 		Route::post('resetpass/{token}', 'UserController@reset');
+		Route::get('allsetting', 'SettingController@allsetting');
+		Route::put('setting/{id}', 'SettingController@update');
 
 		// Financial APIs
 		Route::get('finance', 'TransactionController@finance');

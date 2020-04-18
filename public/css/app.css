@@ -72265,6 +72265,16 @@ body .main-content {
   transition: all 1s ease;
 }
 
+body input::-webkit-outer-spin-button,
+body input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+body input[type=number] {
+  -moz-appearance: textfield;
+}
+
 body.admin {
   background-color: #242424;
   color: #97A3B4;
