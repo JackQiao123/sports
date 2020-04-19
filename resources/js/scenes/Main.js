@@ -61,6 +61,7 @@ class Main extends Component {
           <Route exact path="/admin/member/detail" name="AdminMemberDetail" component={MemberDetail} />
 
           <Route exact path="/organization/create" name="OrganizationAdd" component={OrganizationAdd} />
+          <Route exact path="/organization/detail" name="OrganizationDetail" component={OrganizationDetail} />
 
           <Route exact path="/member/register" name="MemberAdd" component={MemberAdd} />
 
