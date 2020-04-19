@@ -342,11 +342,17 @@ class SubTable extends Component {
                         disabled={item.role_id == 4 && item.active == 0}
                       >
                         <Table.Cell>
-                          <span className="text-primary mr-2">
-                            <a className="detail-link" onClick={() => onSelect(item.id)}>
-                              {item.surname && item.surname.toUpperCase()} {item.name}
-                            </a>
-                          </span>
+                          {
+                            item.active == 1 ? (
+                              <a className="detail-link" onClick={() => onSelect(item.id)}>
+                                {item.surname && item.surname.toUpperCase()} {item.name}
+                              </a>
+                            ) : (
+                              <span className="text-primary mr-2">
+                                {item.surname && item.surname.toUpperCase()} {item.name}
+                                </span>
+                            )
+                          }
                         </Table.Cell>
                         <Table.Cell className="text-center">{item.role_name}</Table.Cell>
                         <Table.Cell className="text-center">{item.gender == 1 ? Genders[0].name : Genders[1].name}</Table.Cell>
