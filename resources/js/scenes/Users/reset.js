@@ -9,9 +9,16 @@ import {
   Button, Input, Label,
   Alert
 } from 'reactstrap';
-import MainTopBar from '../../components/TopBar/MainTopBar';
+
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+
 import Api from '../../apis/app';
 import AppHelper from '../../helpers/AppHelper';
+import MainTopBar from '../../components/TopBar/MainTopBar';
+
+import { logout } from '../../actions/common';
 
 class Reset extends Component {
   constructor(props) {
@@ -68,7 +75,7 @@ class Reset extends Component {
   }
 
   async handleLogout() {
-    localStorage.clear();
+    await this.props.logout();
     this.props.history.push('/logout');
   }
 
@@ -195,4 +202,11 @@ class Reset extends Component {
   }
 }
 
-export default Reset;
+const mapStateToProps = () => ({
+});
+
+const mapDispatchToProps = dispatch => ({
+  logout: bindActionCreators(logout, dispatch)
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Reset));
