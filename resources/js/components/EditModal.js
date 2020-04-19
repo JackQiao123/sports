@@ -550,7 +550,8 @@ class EditModal extends React.Component {
                           <Label for="identity">Member ID</Label>
                           <Input
                             name="identity"
-                            type="text"                            
+                            type="text"
+                            readOnly
                             value={values.identity || ''}
                             onChange={handleChange}
                             onBlur={handleBlur}

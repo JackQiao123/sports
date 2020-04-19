@@ -40,6 +40,7 @@ Route::namespace('Api')->group(function () {
 		Route::get('roles', 'MemberController@roles');
 		Route::post('reg-member', 'MemberController@store');
 		Route::get('member/{id}', 'MemberController@show');
+		Route::put('member/{id}', 'MemberController@update');
 
 		// Judoka APIs
 		Route::get('weights', 'PlayerController@weights');
