@@ -71,33 +71,20 @@ class MemberDetail extends Component {
                           <Row>
                             <Col sm="12">
                               <h5 className="pt-3 py-2">
-                                <b>Club Name</b>
-                                  :
-                                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                {member.club_name}
-                                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( Region:&nbsp;&nbsp;
-                                {member.org_name}
-                                {' '}
-                                )
+                                <b className="mr-2">Club Name :</b>
+                                {member.club_name} ( Region: {member.org_name} )
                               </h5>
                             </Col>
                             <Col md="6" lg="8">
                               <h5 className="py-2">
-                                <b>Name</b>
-                                :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                {member.name}
-                                {' '}
-                                {member.patronymic != '-' && member.patronymic}
-                                {' '}
-                                {member.surname}
+                                <b className="mr-2">Name :</b>
+                                <span>{member.name}  {member.surname}</span>
                               </h5>
                             </Col>
                             <Col md="6" lg="4">
                               <h5 className="py-2">
-                                <b>Gender</b>
-                                :
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                { member.gender == 1 ? 'Male' : 'Female' }
+                                <b className="mr-2">Gender :</b>
+                                <span>{ member.gender == 1 ? 'Male' : 'Female' }</span>
                               </h5>
                             </Col>
                           </Row>
@@ -107,39 +94,27 @@ class MemberDetail extends Component {
                           <Row>
                             <Col sm="6">
                               <h5 className="pt-3 pb-2">
-                                <b>Name</b>
-                                :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                {member.name}
-                                {' '}
-                                {member.patronymic != '-' && member.patronymic}
-                                {' '}
-                                {member.surname}
+                                <b className="mr-2">Name :</b>
+                                <span>{member.name} {member.surname}</span>
                               </h5>
                             </Col>
                             <Col sm="6">
                               <h5 className="py-2">
-                                <b>Register Date</b>
-                                :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                {member.register_date}
+                                <b className="mr-2">Register Date :</b>
+                                <span>{member.register_date}</span>
                               </h5>
                             </Col>
                             <Col sm={member.role_id == 1 || member.role_id == 4 ? '6' : '12'}>
                               {member.level == 3 ? (
                                 <h5 className="py-2">
-                                  <b>Club Name</b>
-                                    :
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                  {member.club_name}
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( Region:&nbsp;&nbsp;
-                                  {member.org_name}
-                                  {' '}
-                                  )
+                                  <b className="mr-2">Club Name :</b>
+                                  <span className="mr-2">{member.club_name}</span>
+                                  <span>( Region: {member.org_name} )</span>
                                 </h5>
                               ) : (
                                 <h5 className="py-2">
-                                  <b>Regional Federation Name</b>
-                                  :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                  {member.club_name}
+                                  <b className="mr-2">Regional Federation Name :</b>
+                                  <span>{member.club_name}</span>
                                 </h5>
                               )}
                             </Col>
@@ -147,37 +122,33 @@ class MemberDetail extends Component {
                               (member.role_id == 1 || member.role_id == 4) && (
                                 <Col sm="6">
                                   <h5 className="py-2">
-                                    <b>{member.role_id == 1 ? 'Position' : 'Referee Type'}</b>
-                                    :
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <b className="mr-2">{member.role_id == 1 ? 'Position :' : 'Referee Type :'} :</b>
+                                    <span>
                                     {
                                       member.role_id == 1 ? (member.position == '' ? '---' : member.position)
                                       : referee_type_options.filter(item => item.value == member.position)[0].label
                                     }
-                                    {}
+                                    </span>
                                   </h5>
                                 </Col>
                               )
                             }
                             <Col sm="4">
                               <h5 className="py-2">
-                                <b>Birthday</b>
-                                :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                {member.birthday}
+                                <b className="mr-2">Birthday :</b>
+                                <span>{member.birthday}</span>
                               </h5>
                             </Col>
                             <Col sm="4">
                               <h5 className="py-2">
-                                <b>Gender</b>
-                                :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                {member.gender == 1 ? 'Male' : 'Female'}
+                                <b className="mr-2">Gender :</b>
+                                <span>{member.gender == 1 ? 'Male' : 'Female'}</span>
                               </h5>
                             </Col>
                             <Col sm="4">
                               <h5 className="py-2">
-                                <b>Role</b>
-                                :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                {member.role_name}
+                                <b className="mr-2">Role :</b>
+                                <span>{member.role_name}</span>
                               </h5>
                             </Col>
                           </Row>
@@ -187,8 +158,7 @@ class MemberDetail extends Component {
                     <Row>
                       <Col sm="12">
                         <h5 className="py-2">
-                          <b>Email</b>
-                          :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          <b className="mr-2">Email :</b>
                           <a href={`mailto:${member.email}`}>{member.email}</a>
                         </h5>
                       </Col>
@@ -197,20 +167,14 @@ class MemberDetail extends Component {
                       <Row>
                         <Col sm="8">
                           <h5 className="py-2">
-                            <b>Weight</b>
-                            :
-                            {' '}
-                            {member.weight}
-                            {' '}
-                            Kg
+                            <b className="mr-2">Weight :</b>
+                            <span>{member.weight + ' Kg'}</span>
                           </h5>
                         </Col>
                         <Col sm="4">
                           <h5 className="py-2">
-                            <b>Dan</b>
-                            :
-                            {' '}
-                            {member.dan}
+                            <b className="mr-2">Dan :</b>
+                            <span>{member.dan}</span>
                           </h5>
                         </Col>
                       </Row>
