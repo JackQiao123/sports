@@ -72460,6 +72460,15 @@ body .admin-dashboard .home-content .row-0 table tbody td.bar .progress-bar {
   height: 12px;
 }
 
+body .admin-dashboard .row div.segment {
+  color: black;
+  height: 100%;
+}
+
+body .admin-dashboard table td a {
+  cursor: pointer;
+}
+
 body .admin-dashboard > .content {
   height: calc(100vh - 105px);
 }
@@ -72472,12 +72481,6 @@ body .admin-dashboard > .content a.detail-link {
 
 body .admin-dashboard > .content a.detail-link:hover {
   color: #FFFFFF;
-}
-
-body .admin-dashboard > .content .segment {
-  background-color: #242424;
-  border-color: #97A3B4;
-  color: #CCCCCC;
 }
 
 body .admin-dashboard > .content .select-box div {
@@ -72546,7 +72549,7 @@ body .admin-dashboard > .content .fixed-content {
 body .admin-dashboard > .content .row div.segment {
   background-color: #242424;
   border-color: #97A3B4;
-  height: 100%;
+  color: #CCCCCC;
 }
 
 body .admin-dashboard > .content .row div.segment .detail-image img {

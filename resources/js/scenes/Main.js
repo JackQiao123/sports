@@ -17,6 +17,7 @@ import AdminReset from './Admin/reset';
 import AdminSetting from './Admin/setting';
 
 import OrganizationAdd from './Organizations/add';
+import OrganizationDetail from './Organizations/detail';
 
 import MemberAdd from './Members/add';
 
@@ -55,6 +56,7 @@ class Main extends Component {
           <Route exact path="/admin/competition/detail" name="AdminCompDetail" component={AdminCompDetail} />
           <Route exact path="/admin/reset" name="AdminReset" component={AdminReset} />
           <Route exact path="/admin/setting" name="AdminSetting" component={AdminSetting} />
+          <Route exact path="/admin/organization/detail" name="AdminOrganizationDetail" component={OrganizationDetail} />
 
           <Route exact path="/organization/create" name="OrganizationAdd" component={OrganizationAdd} />
 
