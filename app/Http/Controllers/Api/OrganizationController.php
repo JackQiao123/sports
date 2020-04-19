@@ -579,4 +579,48 @@ class OrganizationController extends Controller
 
     return response()->json($result);
   }
+
+  /**
+   * Display the members of the resource.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function members($id)
+  {
+    $org = Organization::find($id);
+
+    $clubs = array();
+
+    if ($org->is_club) {
+      array_push($clubs, $org->id);
+    } else {
+      $orgs = Organization::where('parent_id', $id)->get();
+
+      foreach ($orgs as $row) {
+        if ($org->parent_id == 0) {
+          $result = Organization::where('parent_id', $row->id)->get();
+
+          foreach ($result as $res) {
+              array_push($clubs, $res->id);
+          }
+        } else {
+          array_push($clubs, $row->id);
+        }
+      }
+    }
+
+    sort($clubs);
+
+    $members = Member::leftJoin('players', 'members.id', '=','players.member_id')
+                    ->leftJoin('weights', 'weights.id', '=', 'players.weight_id')
+                    ->leftJoin('organizations AS org1', 'org1.id', '=', 'members.organization_id')
+                    ->leftJoin('organizations AS org2', 'org2.id', '=', 'org1.parent_id')
+                    ->whereIn('members.organization_id', $clubs)
+                    ->where('members.active', '!=', 1)
+                    ->select('members.*', 'org2.name_o AS region', 'org1.name_o AS club', 'weights.weight', 'players.dan')
+                    ->get();
+
+    return response()->json($members);
+  }
 }

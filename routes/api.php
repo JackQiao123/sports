@@ -37,6 +37,7 @@ Route::namespace('Api')->group(function () {
 		Route::post('reg-organization', 'OrganizationController@store');
 		Route::put('organization/{id}', 'OrganizationController@update');
 		Route::delete('organization/{id}', 'OrganizationController@destroy');
+		Route::get('club-members/{id}', 'OrganizationController@members');
 
 		// Member APIs
 		Route::post('members', 'MemberController@index');
@@ -59,6 +60,8 @@ Route::namespace('Api')->group(function () {
 		Route::get('invite-send', 'UserController@invite_send');
 
 		// Financial APIs
+		Route::get('cost/{id}', 'TransactionController@cost');
+		Route::post('pay-now', 'TransactionController@store');
 		Route::get('finance', 'TransactionController@finance');
 		Route::get('transdetail/{id}', 'TransactionController@detail');
 	});

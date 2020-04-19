@@ -27,6 +27,8 @@ import OrganizationDetail from './Organizations/detail';
 import MemberAdd from './Members/add';
 import MemberDetail from './Members/detail';
 
+import Payment from './Payment';
+
 import Dashboard from './Dashboard';
 import Search from './Dashboard/search';
 import Membership from './Users';
@@ -73,6 +75,8 @@ class Main extends Component {
 
           <AuthenticatedRoute path="/member/register" name="MemberAdd" component={MemberAdd} />
           <AuthenticatedRoute path="/member/detail" name="MemberDetail" component={MemberDetail} />
+
+          <AuthenticatedRoute path="/payment-player" name="Payment" component={Payment} />
 
           <AuthenticatedRoute path="/search" name="Search" component={Search} />
           <AuthenticatedRoute path="/membership" name="Membership" component={Membership} />

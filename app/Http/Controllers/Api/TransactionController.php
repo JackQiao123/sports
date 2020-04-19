@@ -6,6 +6,7 @@ use JWTAuth;
 use App\Member;
 use App\Organization;
 use App\Transaction;
+use App\Setting;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -111,5 +112,111 @@ class TransactionController extends Controller
       'status' => 'success',
       'detail' => $detail,
     ], 200);
+  }
+
+  public function store(Request $request)
+  {
+    $data = $request->all();
+    $player_list = $request->input('players');
+    $players = implode(',', $player_list);
+    
+    $club = Organization::find($data['club_id']);
+    $org = Organization::find($club->parent_id);
+    $nf = Organization::find($org->parent_id);
+    $user = auth()->user();
+    $settings = Setting::where('organization_id', $nf->id)->get();
+    $amount = $request->input('amount');
+    $amount1 = 0;
+    $amount2 = 0;
+    if (sizeOf($settings) > 0) {
+      $setting = $settings[0];
+      if ($setting['percent']) {
+        $amount1 = $amount * ((100 - $setting['percent']) / 100);
+        $amount2 = $amount * ($setting['percent'] / 100);
+      } else {
+        $amount1 = $amount;
+        $amount2 = $amount;
+      }
+    } else {
+      return response()->json(
+        [
+          'status' => 'error',
+          'message' => 'Please setting per price.'
+        ],
+        406
+      );
+    }
+
+    if ($data['pay_method'] === 'basic_card') {
+      // $card_info = $request->input('card_info');
+      return response()->json([
+        'status' => 'success',
+        'message' => 'Paid Successfully! Please wait a message.',
+        'data' => $request->input('pay_info')
+      ], 200);
+      // Transaction::create(array(
+      //   'club_id' => $data['club_id'],
+      //   'payer_id' => $data['payer_id'],
+      //   'players' => $players,
+      //   'amount' => $data['amount'],
+      //   'price' => $setting['price'],
+      //   'percent' => $setting['percent']
+      // ));
+
+      // foreach ($player_list as $player) {
+      //     Member::where('id', $player)->update(array(
+      //       'active' => 2
+      //   ));
+      // } 
+    } else if ($data['pay_method'] === 'payme') {
+      
+      // Transaction::create(array(
+      //   'club_id' => $data['club_id'],
+      //   'payer_id' => $data['payer_id'],
+      //   'players' => $players,
+      //   'amount' => $data['amount'],
+      //   'price' => $setting['price'],
+      //   'percent' => $setting['percent']
+      // ));
+
+      // foreach ($player_list as $player) {
+      //     Member::where('id', $player)->update(array(
+      //       'active' => 2
+      //   ));
+      // }
+      // return response()->json([
+      //   'status' => 'error',
+      //   'message' => 'Paid Failed! Please check your payme again.'
+      // ], 406);
+    }
+    return response()->json([
+      'status' => 'success',
+      'message' => 'Paid Successfully! Please wait a message.'
+    ], 200);
+  }
+
+  public function cost($id)
+  {
+    $myOrg = Organization::find($id);
+
+    $nf = array();
+    
+    if ($myOrg->is_club == 1) {
+      $org = Organization::find($myOrg->parent_id);
+      $nf = Organization::find($org->parent_id);
+    } else {
+      if ($myOrg->parent_id == 0)
+        $nf = $myOrg;
+      else
+        $nf = Organization::find($myOrg->parent_id);
+    }
+
+    $data = Setting::where('organization_id', $nf->id)->select('price')->get();
+
+    $cost = 0.00;
+    if (sizeof($data) > 0)
+      $cost = $data[0]['price'];
+
+    return response()->json($cost);
   }
 }
