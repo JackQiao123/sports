@@ -116,6 +116,18 @@ class UserController extends Controller
 		return response()->json($member[0]);
 	}
 
+	public function setting()
+	{
+		$user = JWTAuth::parseToken()->authenticate();
+
+		$setting = Member::leftJoin('settings', 'settings.organization_id', '=', 'members.organization_id')
+								->where('members.id', $user->member_id)
+								->select('settings.*')
+								->get();
+
+		return response()->json($setting[0]);
+	}
+
 	public function reset(Request $request, $token)
 	{
 		$data = $request->all();

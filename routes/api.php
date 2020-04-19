@@ -50,6 +50,7 @@ Route::namespace('Api')->group(function () {
 		Route::get('profile', 'UserController@profile');
 		Route::post('resetpass/{token}', 'UserController@reset');
 		Route::get('allsetting', 'SettingController@allsetting');
+		Route::get('setting', 'UserController@setting');
 		Route::put('setting/{id}', 'SettingController@update');
 
 		// Financial APIs

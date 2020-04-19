@@ -30,6 +30,7 @@ import MemberDetail from './Members/detail';
 import Dashboard from './Dashboard';
 import Search from './Dashboard/search';
 import Profile from './Users/profile';
+import Setting from './Users/setting';
 import Reset from './Users/reset';
 
 class Main extends Component {
@@ -74,6 +75,7 @@ class Main extends Component {
 
           <AuthenticatedRoute path="/search" name="Search" component={Search} />
           <AuthenticatedRoute path="/profile" name="Profile" component={Profile} />
+          <AuthenticatedRoute path="/setting" name="Setting" component={Setting} />
           <AuthenticatedRoute path="/reset" name="Reset" component={Reset} />
           <AuthenticatedRoute path="/" name="Dashboard" component={Dashboard} />
         </Switch>
