@@ -103,6 +103,19 @@ class UserController extends Controller
 		}
 	}
 
+	public function profile()
+	{
+		$user = JWTAuth::parseToken()->authenticate();
+
+		$member = Member::leftJoin('organizations', 'organizations.id', '=', 'members.organization_id')
+								->leftJoin('roles', 'roles.id', '=', 'members.role_id')
+								->where('members.id', $user->member_id)
+								->select('members.*', 'organizations.parent_id', 'organizations.name_o', 'roles.name AS role')
+								->get();
+
+		return response()->json($member[0]);
+	}
+
 	public function reset(Request $request, $token)
 	{
 		$data = $request->all();

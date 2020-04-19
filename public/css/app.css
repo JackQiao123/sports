@@ -72035,6 +72035,10 @@ body .main-content {
   }
 }
 
+.form-control[readonly] {
+  background-color: #FFFFFF;
+}
+
 .main-content .ui.table {
   border-color: #000;
   border-top: none;
@@ -72225,10 +72229,6 @@ body .main-content {
 
 .main-content .form-group .ui.input input {
   height: 48px;
-}
-
-.main-content .form-control[readonly] {
-  background-color: #FFFFFF;
 }
 
 .main-content.has-hand-card {

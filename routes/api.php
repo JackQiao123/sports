@@ -47,6 +47,7 @@ Route::namespace('Api')->group(function () {
 		Route::get('weights', 'PlayerController@weights');
 
 		// User APIs
+		Route::get('profile', 'UserController@profile');
 		Route::post('resetpass/{token}', 'UserController@reset');
 		Route::get('allsetting', 'SettingController@allsetting');
 		Route::put('setting/{id}', 'SettingController@update');
