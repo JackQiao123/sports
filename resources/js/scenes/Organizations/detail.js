@@ -215,12 +215,20 @@ class OrganizationDetail extends Component {
     }
 
     if (option == 'club') {
-      this.props.history.push('/member/detail', id);
+      if (this.state.is_super == 1) {
+        this.props.history.push('/admin/member/detail', id);
+      } else {
+        this.props.history.push('/member/detail', id);
+      }
     }
   }
 
   async handleSelectMember(id) {
-    this.props.history.push('/member/detail', id);
+    if (this.state.is_super == 1) {
+      this.props.history.push('/admin/member/detail', id);
+    } else {
+      this.props.history.push('/member/detail', id);
+    }
   }
 
   getWeights(gender) {

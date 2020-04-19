@@ -25,7 +25,7 @@ Route::namespace('Api')->group(function () {
 
 		// Organization APIs
 		Route::get('search', 'OrganizationController@search');
-		
+
 		Route::get('organization/{id}', 'OrganizationController@show');
 		Route::get('organization-list/{id}', 'OrganizationController@orgList');
 		Route::get('organization-child/{id}', 'OrganizationController@child');
@@ -37,6 +37,7 @@ Route::namespace('Api')->group(function () {
 		Route::post('members', 'MemberController@index');
 		Route::get('roles', 'MemberController@roles');
 		Route::post('reg-member', 'MemberController@store');
+		Route::get('member/{id}', 'MemberController@show');
 
 		// Judoka APIs
 		Route::get('weights', 'PlayerController@weights');

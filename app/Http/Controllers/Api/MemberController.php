@@ -67,6 +67,58 @@ class MemberController extends Controller
   }
 
   /**
+   * Display the specified resource.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function show($id)
+  {
+    $member = Member::where('members.id', $id)
+                    ->leftJoin('organizations AS club', 'club.id', '=', 'members.organization_id')
+                    ->leftJoin('organizations AS org', 'org.id', '=', 'club.parent_id')
+                    ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
+                    ->leftJoin('users', 'users.member_id', '=', 'members.id')
+                    ->select('members.*', 
+                              'org.name_o AS org_name', 'org.id AS org_id',
+                              'club.name_o AS club_name', 'club.id AS club_id',
+                              'club.level', 'roles.name AS role_name', 'roles.is_player',
+                              'users.id AS uid', 'users.deleted_at AS status')
+                    ->first();
+
+    if (isset($member)) {
+      $role = DB::table('roles')->find($member->role_id);
+      
+      if ($role->is_player) {
+        $member = Member::where('members.id', $id)
+                ->leftJoin('organizations AS club', 'club.id', '=', 'members.organization_id')
+                ->leftJoin('organizations AS org', 'org.id', '=', 'club.parent_id')
+                ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
+                ->leftJoin('players', 'players.member_id', '=', 'members.id')
+                ->leftJoin('weights', 'weights.id', '=', 'players.weight_id')
+                ->select('members.*',
+                          'org.name_o AS org_name', 'org.id AS org_id',
+                          'club.name_o AS club_name', 'club.id AS club_id',
+                          'club.level', 'roles.name AS role_name', 'roles.is_player',
+                          'weights.id AS weight_id', 'weights.weight',
+                          'players.dan', 'players.skill', 'players.expired_date',
+                        DB::raw("null AS uid, null AS status"))
+                ->first();
+      }
+
+      return response()->json($member);
+    } else {
+      return response()->json(
+        [
+          'status' => 'error',
+          'message' => 'Invalid Member ID'
+        ],
+        406
+      );
+    }
+  }
+
+  /**
    * Store a newly created resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request

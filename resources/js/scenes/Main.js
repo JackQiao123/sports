@@ -20,6 +20,7 @@ import OrganizationAdd from './Organizations/add';
 import OrganizationDetail from './Organizations/detail';
 
 import MemberAdd from './Members/add';
+import MemberDetail from './Members/detail';
 
 import Dashboard from './Dashboard';
 import Search from './Dashboard/search';
@@ -57,6 +58,7 @@ class Main extends Component {
           <Route exact path="/admin/reset" name="AdminReset" component={AdminReset} />
           <Route exact path="/admin/setting" name="AdminSetting" component={AdminSetting} />
           <Route exact path="/admin/organization/detail" name="AdminOrganizationDetail" component={OrganizationDetail} />
+          <Route exact path="/admin/member/detail" name="AdminMemberDetail" component={MemberDetail} />
 
           <Route exact path="/organization/create" name="OrganizationAdd" component={OrganizationAdd} />
 
