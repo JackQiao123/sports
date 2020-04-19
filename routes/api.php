@@ -41,6 +41,7 @@ Route::namespace('Api')->group(function () {
 		Route::post('reg-member', 'MemberController@store');
 		Route::get('member/{id}', 'MemberController@show');
 		Route::put('member/{id}', 'MemberController@update');
+		Route::delete('member/{id}', 'MemberController@destroy');
 
 		// Judoka APIs
 		Route::get('weights', 'PlayerController@weights');

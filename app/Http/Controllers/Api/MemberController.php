@@ -6,6 +6,7 @@ use App\Member;
 use App\Organization;
 use App\User;
 
+use JWTAuth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -419,6 +420,56 @@ class MemberController extends Controller
           406
         );
       }
+  }
+
+  /**
+   * Remove the specified resource from storage.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function destroy($id)
+  {
+    $member = Member::find($id);
+
+    $user = JWTAuth::parseToken()->authenticate();
+
+    if (isset($user)) {
+      $member = Member::find($id);
+
+      if (isset($member)) {
+        $role = DB::table('roles')->where('id', $member->role_id)->first();
+
+        if ($role->is_player) {
+          Player::where('member_id', $id)->delete();
+        } else {
+          User::where('member_id', $id)->delete();
+        }
+
+        Member::where('id', $id)->delete();
+
+        return response()->json([
+          'status' => 'success',
+          'message' => 'Deleted Successfully'
+        ], 200);
+      } else {
+        return response()->json(
+          [
+            'status' => 'error',
+            'message' => 'Invalid Member ID'
+          ],
+          406
+        );
+      }
+    } else {
+      return response()->json(
+        [
+          'status' => 'error',
+          'message' => 'Invalid credentials.'
+        ],
+        406
+      );
+    }
   }
 
   /**
