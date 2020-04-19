@@ -53,27 +53,27 @@ class Main extends Component {
       <Router history={history}>
         <Switch>
           <SuperAdminRoute path="/admin/home" name="Admin" component={Admin} />
-          <SuperAdminRoute exact path="/create" name="AdminCreate" component={AdminCreate} />
-          <SuperAdminRoute exact path="/federations" name="AdminFederation" component={AdminFederation} />
-          <SuperAdminRoute exact path="/nfprofile" name="AdminNFProfile" component={AdminNFProfile} />
-          <SuperAdminRoute exact path="/detail" name="AdminDetail" component={AdminDetail} />
-          <SuperAdminRoute exact path="/search" name="Admin" component={AdminSearch} />
-          <SuperAdminRoute exact path="/competitions" name="AdminCompetition" component={AdminCompetition} />
-          <SuperAdminRoute exact path="/competition/detail" name="AdminCompDetail" component={AdminCompDetail} />
-          <SuperAdminRoute exact path="/reset" name="AdminReset" component={AdminReset} />
-          <SuperAdminRoute exact path="/setting" name="AdminSetting" component={AdminSetting} />
-          <SuperAdminRoute exact path="/organization/detail" name="AdminOrganizationDetail" component={OrganizationDetail} />
-          <SuperAdminRoute exact path="/member/detail" name="AdminMemberDetail" component={MemberDetail} />
+          <SuperAdminRoute path="/admin/create" name="AdminCreate" component={AdminCreate} />
+          <SuperAdminRoute path="/admin/federations" name="AdminFederation" component={AdminFederation} />
+          <SuperAdminRoute path="/admin/nfprofile" name="AdminNFProfile" component={AdminNFProfile} />
+          <SuperAdminRoute path="/admin/detail" name="AdminDetail" component={AdminDetail} />
+          <SuperAdminRoute path="/admin/search" name="Admin" component={AdminSearch} />
+          <SuperAdminRoute path="/admin/competitions" name="AdminCompetition" component={AdminCompetition} />
+          <SuperAdminRoute path="/admin/competition/detail" name="AdminCompDetail" component={AdminCompDetail} />
+          <SuperAdminRoute path="/admin/reset" name="AdminReset" component={AdminReset} />
+          <SuperAdminRoute path="/admin/setting" name="AdminSetting" component={AdminSetting} />
+          <SuperAdminRoute path="/admin/organization/detail" name="AdminOrganizationDetail" component={OrganizationDetail} />
+          <SuperAdminRoute path="/admin/member/detail" name="AdminMemberDetail" component={MemberDetail} />
 
-          <AuthenticatedRoute exact path="/organization/create" name="OrganizationAdd" component={OrganizationAdd} />
-          <AuthenticatedRoute exact path="/organization/detail" name="OrganizationDetail" component={OrganizationDetail} />
+          <AuthenticatedRoute path="/organization/create" name="OrganizationAdd" component={OrganizationAdd} />
+          <AuthenticatedRoute path="/organization/detail" name="OrganizationDetail" component={OrganizationDetail} />
 
-          <AuthenticatedRoute exact path="/member/register" name="MemberAdd" component={MemberAdd} />
-          <AuthenticatedRoute exact path="/member/detail" name="MemberDetail" component={MemberDetail} />
+          <AuthenticatedRoute path="/member/register" name="MemberAdd" component={MemberAdd} />
+          <AuthenticatedRoute path="/member/detail" name="MemberDetail" component={MemberDetail} />
 
-          <AuthenticatedRoute exact path="/search" name="Search" component={Search} />
-          <AuthenticatedRoute exact path="/reset" name="Reset" component={Reset} />
-          <AuthenticatedRoute exact path="/" name="Dashboard" component={Dashboard} />
+          <AuthenticatedRoute path="/search" name="Search" component={Search} />
+          <AuthenticatedRoute path="/reset" name="Reset" component={Reset} />
+          <AuthenticatedRoute path="/" name="Dashboard" component={Dashboard} />
         </Switch>
       </Router>
     );
