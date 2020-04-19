@@ -21,7 +21,9 @@ import AdminCompDetail from './Admin/compdetail';
 import AdminReset from './Admin/reset';
 import AdminSetting from './Admin/setting';
 
+import Competitions from './Competitions';
 import CreateComp from './Competitions/create';
+import DetailComp from './Competitions/detail';
 
 import OrganizationAdd from './Organizations/add';
 import OrganizationDetail from './Organizations/detail';
@@ -72,7 +74,9 @@ class Main extends Component {
           <SuperAdminRoute path="/admin/organization/detail" name="AdminOrganizationDetail" component={OrganizationDetail} />
           <SuperAdminRoute path="/admin/member/detail" name="AdminMemberDetail" component={MemberDetail} />
 
+          <AuthenticatedRoute path="/competitions" name="Competitions" component={Competitions} />
           <AuthenticatedRoute path="/competition/create" name="CreateComp" component={CreateComp} />
+          <AuthenticatedRoute path="/competition/detail" name="DetailComp" component={DetailComp} />
 
           <AuthenticatedRoute path="/organization/create" name="OrganizationAdd" component={OrganizationAdd} />
           <AuthenticatedRoute path="/organization/detail" name="OrganizationDetail" component={OrganizationDetail} />
