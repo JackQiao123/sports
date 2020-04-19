@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Router, Route, Switch
+  Router, Switch
 } from 'react-router-dom';
 
 import history from './history';
@@ -16,7 +16,7 @@ import {
 } from './actions/common';
 import Api from './apis/app';
 import {
-  AuthRoute, RedirectIfAuthenticatedRoute
+  AuthRoute, AuthenticatedRoute
 } from './components/PrivateRoutes';
 
 class App extends Component {
@@ -45,9 +45,9 @@ class App extends Component {
       initialized ? (
         <Router history={history}>
           <Switch>
-            <RedirectIfAuthenticatedRoute path="/forgot" name="Forgot" component={Forgot} />
-            <RedirectIfAuthenticatedRoute path="/login" name="Login" component={Login} />
-            <RedirectIfAuthenticatedRoute path="/reset/:token" name="Reset" component={Reset} />
+            <AuthenticatedRoute path="/forgot" name="Forgot" component={Forgot} />
+            <AuthenticatedRoute path="/login" name="Login" component={Login} />
+            <AuthenticatedRoute path="/reset/:token" name="Reset" component={Reset} />
             <AuthRoute path="/" name="Main" component={Main} />
           </Switch>
         </Router>

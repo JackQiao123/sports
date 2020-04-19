@@ -19,8 +19,6 @@ import {
 } from 'reactstrap';
 import Switch from "react-switch";
 
-import Api from '../../apis/app';
-
 import TopBar from '../../components/TopBar/TopBar';
 import { logout } from '../../actions/common';
 import Bitmaps from '../../theme/Bitmaps';

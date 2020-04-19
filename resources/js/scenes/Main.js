@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import {
-  Router, Switch, Route
+  Router, Switch
 } from 'react-router-dom';
+
+import {
+  SuperAdminRoute,
+  AuthenticatedRoute
+} from '../components/PrivateRoutes';
 
 import history from '../history';
 
@@ -47,28 +52,28 @@ class Main extends Component {
     return (
       <Router history={history}>
         <Switch>
-          <Route exact path="/admin/home" name="Admin" component={Admin} />
-          <Route exact path="/admin/create" name="AdminCreate" component={AdminCreate} />
-          <Route exact path="/admin/federations" name="AdminFederation" component={AdminFederation} />
-          <Route exact path="/admin/nfprofile" name="AdminNFProfile" component={AdminNFProfile} />
-          <Route exact path="/admin/detail" name="AdminDetail" component={AdminDetail} />
-          <Route exact path="/admin/search" name="Admin" component={AdminSearch} />
-          <Route exact path="/admin/competitions" name="AdminCompetition" component={AdminCompetition} />
-          <Route exact path="/admin/competition/detail" name="AdminCompDetail" component={AdminCompDetail} />
-          <Route exact path="/admin/reset" name="AdminReset" component={AdminReset} />
-          <Route exact path="/admin/setting" name="AdminSetting" component={AdminSetting} />
-          <Route exact path="/admin/organization/detail" name="AdminOrganizationDetail" component={OrganizationDetail} />
-          <Route exact path="/admin/member/detail" name="AdminMemberDetail" component={MemberDetail} />
+          <SuperAdminRoute path="/admin/home" name="Admin" component={Admin} />
+          <SuperAdminRoute exact path="/create" name="AdminCreate" component={AdminCreate} />
+          <SuperAdminRoute exact path="/federations" name="AdminFederation" component={AdminFederation} />
+          <SuperAdminRoute exact path="/nfprofile" name="AdminNFProfile" component={AdminNFProfile} />
+          <SuperAdminRoute exact path="/detail" name="AdminDetail" component={AdminDetail} />
+          <SuperAdminRoute exact path="/search" name="Admin" component={AdminSearch} />
+          <SuperAdminRoute exact path="/competitions" name="AdminCompetition" component={AdminCompetition} />
+          <SuperAdminRoute exact path="/competition/detail" name="AdminCompDetail" component={AdminCompDetail} />
+          <SuperAdminRoute exact path="/reset" name="AdminReset" component={AdminReset} />
+          <SuperAdminRoute exact path="/setting" name="AdminSetting" component={AdminSetting} />
+          <SuperAdminRoute exact path="/organization/detail" name="AdminOrganizationDetail" component={OrganizationDetail} />
+          <SuperAdminRoute exact path="/member/detail" name="AdminMemberDetail" component={MemberDetail} />
 
-          <Route exact path="/organization/create" name="OrganizationAdd" component={OrganizationAdd} />
-          <Route exact path="/organization/detail" name="OrganizationDetail" component={OrganizationDetail} />
+          <AuthenticatedRoute exact path="/organization/create" name="OrganizationAdd" component={OrganizationAdd} />
+          <AuthenticatedRoute exact path="/organization/detail" name="OrganizationDetail" component={OrganizationDetail} />
 
-          <Route exact path="/member/register" name="MemberAdd" component={MemberAdd} />
-          <Route exact path="/member/detail" name="MemberDetail" component={MemberDetail} />
+          <AuthenticatedRoute exact path="/member/register" name="MemberAdd" component={MemberAdd} />
+          <AuthenticatedRoute exact path="/member/detail" name="MemberDetail" component={MemberDetail} />
 
-          <Route exact path="/search" name="Search" component={Search} />
-          <Route exact path="/reset" name="Reset" component={Reset} />
-          <Route exact path="/" name="Dashboard" component={Dashboard} />
+          <AuthenticatedRoute exact path="/search" name="Search" component={Search} />
+          <AuthenticatedRoute exact path="/reset" name="Reset" component={Reset} />
+          <AuthenticatedRoute exact path="/" name="Dashboard" component={Dashboard} />
         </Switch>
       </Router>
     );
