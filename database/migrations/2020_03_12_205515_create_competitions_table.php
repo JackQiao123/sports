@@ -20,6 +20,7 @@ class CreateCompetitionsTable extends Migration
             $table->string('short_name');
             $table->string('place');
             $table->string('type');
+            $table->string('level', 30);
             $table->date('from');
             $table->date('to');
             $table->date('register_from');

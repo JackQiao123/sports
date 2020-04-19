@@ -26,6 +26,9 @@ Route::namespace('Api')->group(function () {
 		Route::get('all-nf', 'NationalController@list');
 		Route::post('create-nf', 'NationalController@store');
 
+		// Competition APIs
+		Route::post('reg-competition', 'CompetitionController@store');
+
 		// Organization APIs
 		Route::get('search', 'OrganizationController@search');
 

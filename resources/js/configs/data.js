@@ -313,6 +313,6 @@ export const CompetitionType = [
 ];
 
 export const CompetitionLevel = [
-  { label: 'Senior and Junior', value: 'sj' },
+  { label: 'Senior and Junior', value: 'senior-junior' },
   { label: 'Cadet under 18', value: 'cadet' }
 ];
