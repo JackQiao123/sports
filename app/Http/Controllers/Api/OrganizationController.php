@@ -360,7 +360,7 @@ class OrganizationController extends Controller
         $result = $result->orderBy('name_o')->get();
         break;
       case 'club':
-        $result = Organization::where('is_club', 1);
+        $result = Organization::where('country', $myOrg->country)->where('is_club', 1);
 
         if ($org != '') {
           $result = $result->where('parent_id', $org);
