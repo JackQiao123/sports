@@ -67,8 +67,8 @@ class CreateWeightsTable extends Migration
         $gender = array(
             1, 1, 1, 1, 1, 1, 1,
             1, 1, 1, 1, 1, 1, 1, 1,
-            0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0
+            2, 2, 2, 2, 2, 2, 2,
+            2, 2, 2, 2, 2, 2, 2, 2
         );
 
         for ($i = 0; $i < sizeof($weight); $i++) {
