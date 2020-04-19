@@ -36,9 +36,6 @@ class Search extends Component {
     const user = JSON.parse(localStorage.getItem('auth'));
     const me = user.user.member_info.organization_id;
 
-    if (user.user.is_super == 1)
-      this.props.history.push('/admin/home');
-
     this.state = {
       me,
       level: '',
@@ -540,7 +537,9 @@ class Search extends Component {
             alertVisible: true,
             messageStatus: false,
             isOpenEditModal: false,
-            failMessage: updateMem.body.data && (`${updateMem.body.data.email !== undefined ? updateMem.body.data.email : ''} ${updateMem.body.data.identity !== undefined ? updateMem.body.data.identity : ''}`)
+            failMessage: updateMem.body.data && 
+            (`${updateMem.body.data.email !== undefined ? updateMem.body.data.email : ''} 
+              ${updateMem.body.data.identity !== undefined ? updateMem.body.data.identity : ''}`)
           });
           break;
         case 500:
@@ -674,7 +673,6 @@ class Search extends Component {
                         classNamePrefix="react-select-lg"
                         placeholder="Organization Name"
                         isClearable
-                        // isMulti
                         value={search_org}
                         options={orgs}
                         getOptionValue={option => option.id}
@@ -696,7 +694,6 @@ class Search extends Component {
                       classNamePrefix="react-select-lg"
                       placeholder="Org Search"
                       isClearable
-                      // isMulti
                       value={search_org}
                       options={org_list}
                       getOptionValue={option => option.id}
@@ -710,7 +707,6 @@ class Search extends Component {
                 )
               }
               {
-                // (search_type.value == 'club' || search_type.value == 'member') && (
                 search_type.value == 'club' && (
                   <Col xl="2" lg="4" md="4" sm="6" xs="12">
                     <FormGroup>
@@ -719,7 +715,6 @@ class Search extends Component {
                         classNamePrefix="react-select-lg"
                         placeholder="Club Name"
                         isClearable
-                        // isMulti
                         value={search_club}
                         options={clubs}
                         getOptionValue={option => option.id}

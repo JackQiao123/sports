@@ -124,7 +124,8 @@ class DataTable extends Component {
       items,
       stype,
       mtype,
-      init
+      init,
+      display
     } = this.props;
 
     const {
@@ -204,14 +205,6 @@ class DataTable extends Component {
             {
               mtype.value !== 'judoka' && (
                 <Fragment>
-                  {/* <Table.HeaderCell
-                    width="1"
-                    className="text-center"
-                    sorted={column === 'mobile_phone' ? direction : null}
-                    onClick={this.handleSort.bind(this, 'mobile_phone')}
-                  >
-                    Mobile
-                  </Table.HeaderCell> */}
                   <Table.HeaderCell
                     className="text-center"
                     width="3"
@@ -220,14 +213,6 @@ class DataTable extends Component {
                   >
                     Email
                   </Table.HeaderCell>
-                  {/* <Table.HeaderCell
-                    className="text-center"
-                    width="6"
-                    sorted={column === 'addressline1' ? direction : null}
-                    onClick={this.handleSort.bind(this, 'addressline1')}
-                  >
-                    Address
-                  </Table.HeaderCell> */}
                 </Fragment>
               )
             }
@@ -255,7 +240,7 @@ class DataTable extends Component {
               )
             }
             {
-              this.props.display && this.props.display == true && (
+              display && (
                 <Table.HeaderCell className="text-center" width="2">
                   Edit / Delete
                 </Table.HeaderCell>
@@ -290,16 +275,12 @@ class DataTable extends Component {
                         item.active == 0 ? (
                           <a>
                             {item.name}
-                            {/* {' '}
-                            {item.patronymic != '-' && item.patronymic} */}
                             {' '}
                             {item.surname && item.surname.toUpperCase()}
                           </a>
                         ) : (
                           <a className="detail-link" onClick={() => onSelect(item.id)}>
                             {item.name}
-                            {/* {' '}
-                            {item.patronymic != '-' && item.patronymic} */}
                             {' '}
                             {item.surname && item.surname.toUpperCase()}
                           </a>
@@ -338,17 +319,7 @@ class DataTable extends Component {
                   }
                   {
                     mtype.value !== 'judoka' && (
-                      <Fragment>
-                        {/* <Table.Cell className="text-center">{item.mobile_phone}</Table.Cell> */}
-                        <Table.Cell className="text-center">{item.email}</Table.Cell>
-                        {/* <Table.Cell>
-                          {(item.addressline1 && item.addressline1 !== '' && item.addressline1 !== '-') ? `${item.addressline1}, ` : '' }
-                          {(item.addressline2 && item.addressline2 !== '' && item.addressline2 !== '-') ? `${item.addressline2}, ` : '' }
-                          {(item.city && item.city !== '' && item.city !== '-') ? `${item.city}, ` : '' }
-                          {(item.state && item.state !== '' && item.state !== '-') ? `${item.state}, ` : '' }
-                          {item.zip_code}
-                        </Table.Cell> */}
-                      </Fragment>
+                      <Table.Cell className="text-center">{item.email}</Table.Cell>
                     )
                   }
                   {
@@ -395,7 +366,7 @@ class DataTable extends Component {
                     )
                   }
                   {
-                    this.props.display && this.props.display == true && (
+                    display && (
                       <Table.Cell>
                         {
                           (stype.value === 'org' || stype.value === 'club' || item.active == 1) && (
