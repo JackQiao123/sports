@@ -286,6 +286,46 @@ class OrganizationController extends Controller
   }
 
   /**
+   * Remove the specified resource from storage.
+   *
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function destroy($id)
+  {
+    $user = JWTAuth::parseToken()->authenticate();
+
+    if (isset($user)) {
+      $child_org = Organization::where('parent_id', $id)->get();
+
+      if (sizeof($child_org) == 0) {
+        Organization::where('id', $id)->delete();
+
+        return response()->json([
+          'status' => 'success',
+          'message' => 'Deleted Successfully'
+        ], 200);
+      } else {
+        return response()->json(
+          [
+            'status' => 'error',
+            'message' => 'Child Organization exist.'
+          ],
+          406
+        );
+      }
+    } else {
+      return response()->json(
+        [
+          'status' => 'error',
+          'message' => 'Invalid credentials.'
+        ],
+        406
+      );
+    }
+  }
+
+  /**
    * Display a listing of the resource.
    *
    * @return \Illuminate\Http\Response

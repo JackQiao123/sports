@@ -33,6 +33,7 @@ Route::namespace('Api')->group(function () {
 		Route::get('countryclubs/{id}', 'OrganizationController@country_clubs');
 		Route::post('reg-organization', 'OrganizationController@store');
 		Route::put('organization/{id}', 'OrganizationController@update');
+		Route::delete('organization/{id}', 'OrganizationController@destroy');
 
 		// Member APIs
 		Route::post('members', 'MemberController@index');
