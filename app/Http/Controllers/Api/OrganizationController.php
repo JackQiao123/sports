@@ -178,7 +178,111 @@ class OrganizationController extends Controller
       return response()->json([
         'status' => 'success'
       ], 200);
+    }
   }
+
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+  public function update(Request $request, $id)
+  {
+    $data = $request->all();
+
+    $validator = Validator::make($data, [
+      'register_no' => 'required',
+      'name_o' => 'required|string|max:255',
+      'name_s' => 'required|string|max:255',
+      'email' => 'required|string|email|max:255'
+    ]);
+    
+    if ($validator->fails()) {
+      return response()->json(
+        [
+          'status' => 'fail',
+          'data' => $validator->errors()
+        ],
+        422
+      );
+    } else {
+      $exist1 = Organization::where('email', $data['email'])->where('id', '!=', $id)->withTrashed()->count();
+      $exist2 = Organization::where('register_no', $data['register_no'])->where('id', '!=', $id)->withTrashed()->count();
+
+      $errArr = array();
+      $exist = 0;
+
+      if ($exist1 > 0) {
+        $errArr['email'] = 'Email already exist.';
+        $exist += $exist1;
+      }
+
+      if ($exist2 > 0) {
+        $errArr['register_no'] = 'Register No already exist.';
+        $exist += $exist2;
+      }
+      
+      if ($exist > 0) {
+        return response()->json(
+          [
+              'status' => 'fail',
+              'data' => $errArr
+          ],
+          422
+        );
+      }
+
+      $current = Organization::where('id', $id)->first();
+
+      $base64_image = $request->input('logo');
+      
+      if ($base64_image != '' && preg_match('/^data:image\/(\w+);base64,/', $base64_image)) {
+        $pos  = strpos($base64_image, ';');
+        $type = explode(':', substr($base64_image, 0, $pos))[1];
+
+        if (substr($type, 0, 5) == 'image') {
+          $filename = date('Ymd') . '_' . $data['register_no'];
+
+          $type = str_replace('image/', '.', $type);
+
+          $image = substr($base64_image, strpos($base64_image, ',') + 1);
+          $image = base64_decode($image);
+          
+          Storage::disk('local')->delete(str_replace('photos/', '', $current->logo));
+          Storage::disk('local')->put($filename . $type, $image);
+
+          $data['logo'] = "photos/" . $filename . $type;
+        } else {
+          return response()->json(
+            [
+              'status' => 'error',
+              'message' => 'File type is not image.'
+            ],
+            406
+          );
+        }
+      }
+      
+      if (!isset($data['logo']) || is_null($data['logo'])) {
+        $data['logo'] = "";
+      }
+
+      if (is_null($data['addressline2'])) {
+        $data['addressline2'] = "";
+      }
+
+      if ($data['is_club'] == 0) {
+        $data['parent_id'] = 1;
+      }
+          
+      Organization::where('id', $id)->update($data);
+
+      return response()->json([
+        'status' => 'success'
+      ], 200);
+    }
   }
 
   /**
