@@ -23,6 +23,8 @@ import CompetitionClubTable from '../../components/CompetitionClubTable';
 import CompetitionSelectTable from '../../components/CompetitionSelectTable';
 import Bitmaps from '../../theme/Bitmaps';
 
+import { CompetitionType, CompetitionLevel } from '../../configs/data';
+
 class CompetitionDetail extends Component {
   constructor(props) {
     super(props);
@@ -216,6 +218,26 @@ class CompetitionDetail extends Component {
                     <h3 className="text-center">{competition.name}</h3>
                   </Col>
                   <Col sm="12" className="mt-5">
+                    <h4>
+                      Competition Type: 
+                      {
+                        ' ' +
+                        (competition.type && 
+                          CompetitionType.filter(type => type.value == competition.type)[0]['label'])
+                      }
+                    </h4>
+                  </Col>
+                  <Col sm="12" className="mt-3">
+                    <h4>
+                      Competition Level:
+                      {
+                        ' ' +
+                        (competition.level && 
+                          CompetitionLevel.filter(level => level.value == competition.level)[0]['label'])
+                      }
+                    </h4>
+                  </Col>
+                  <Col sm="12" className="mt-3">
                     <h4>Competition Place: {competition.place}</h4>
                   </Col>
                   <Col sm="12" className="mt-3">
