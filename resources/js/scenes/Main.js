@@ -29,6 +29,7 @@ import MemberDetail from './Members/detail';
 
 import Dashboard from './Dashboard';
 import Search from './Dashboard/search';
+import Membership from './Users';
 import Profile from './Users/profile';
 import Setting from './Users/setting';
 import Reset from './Users/reset';
@@ -74,6 +75,7 @@ class Main extends Component {
           <AuthenticatedRoute path="/member/detail" name="MemberDetail" component={MemberDetail} />
 
           <AuthenticatedRoute path="/search" name="Search" component={Search} />
+          <AuthenticatedRoute path="/membership" name="Membership" component={Membership} />
           <AuthenticatedRoute path="/profile" name="Profile" component={Profile} />
           <AuthenticatedRoute path="/setting" name="Setting" component={Setting} />
           <AuthenticatedRoute path="/reset" name="Reset" component={Reset} />

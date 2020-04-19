@@ -11,7 +11,7 @@ import Select from 'react-select';
 import MainTopBar from '../../components/TopBar/MainTopBar';
 import Api from '../../apis/app';
 import InviteTable from '../../components/InviteTable';
-import ChangeSuperTable from '../../components/ChangeSuperTable';
+import ActiveUserTable from '../../components/ActiveUserTable';
 
 import { OrganizationType } from '../../configs/data';
 
@@ -38,7 +38,10 @@ class GetInviteUsers extends Component {
   }
 
   async componentDidMount() {
-    const org_response = await Api.get('organizations-list');
+    const user = JSON.parse(localStorage.getItem('auth'));
+    const parent_id = user.user.member_info.organization_id;
+
+    const org_response = await Api.get(`organization-list/${parent_id}`);
     switch (org_response.response.status) {
       case 200:
         const orgArr = [];
@@ -238,66 +241,58 @@ class GetInviteUsers extends Component {
       <Fragment>
         <MainTopBar />
         <div className="main-content">
-        <Container fluid>
-          <Row className="my-2">
-            <Col lg="2" md="3" sm="4">
-              <FormGroup>
-                <Select
-                  name="inviteOrgtype"
-                  classNamePrefix={'react-select-lg'}
-                  value={inviteOrgtype}
-                  options={OrganizationType}
-                  onChange={this.handleSelectInvite.bind(this)}
-                />
-              </FormGroup>
-            </Col>
-            {
-              inviteOrgtype.value !== 'nf' && (
+        {
+          members && members.length > 0 && (
+            <Container fluid>
+              <Row className="my-2">
+                <Col lg="2" md="3" sm="4">
+                  <FormGroup>
+                    <Select
+                      name="inviteOrgtype"
+                      classNamePrefix={'react-select-lg'}
+                      value={inviteOrgtype}
+                      options={OrganizationType}
+                      onChange={this.handleSelectInvite.bind(this)}
+                    />
+                  </FormGroup>
+                </Col>
+                {
+                  inviteOrgtype.value !== 'nf' && (
+                    <Col lg="2" md="3" sm="4">
+                      <FormGroup>
+                        <Input
+                          className="club-list"
+                          list="orgs"
+                          type="text"
+                          placeholder="Regional Federation"
+                          onChange={event => this.handleInviteOrgFilter(event.target.value)}
+                        />
+                        <datalist id="orgs">
+                          {orgs}
+                        </datalist>
+                      </FormGroup>
+                    </Col>
+                  )
+                }
                 <Col lg="2" md="3" sm="4">
                   <FormGroup>
                     <Input
-                      className="club-list"
-                      list="orgs"
-                      type="text"
-                      placeholder="Regional Federation"
-                      onChange={event => this.handleInviteOrgFilter(event.target.value)}
+                      value={filter_members}
+                      icon="search"
+                      placeholder="Search Invite Users"
+                      onChange={this.handleFilterInvite.bind(this)}
                     />
-                    <datalist id="orgs">
-                      {orgs}
-                    </datalist>
                   </FormGroup>
                 </Col>
-              )
-            }
-            <Col lg="2" md="3" sm="4">
-              <FormGroup>
-                <Input
-                  value={filter_members}
-                  icon="search"
-                  placeholder="Search Invite Users"
-                  onChange={this.handleFilterInvite.bind(this)}
-                />
-              </FormGroup>
-            </Col>
-          </Row>
-          <div className="table-responsive">
-            {
-              members && members.length > 0 ? (
+              </Row>
+              <div className="table-responsive">
                 <InviteTable
                   items={members}
                 />
-              ) : (
-                <div className="fixed-content">
-                  <h3 className="text-muted">
-                    No results!
-                  </h3>
-                </div>
-              )
-            }
-            
-          </div>
-        </Container>
-
+              </div>
+            </Container>
+          )
+        }
         {
           users && users.length > 0 && (
             <Container fluid>
@@ -343,7 +338,7 @@ class GetInviteUsers extends Component {
                 </Col>
               </Row>
               <div className="table-responsive">
-                <ChangeSuperTable
+                <ActiveUserTable
                   items={users}
                 />
               </div>

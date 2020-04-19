@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
-  Router, Switch
+  Router, Route, Switch
 } from 'react-router-dom';
 
 import history from './history';
@@ -18,6 +18,8 @@ import Api from './apis/app';
 import {
   AuthRoute, AuthenticatedRoute
 } from './components/PrivateRoutes';
+
+import InviteAccept from './scenes/Users/invite';
 
 class App extends Component {
   constructor(props) {
@@ -48,6 +50,7 @@ class App extends Component {
             <AuthenticatedRoute path="/forgot" name="Forgot" component={Forgot} />
             <AuthenticatedRoute path="/login" name="Login" component={Login} />
             <AuthenticatedRoute path="/reset/:token" name="Reset" component={Reset} />
+            <Route path="/invite-accept" name="InviteAccept" component={InviteAccept} />
             <AuthRoute path="/" name="Main" component={Main} />
           </Switch>
         </Router>

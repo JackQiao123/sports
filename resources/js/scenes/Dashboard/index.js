@@ -170,7 +170,7 @@ class Dashboard extends Component {
                 {
                   is_nf == 1 && (
                     <Card body inverse
-                      onClick={this.handleURL.bind(this, '/invite-users')}
+                      onClick={this.handleURL.bind(this, '/membership')}
                       style={{ backgroundColor: '#262228', borderColor: '#262228' }}>
                       <CardTitle>
                         <i className="fa fa-address-card"></i>
