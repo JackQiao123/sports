@@ -296,20 +296,34 @@ class OrganizationController extends Controller
     $user = JWTAuth::parseToken()->authenticate();
 
     if (isset($user)) {
-      $child_org = Organization::where('parent_id', $id)->get();
+      $members = Member::where('organization_id', $id)->get();
 
-      if (sizeof($child_org) == 0) {
-        Organization::where('id', $id)->delete();
+      if (sizeof($members) == 0) {
+        $org = Organization::find($id);
 
-        return response()->json([
-          'status' => 'success',
-          'message' => 'Deleted Successfully'
-        ], 200);
+        $child_org = Organization::where('parent_id', $id)->get();
+
+        if (sizeof($child_org) == 0) {
+          Organization::where('id', $id)->delete();
+
+          return response()->json([
+            'status' => 'success',
+            'message' => 'Deleted Successfully'
+          ], 200);
+        } else {
+          return response()->json(
+            [
+              'status' => 'error',
+              'message' => 'Delete action failed. This federation has clubs now.'
+            ],
+            406
+          );
+        }
       } else {
         return response()->json(
           [
             'status' => 'error',
-            'message' => 'Child Organization exist.'
+            'message' => 'Delete action failed. This organization has members now.'
           ],
           406
         );
