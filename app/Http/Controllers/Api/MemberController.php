@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Member;
 use App\Organization;
 use App\User;
+use App\Player;
 
 use JWTAuth;
 use Illuminate\Http\Request;
