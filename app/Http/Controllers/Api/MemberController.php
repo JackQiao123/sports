@@ -104,7 +104,7 @@ class MemberController extends Controller
                           'club.name_o AS club_name', 'club.id AS club_id',
                           'club.level', 'roles.name AS role_name', 'roles.is_player',
                           'weights.id AS weight_id', 'weights.weight',
-                          'players.dan', 'players.skill', 'players.expired_date',
+                          'players.dan', 'players.expired_date',
                         DB::raw("null AS uid, null AS status"))
                 ->first();
       }
