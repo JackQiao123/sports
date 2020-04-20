@@ -46,7 +46,7 @@ class MemberAdd extends Component {
     const user = JSON.parse(localStorage.getItem('auth'));
     const parent_id = user.user.member_info.organization_id;
     const country = user.user.country;
-    const level = user.user.level == 1 && true;
+    const level = user.user.level;
     const user_is_club = user.user.is_club_member == 1 && true;
     
     this.setState({
@@ -62,16 +62,10 @@ class MemberAdd extends Component {
       case 200:
         if (body.length > 0 && body[0].parent_id == 0)
           body[0].name_o = "National Federation";
-          
-        if (this.state.level == 1) {
-          this.setState({
-            org_list: body
-          });
-        } else {
-          this.setState({
-            org_list: body.filter(item => item.id == this.state.level)
-          });
-        }
+
+        this.setState({
+          org_list: body
+        });
 
         break;
       default:
@@ -81,15 +75,9 @@ class MemberAdd extends Component {
     const club_response = await Api.get(`club-list/${parent_id}`);
     switch (club_response.response.status) {
       case 200:
-        if (this.state.level == 1) {
-          this.setState({
-            club_list: club_response.body
-          });
-        } else {
-          this.setState({
-            club_list: club_response.body.filter(item => item.parent_id == this.state.level)
-          });
-        }
+        this.setState({
+          club_list: club_response.body
+        });
         
         break;
       default:
