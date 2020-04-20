@@ -322,6 +322,8 @@ class MemberController extends Controller
 
         if ($current->role_id != $role->id) {
           if ($role->is_player) {
+            $data['position'] = '';
+            
             User::where('member_id', $id)->delete();
 
             $checkDeleted = Player::withTrashed()->where('member_id', $id)->count();
@@ -373,9 +375,13 @@ class MemberController extends Controller
           $data['profile_image'] = "";
         }
 
+        if (!isset($data['position']) || is_null($data['position'])) {
+          $data['position'] = "";
+        }
+
         $orgID = '';
 
-        if (($data['role_id'] == 2 || $data['role_id'] == 3) && $data['club_id'] != '') {
+        if (($data['role_id'] == 2 || $data['role_id'] == 4) && $data['club_id'] != '') {
           $orgID = $data['club_id'];
         } else {
           $orgID = $data['org_id'];
@@ -390,6 +396,7 @@ class MemberController extends Controller
           'gender' => $data['gender'],
           'birthday' => $data['birthday'],
           'email' => $data['email'],
+          'position' => $data['position'],
           'identity' => $data['identity'],
           'register_date' => $data['register_date']
         ));

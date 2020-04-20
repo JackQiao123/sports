@@ -252,7 +252,8 @@ class EditModal extends React.Component {
 
     handleSave = handleSave || (() => {});
 
-    if (values.role_id && (values.role_id.id == 2 || values.role_id.id == 4) && values.club_id == '') {
+    if (values.role_id && (values.role_id.id == 2 || values.role_id.id == 4) && 
+        (values.club_id === undefined || values.club_id == '')) {
       bags.setStatus({
         color: 'danger',
         children: 'Club is required for this member.'

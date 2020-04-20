@@ -361,6 +361,10 @@ class OrganizationController extends Controller
       foreach ($children as $child) {
         array_push($result, $child);
       }
+    } else {
+      $parent = Organization::find($org->parent_id);
+
+      array_push($result, $parent);
     }
 
     return response()->json($result);
