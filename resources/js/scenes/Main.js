@@ -24,6 +24,8 @@ import AdminSetting from './Admin/setting';
 import Competitions from './Competitions';
 import CreateComp from './Competitions/create';
 import DetailComp from './Competitions/detail';
+import ListComp from './Competitions/list';
+import InscribeComp from './Competitions/inscribe';
 
 import OrganizationAdd from './Organizations/add';
 import OrganizationDetail from './Organizations/detail';
@@ -77,6 +79,8 @@ class Main extends Component {
           <AuthenticatedRoute path="/competitions" name="Competitions" component={Competitions} />
           <AuthenticatedRoute path="/competition/create" name="CreateComp" component={CreateComp} />
           <AuthenticatedRoute path="/competition/detail" name="DetailComp" component={DetailComp} />
+          <AuthenticatedRoute path="/competition/list" name="ListComp" component={ListComp} />
+          <AuthenticatedRoute path="/competition/inscribe" name="InscribeComp" component={InscribeComp} />
 
           <AuthenticatedRoute path="/organization/create" name="OrganizationAdd" component={OrganizationAdd} />
           <AuthenticatedRoute path="/organization/detail" name="OrganizationDetail" component={OrganizationDetail} />

@@ -32,6 +32,10 @@ Route::namespace('Api')->group(function () {
 		Route::get('competition/{id}', 'CompetitionController@show');
 		Route::get('all-competitions', 'CompetitionController@all');
 		Route::post('competition-clubs', 'CompetitionController@clubs');
+		Route::post('competition-members', 'CompetitionController@members');
+		Route::post('competion-weights', 'CompetitionController@weights');
+		Route::post('check-competition', 'CompetitionController@check');
+		Route::post('attend-competition', 'CompetitionController@attend');
 
 		// Organization APIs
 		Route::get('search', 'OrganizationController@search');
@@ -48,6 +52,7 @@ Route::namespace('Api')->group(function () {
 
 		// Member APIs
 		Route::post('members', 'MemberController@index');
+		Route::post('allow-members', 'MemberController@allow');
 		Route::get('roles', 'MemberController@roles');
 		Route::post('reg-member', 'MemberController@store');
 		Route::get('member/{id}', 'MemberController@show');

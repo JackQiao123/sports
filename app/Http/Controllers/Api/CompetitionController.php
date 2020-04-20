@@ -196,6 +196,51 @@ class CompetitionController extends Controller
     ]);
   }
 
+  public function members(Request $request)
+  {
+    $data = $request->all();
+
+    $ids = array();
+
+    $competition = CompetitionMembers::where('competition_id', $data['competition_id'])
+                    ->where('club_id', $data['club_id'])
+                    ->get();
+
+    if (sizeof($competition) > 0) {
+      $ids = explode(',', $competition[0]->member_ids);
+    }
+
+    $members = Member::leftJoin('players', 'players.member_id', '=', 'members.id')
+                    ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
+                    ->leftJoin('weights', 'weights.id', '=', 'players.weight_id')
+                    ->whereIn('members.id', $ids)
+                    ->where('members.active', 1)
+                    ->select('members.*', 'roles.name as role_name', 'weights.weight', 'players.dan')
+                    ->orderBy('players.weight_id')
+                    ->orderBy('members.surname')
+                    ->get();
+
+    return response()->json([
+      'status' => 200,
+      'data' => $members
+    ]);
+  }
+
+  public function weights(Request $request)
+  {
+    $input = $request->all();
+
+    $comp = Competition::find($input['competition_id']);
+
+    $ids = explode(',', $comp->weights);
+
+    array_push($ids, 0);
+    
+    $weights = DB::table('weights')->whereIn('id', $ids)->get();
+
+    return response()->json($weights);
+  }
+
   public function getClubs($competition_id, $clubs)
   {
     $result = array();
@@ -238,5 +283,59 @@ class CompetitionController extends Controller
     }
 
     return $result;
+  }
+
+  public function check(Request $request)
+  {
+    $data = $request->all();
+
+    $competition = CompetitionMembers::where('competition_id', $data['competition_id'])
+                        ->where('club_id', $data['club_id'])
+                        ->get();
+
+    $status = 0;
+
+    if (sizeof($competition) > 0) {
+      $status = $competition[0]->status;
+    }
+
+    return response()->json([
+      'status' => 200,
+      'data' => $status
+    ]);
+  }
+
+  public function attend(Request $request)
+  {
+    $data = $request->all();
+
+    $members = '';
+
+    foreach ($data['members'] as $member) {
+      $members .= $member . ',';
+    }
+
+    $compMembers = CompetitionMembers::where('competition_id', $data['competition_id'])
+                    ->where('club_id', $data['club_id'])
+                    ->get();
+
+    if (sizeof($compMembers) > 0) {
+      CompetitionMembers::where('competition_id', $data['competition_id'])
+                    ->where('club_id', $data['club_id'])
+                    ->update([
+                      'member_ids' => substr($members, 0, strlen($members) - 1)
+                    ]);
+    } else {
+      CompetitionMembers::create(array(
+        'competition_id' => $data['competition_id'],
+        'club_id' => $data['club_id'],
+        'member_ids' => substr($members, 0, strlen($members) - 1),
+        'status' => 0
+      ));
+    }
+
+    return response()->json([
+      'status' => 'success'
+    ], 200);
   }
 }

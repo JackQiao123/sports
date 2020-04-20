@@ -210,18 +210,14 @@ class Dashboard extends Component {
                     <i className="fa fa-calendar"></i>
                   </CardTitle>
                 </Card>
-                {
-                  is_nf != 1 && (
-                    <Card body inverse
-                      onClick={this.handleURL.bind(this, '/competition/list')}
-                      style={{ backgroundColor: '#4480b2', borderColor: '#4480b2' }}>
-                      <CardTitle>
-                        <i className="fa fa-user"></i>
-                      </CardTitle>
-                      <CardText>Inscribe Competition</CardText>
-                    </Card>
-                  )
-                }
+                <Card body inverse
+                  onClick={this.handleURL.bind(this, '/competition/list')}
+                  style={{ backgroundColor: '#4480b2', borderColor: '#4480b2' }}>
+                  <CardTitle>
+                    <i className="fa fa-user"></i>
+                  </CardTitle>
+                  <CardText>Inscribe Competition</CardText>
+                </Card>
               </Col>
               <Col md="3" sm="6" xs="12">
                 <h3 className="ml-3">

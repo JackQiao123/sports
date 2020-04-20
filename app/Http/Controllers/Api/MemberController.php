@@ -6,6 +6,8 @@ use App\Member;
 use App\Organization;
 use App\User;
 use App\Player;
+use App\Competition;
+use App\CompetitionMembers;
 
 use JWTAuth;
 use Illuminate\Http\Request;
@@ -477,6 +479,91 @@ class MemberController extends Controller
         406
       );
     }
+  }
+
+  public function allow(Request $request)
+  {
+    $data = $request->all();
+
+    $competition = Competition::find($data['competition_id']);
+
+    $compMember = CompetitionMembers::where('competition_id', $data['competition_id'])
+                        ->where('club_id', $data['club_id'])
+                        ->get();
+
+    $memids = array();
+    if (sizeof($compMember) > 0) {
+      $memids = explode(',', $compMember[0]->member_ids);
+    }
+
+    $myOrg = Organization::find($data['club_id']);
+
+    $orgids = array();
+
+    array_push($orgids, $myOrg->id);
+
+    if ($myOrg->parent_id == 0) {
+      $orgs = Organization::where('parent_id', $myOrg->id)->get();
+
+      foreach ($orgs as $org) {
+        array_push($orgids, $org->id);
+      
+        $children = Organization::where('parent_id', $org->id)->get();
+
+        foreach($children as $child) {
+          array_push($orgids, $child->id);
+        }
+      }
+    } else {
+      $orgs = Organization::where('parent_id', $myOrg->id)->get();
+
+      foreach ($orgs as $org) {
+        array_push($orgids, $org->id);
+      }
+    }
+
+    sort($orgids);
+
+    $members = Member::leftJoin('players', 'players.member_id', '=', 'members.id')
+                    ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
+                    ->leftJoin('weights', 'weights.id', '=', 'players.weight_id')
+                    ->whereNotIn('members.id', $memids)
+                    ->whereIn('organization_id', $orgids)
+                    ->where('members.active', 1)
+                    ->where('members.role_id', '!=', 1)
+                    ->select('members.*', 'roles.name as role_name', 'weights.weight', 'players.dan')
+                    ->orderBy('members.role_id')
+                    ->orderBy('players.weight_id')
+                    ->orderBy('members.name')
+                    ->get();
+
+    $result = array();
+
+    foreach ($members as $member) {
+      if ($member->role_id == 3) {
+        $birthday = date_create($member->birthday);
+        $today = date_create(Date('Y-m-d'));
+
+        $diff = date_diff($birthday, $today);
+
+        if ($competition->level == 'cadet') {
+          if ($diff->y < 18 || ($diff->y == 18 && $diff->m == 0 && $diff->d == 0)) {
+            array_push($result, $member);
+          }
+        } else {
+          if ($diff->y > 18 || ($diff->y == 18 && ($diff->m > 0 || $diff->d > 0))) {
+            array_push($result, $member);
+          }
+        }
+      } else {
+        array_push($result, $member);
+      }
+    }
+
+    return response()->json([
+      'status' => 200,
+      'data' => $result
+    ]);
   }
 
   /**
