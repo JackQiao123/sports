@@ -143,7 +143,7 @@ class EditModal extends React.Component {
         weight_id: weights.filter(weight => weight.id == values.weight_id)[0],
         dan: Dans.filter(dan => dan.value == values.dan)[0],
         identity: values.identity,
-        position: values.role_id == 4 ? referee_type_options.filter(option => option.value == values.position) : values.position,
+        position: values.role_id == 3 ? referee_type_options.filter(option => option.value == values.position) : values.position,
         level: values.level
       });
     } else {
@@ -252,7 +252,7 @@ class EditModal extends React.Component {
 
     handleSave = handleSave || (() => {});
 
-    if (values.role_id && (values.role_id.id == 2 || values.role_id.id == 3) && values.club_id == '') {
+    if (values.role_id && (values.role_id.id == 2 || values.role_id.id == 4) && values.club_id == '') {
       bags.setStatus({
         color: 'danger',
         children: 'Club is required for this member.'
@@ -634,7 +634,7 @@ class EditModal extends React.Component {
                         )
                       }
                       {
-                        values.role_id && values.role_id.id == 4 && (
+                        values.role_id && values.role_id.id == 3 && (
                           <Col xs="6">
                             <FormGroup>
                               <Label for="position">Referee Type</Label>
