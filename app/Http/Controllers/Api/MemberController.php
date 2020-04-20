@@ -136,7 +136,7 @@ class MemberController extends Controller
       'role_id' => 'required',
       'name' => 'required|string|max:255',
       'surname' => 'required|string|max:255',
-      'gender' => 'required|boolean',
+      'gender' => 'required|integer',
       'birthday' => 'required|date',
       'email' => 'required|string|email|max:255|unique:members',
       'active' => 'required|boolean',
@@ -209,14 +209,13 @@ class MemberController extends Controller
     $exist = Member::leftJoin('organizations', 'organizations.id', '=', 'members.organization_id')
               ->where('organizations.country', $data['country'])
               ->select('members.*')
-              ->orderBy('members.id', 'DESC')
-              ->first();
+              ->count();
 
-    for ($i = 0; $i < 8 - strlen($exist->id); $i++) {
+    for ($i = 0; $i < 8 - strlen($exist + 1); $i++) {
         $identity .= '0';
     }
 
-    $identity .= ($exist->id + 1);
+    $identity .= ($exist + 1);
 
     $member = Member::create(array(
       'organization_id' => $data['organization_id'],
@@ -267,7 +266,7 @@ class MemberController extends Controller
           'role_id' => 'required',
           'name' => 'required|string|max:255',
           'surname' => 'required|string|max:255',
-          'gender' => 'required|boolean',
+          'gender' => 'required|integer',
           'birthday' => 'required|date',
           'email' => 'required|string|email|max:255',
           'identity' => 'required|string|max:255',

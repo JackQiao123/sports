@@ -190,7 +190,7 @@ class MemberAdd extends Component {
       country: this.state.country,
       weight_id: values.weight_id ? values.weight_id.id : '',
       dan: values.dan ? values.dan.value : '',
-      role_id: values.role_id ? values.role_id.id : 3,
+      role_id: values.role_id ? values.role_id.id : 4,
       profile_image: imagePreviewUrl || '',
       position: values.position ? (values.position.value || values.position) : '',
       active: values.is_club || 0,
