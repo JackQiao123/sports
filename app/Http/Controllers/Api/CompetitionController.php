@@ -19,9 +19,25 @@ class CompetitionController extends Controller
 {
   public function index()
   {
-    $competitions = Competition::where('from', 'like', date('Y') . '-%')
+    $user = JWTAuth::parseToken()->authenticate();
+
+    $competitions = array();
+
+    if (isset($user)) {
+      $member = Member::find($user->member_id);
+      $org = Organization::find($member->organization_id);
+      $orgs = Organization::where('country', $org->country)->get();
+
+      $ids = array();
+      foreach($orgs as $org) {
+        array_push($ids, $org->id);
+      }
+
+      $competitions = Competition::where('from', 'like', date('Y') . '-%')
+                    ->whereIn('creator_id', $ids)
                     ->orderBy('from')
                     ->get();
+    }
 
     return response()->json([
       'status' => 200,

@@ -93,7 +93,7 @@ class CompetitionList extends Component {
             <Row>
               <Col sm="12">
                 {
-                  competitions && competitions.length > 0 && (
+                  competitions && competitions.length > 0 ? (
                     <CompetitionTable
                       items={competitions}
                       inscribe={true}
@@ -101,6 +101,12 @@ class CompetitionList extends Component {
                       countDown={countDown}
                       onSelect={this.handleSelectItem.bind(this)}
                     />
+                  ) : (
+                    <div className="fixed-content">
+                      <h3 className="text-primary">
+                        No competition to enscribe now!
+                      </h3>
+                    </div>
                   )
                 }
               </Col>

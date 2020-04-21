@@ -97,11 +97,17 @@ class Competitions extends Component {
             <Row>
               <Col sm="12">
                 {
-                  competitions && competitions.length > 0 && (
+                  competitions && competitions.length > 0 ? (
                     <CompetitionTable
                       items={competitions}
                       onSelect={this.handleSelectItem.bind(this)}
                     />
+                  ) : (
+                    <div className="fixed-content">
+                      <h3 className="text-primary">
+                        No competition exist!
+                      </h3>
+                    </div>
                   )
                 }
               </Col>
