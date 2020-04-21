@@ -160,7 +160,7 @@ class CreateComp extends Component {
       name: values.name,
       short_name: values.short_name,
       place: values.place,
-      type: this.state.is_nf ? values.type.value : CompetitionType.filter(type => type.value == 'reg')[0].value,
+      type: this.state.is_nf == 1 ? values.type.value : CompetitionType.filter(type => type.value == 'reg')[0].value,
       level: values.level.value,
       from: this.state.from,
       to: this.state.to,
@@ -315,9 +315,17 @@ class CreateComp extends Component {
                                   setFieldValue('level', level);
 
                                   setFieldValue('weights', '');
+
+                                  let weight_list = [];
+
+                                  if (level.value == 'senior' || level.value == 'junior') {
+                                    weight_list = weight_origin.filter(weight => weight.type == 'senior-junior');
+                                  } else {
+                                    weight_list = weight_origin.filter(weight => weight.type == 'cadet');
+                                  }
                                   
                                   this.setState({
-                                    weight_list: weight_origin.filter(weight => weight.type == level.value)
+                                    weight_list
                                   });
                                 }}
                                 onBlur={this.handleBlur}
@@ -344,8 +352,18 @@ class CreateComp extends Component {
                                 onChange={(level) => {
                                   setFieldValue('level', level);
                                   
+                                  setFieldValue('weights', '');
+
+                                  let weight_list = [];
+
+                                  if (level.value == 'senior' || level.value == 'junior') {
+                                    weight_list = weight_origin.filter(weight => weight.type == 'senior-junior');
+                                  } else {
+                                    weight_list = weight_origin.filter(weight => weight.type == 'cadet');
+                                  }
+                                  
                                   this.setState({
-                                    weight_list: weight_origin.filter(weight => weight.type == level.value)
+                                    weight_list
                                   });
                                 }}
                                 onBlur={this.handleBlur}
