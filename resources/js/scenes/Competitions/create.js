@@ -219,6 +219,37 @@ class CreateComp extends Component {
       years.push({label: i, value: i});
     }
 
+    const colourStyles = {
+      control: styles => ({ ...styles, backgroundColor: 'white' }),
+      option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+        return {
+          ...styles,
+          backgroundColor: isDisabled
+            ? null
+            : isSelected
+            ? data.gender == 1 ? '#635FA3 !important' : '#DC3545 !important'
+            : isFocused
+            ? '#e2e2e2'
+            : null,
+          color: 'black'
+        };
+      },
+      multiValue: (styles, { data }) => {
+        return {
+          ...styles,
+          backgroundColor: data.gender == 1 ? '#635FA3 !important' : '#DC3545 !important'
+        };
+      },
+      multiValueLabel: (styles) => ({
+        ...styles,
+        color: 'white',
+      }),
+      multiValueRemove: (styles) => ({
+        ...styles,
+        color: 'white'
+      }),
+    }
+
     return(
       <Fragment>
         <MainTopBar />
@@ -563,6 +594,7 @@ class CreateComp extends Component {
                           onChange={(weight) => {
                             setFieldValue('weights', weight);
                           }}
+                          styles={colourStyles}
                         />
                         {!values.weights && touched.weights && (
                           <FormFeedback className="d-block">This field is required!</FormFeedback>
