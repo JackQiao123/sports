@@ -251,9 +251,8 @@ console.log(competition);
                   <h4>
                     Competition Type: 
                     {
-                      ' ' +
                       (competition.type !== undefined &&
-                        CompetitionType.filter(type => type.value == competition.type)[0]['label'])
+                        console.log(CompetitionType.filter(type => type.value == competition.type)))
                     }
                   </h4>
                 </Col>
@@ -261,9 +260,9 @@ console.log(competition);
                   <h4>
                     Competition Level:
                     {
-                      ' ' +
-                      (competition.level !== undefined &&
-                        CompetitionLevel.filter(level => level.value == competition.level)[0]['label'])
+                      // ' ' +
+                      // (competition.level !== undefined &&
+                      //   CompetitionLevel.filter(level => level.value == competition.level)[0]['label'])
                     }
                   </h4>
                 </Col>
