@@ -234,7 +234,8 @@ class CompetitionDetail extends Component {
       selectMembers, detail,
       exportMembers, exportPDF,
     } = this.state;
-
+console.log(CompetitionType);
+console.log(competition);
     return (
       <Fragment>
         <MainTopBar />
