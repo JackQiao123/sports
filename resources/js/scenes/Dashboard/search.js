@@ -248,6 +248,7 @@ class Search extends Component {
           search_required: true,
           search_org: '',
           search_club: '',
+          member_type: '',
           search_data: null
         });
         break;
