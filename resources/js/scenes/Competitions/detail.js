@@ -252,7 +252,7 @@ console.log(competition);
                     Competition Type: 
                     {
                       (competition.type !== undefined &&
-                        console.log(CompetitionType.filter(type => type.value == competition.type)))
+                        console.log(CompetitionType.filter(type => type.value == competition.type)[0]))
                     }
                   </h4>
                 </Col>
