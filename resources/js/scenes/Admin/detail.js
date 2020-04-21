@@ -24,62 +24,8 @@ class Detail extends Component {
     this.state = {
       detail: [],
       nfs: [],
-
-      series: [{
-        data: [{
-            x: new Date(1538778600000),
-            y: [6629.81, 6650.5, 6623.04, 6633.33]
-          },
-          {
-            x: new Date(1538780400000),
-            y: [6632.01, 6643.59, 6620, 6630.11]
-          },
-          {
-            x: new Date(1538782200000),
-            y: [6630.71, 6648.95, 6623.34, 6635.65]
-          },
-          {
-            x: new Date(1538784000000),
-            y: [6635.65, 6651, 6629.67, 6638.24]
-          },
-          {
-            x: new Date(1538785800000),
-            y: [6638.24, 6640, 6620, 6624.47]
-          }
-        ]
-      }],
-      options: {
-        chart: {
-          type: 'candlestick',
-          height: 350
-        },
-        title: {
-          text: 'Totoal Amount Chart',
-          align: 'center',
-          style: {
-            color: '#ffc107'
-          }
-        },
-        xaxis: {
-          type: 'datetime',
-          labels: {
-            style: {
-              colors: '#ffc107'
-            }
-          }
-        },
-        yaxis: {
-          tooltip: {
-            enabled: true
-          },
-          labels: {
-            style: {
-              colors: '#ffc107'
-            }
-          }
-        }
-      }
-    };
+      barChart: []
+    }
   }
 
   async componentDidMount() {
@@ -87,8 +33,99 @@ class Detail extends Component {
     const { response, body } = org;
     switch (response.status) {
       case 200:
+        let cat = [];
+        body.nfs.map(item => {
+          cat.push(item.name_o);
+        });
+
+        let barChart = {
+          series: [{
+            data: [400, 30, 0]
+          }],
+          options: {
+            chart: {
+              type: 'bar',
+              height: 360
+            },
+            plotOptions: {
+              bar: {
+                barHeight: '50%',
+                distributed: true,
+                horizontal: true,
+                dataLabels: {
+                  position: 'bottom'
+                },
+              }
+            },
+            colors: [
+              '#33b2df', '#f9a3a4', '#13d8aa', '#546E7A', '#69d2e7', 
+              '#2b908f', '#90ee7e', '#f48024', '#d4526e', '#A5978B'
+            ],
+            dataLabels: {
+              enabled: true,
+              textAnchor: 'start',
+              style: {
+                colors: ['#fff']
+              },
+              formatter: function (val, opt) {
+                return opt.w.globals.labels[opt.dataPointIndex] + ":  $" + val
+              },
+              offsetX: 0,
+              dropShadow: {
+                enabled: true
+              }
+            },
+            stroke: {
+              width: 1,
+              colors: ['#fff']
+            },
+            legend: {
+              labels: {
+                colors: ['#fff']
+              }
+            },
+            xaxis: {
+              categories: cat,
+              labels: {
+                show: true,
+                style: {
+                  colors: ['#fff']
+                }
+              }
+            },
+            yaxis: {
+              labels: {
+                show: false
+              }
+            },
+            title: {
+              text: 'Total Amount',
+              align: 'center',
+              floating: true,
+              style: {
+                color: '#fff',
+                fontSize: '18px'
+              }
+            },
+            tooltip: {
+              theme: 'light',
+              x: {
+                show: true
+              },
+              y: {
+                title: {
+                  formatter: function () {
+                    return ''
+                  }
+                }
+              }
+            }
+          }
+        }
+
         this.setState({
-          nfs: body.nfs
+          nfs: body.nfs,
+          barChart
         });
         break;
       default:
@@ -114,7 +151,7 @@ class Detail extends Component {
   }
 
   render() {
-    const { nfs, detail } = this.state;
+    const { barChart, nfs, detail } = this.state;
 
     return (
       <Fragment>
@@ -129,12 +166,16 @@ class Detail extends Component {
             <div className="content">
               <Row className="row-0">
                 <Col sm="12">
-                  <Chart
-                    options={this.state.options}
-                    series={this.state.series}
-                    height="300"
-                    type="candlestick"
-                  />
+                  {
+                    barChart && barChart.series && (
+                      <Chart
+                        options={barChart.options}
+                        series={barChart.series}
+                        height="360"
+                        type="bar"
+                      />
+                    )
+                  }
                 </Col>
               </Row>
               <Row>
