@@ -250,7 +250,8 @@ class CompetitionDetail extends Component {
                   <h4>
                     Competition Type: 
                     {
-                      (competition.type !== undefined &&
+                      ' ' +
+                      (competition.type && 
                         CompetitionType.filter(type => type.value == competition.type)[0]['label'])
                     }
                   </h4>
@@ -259,7 +260,8 @@ class CompetitionDetail extends Component {
                   <h4>
                     Competition Level:
                     {
-                      (competition.level !== undefined &&
+                      ' ' +
+                      (competition.level && 
                         CompetitionLevel.filter(level => level.value == competition.level)[0]['label'])
                     }
                   </h4>
