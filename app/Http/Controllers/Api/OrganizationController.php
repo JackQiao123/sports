@@ -136,12 +136,24 @@ class OrganizationController extends Controller
 
           $type = str_replace('image/', '.', $type);
 
-          $image = substr($base64_image, strpos($base64_image, ',') + 1);
-          $image = base64_decode($image);
-          
-          Storage::disk('local')->put($filename . $type, $image);
+          $size = (int) (strlen(rtrim($base64_image, '=')) * 3 / 4);
 
-          $data['logo'] = "photos/" . $filename . $type;
+          if ($size < 1050000) {
+            $image = substr($base64_image, strpos($base64_image, ',') + 1);
+            $image = base64_decode($image);
+            
+            Storage::disk('local')->put($filename . $type, $image);
+    
+            $data['profile_image'] = "photos/" . $filename . $type;
+          } else {
+            return response()->json(
+              [
+                'status' => 'error',
+                'message' => 'File size must be less than 1MB.'
+              ],
+              406
+            );
+          }
         } else {
           return response()->json(
             [
@@ -247,13 +259,25 @@ class OrganizationController extends Controller
 
           $type = str_replace('image/', '.', $type);
 
-          $image = substr($base64_image, strpos($base64_image, ',') + 1);
-          $image = base64_decode($image);
-          
-          Storage::disk('local')->delete(str_replace('photos/', '', $current->logo));
-          Storage::disk('local')->put($filename . $type, $image);
+          $size = (int) (strlen(rtrim($base64_image, '=')) * 3 / 4);
 
-          $data['logo'] = "photos/" . $filename . $type;
+          if ($size < 1050000) {
+            $image = substr($base64_image, strpos($base64_image, ',') + 1);
+            $image = base64_decode($image);
+            
+            Storage::disk('local')->delete(str_replace('photos/', '', $current->logo));
+            Storage::disk('local')->put($filename . $type, $image);
+
+            $data['logo'] = "photos/" . $filename . $type;
+          } else {
+            return response()->json(
+              [
+                'status' => 'error',
+                'message' => 'File size must be less than 1MB.'
+              ],
+              406
+            );
+          }
         } else {
           return response()->json(
             [
