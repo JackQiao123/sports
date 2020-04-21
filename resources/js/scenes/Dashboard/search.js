@@ -82,7 +82,13 @@ class Search extends Component {
     this.getWeights = this.getWeights.bind(this);
     this.search = this.search.bind(this);
 
-    if (referee_type_options.length == 3) referee_type_options.splice(0, 0, { label: 'All Referee', value: 'all' });
+    if (member_type_options.length === 5) {
+      member_type_options.shift();
+    }
+
+    if (referee_type_options.length == 3) {
+      referee_type_options.splice(0, 0, { label: 'All Referee', value: 'all' });
+    }
   }
 
   async componentDidMount() {
