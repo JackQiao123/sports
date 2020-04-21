@@ -555,7 +555,7 @@ class MemberController extends Controller
                     ->whereIn('organization_id', $orgids)
                     ->where('members.active', 1)
                     ->where('members.role_id', '!=', 1)
-                    ->select('members.*', 'roles.name as role_name', 'weights.weight', 'players.dan')
+                    ->select('members.*', 'roles.name as role_name', 'weights.id as weight_id', 'weights.weight', 'players.dan')
                     ->orderBy('members.role_id')
                     ->orderBy('players.weight_id')
                     ->orderBy('members.name')

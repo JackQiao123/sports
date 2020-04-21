@@ -108,7 +108,7 @@ class CompetitionSelectTable extends Component {
 
   render() {
     const {
-      items, org_flag, delCol, onDelete
+      items, delCol, onDelete
     } = this.props;
 
     const {
@@ -132,17 +132,6 @@ class CompetitionSelectTable extends Component {
             >
               Name
             </Table.HeaderCell>
-            {
-              org_flag == 1 && (
-                <Table.HeaderCell
-                  className="text-center"
-                  sorted={column === 'club' ? direction : null}
-                  onClick={this.handleSort.bind(this, 'club')}
-                >
-                  Club
-                </Table.HeaderCell>
-              )
-            }
             <Table.HeaderCell
               className="text-center"
               sorted={column === 'role' ? direction : null}
@@ -202,11 +191,6 @@ class CompetitionSelectTable extends Component {
                       {' '}
                       {item.name}
                   </Table.Cell>
-                  {
-                    org_flag == 1 && (
-                      <Table.Cell className="text-center">{item.name_o}</Table.Cell>
-                    )
-                  }
                   <Table.Cell className="text-center">{item.role_name}</Table.Cell>
                   <Table.Cell className="text-center">
                     {item.gender && item.gender == 1 ? Genders[0].name : Genders[1].name}
@@ -223,7 +207,7 @@ class CompetitionSelectTable extends Component {
                           <Button
                             color="danger"
                             type="button"
-                            onClick={() => onDelete(item.id, 'member')}
+                            onClick={() => onDelete(item.id)}
                           >
                             <i className="fa fa-trash-alt fa-lg" />
                           </Button>
@@ -254,7 +238,7 @@ class CompetitionSelectTable extends Component {
                 }}
               />
             </Table.HeaderCell>
-            <Table.HeaderCell colSpan={delCol || org_flag == 1 ? 6 : 5}>
+            <Table.HeaderCell colSpan={delCol ? 6 : 5}>
               <Menu floated="right" pagination>
                 <Pagination
                   activePage={activePage}

@@ -231,7 +231,7 @@ class CompetitionController extends Controller
                     ->leftJoin('weights', 'weights.id', '=', 'players.weight_id')
                     ->whereIn('members.id', $ids)
                     ->where('members.active', 1)
-                    ->select('members.*', 'roles.name as role_name', 'weights.weight', 'players.dan')
+                    ->select('members.*', 'roles.name as role_name', 'weights.id as weight_id', 'weights.weight', 'players.dan')
                     ->orderBy('players.weight_id')
                     ->orderBy('members.surname')
                     ->get();

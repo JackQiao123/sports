@@ -24,7 +24,6 @@ class CompetitionDetail extends Component {
       expire: '',
       intervalId: '',
       end: '',
-      org_flag: 0,
       competition_id: '',
       competition: [],
       clubs: [],
@@ -229,7 +228,6 @@ class CompetitionDetail extends Component {
   render() {
     const {
       expire,
-      org_flag,
       competition, clubs,
       selectMembers, detail,
       exportMembers, exportPDF,
@@ -303,7 +301,6 @@ class CompetitionDetail extends Component {
                 <Row className="mt-3">
                   <CompetitionSelectTable
                     items={selectMembers}
-                    org_flag={org_flag}
                   />
                 </Row>
               )

@@ -28,6 +28,7 @@ class CompetitionInscribe extends Component {
     const user = JSON.parse(localStorage.getItem('auth'));
 
     this.state={
+      expire: '',
       org_id: user.user.member_info.organization_id,
       name: '',
       from: '',
@@ -51,6 +52,28 @@ class CompetitionInscribe extends Component {
     if (member_type_options.length === 4) {
       member_type_options.splice(0, 0, { label: 'All Members', value: '' });
     }
+
+    this.end = '';
+  }
+
+  timer() {
+    let distance = this.end - new Date().getTime();
+    let expire = '';
+
+    if (distance > 0) {
+      let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      expire = 'Expire time left : ' + days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+    } else {
+      expire = 'Expired.'
+    }
+
+    this.setState({
+      expire
+    });
   }
 
   componentDidMount() {
@@ -63,11 +86,25 @@ class CompetitionInscribe extends Component {
     const competition = await Api.get(`competition/${competition_id}`);
     switch (competition.response.status) {
       case 200:
+        let comp = competition.body.competition;
+
+        let now = new Date().getTime();
+        let start = new Date(comp.register_from).getTime();
+        this.end = new Date(comp.register_to).getTime() + 86400000;
+
+        if (now > start && now < this.end) {
+          let intervalId = setInterval(this.timer.bind(this), 1000);
+
+          this.setState({
+            intervalId
+          });
+        }
+
         this.setState({
-          name: competition.body.competition.name,
-          from: competition.body.competition.from,
-          to: competition.body.competition.to,
-          place: competition.body.competition.place
+          name: comp.name,
+          from: comp.from,
+          to: comp.to,
+          place: comp.place
         });
         break;
       default:
@@ -235,7 +272,10 @@ class CompetitionInscribe extends Component {
           selects.push(judo[j]);
         }
       }
-      selects.reverse();
+      
+      selects.sort(function(a, b) {
+        return a['role_id'] - b['role_id'] || a['weight_id'] - b['weight_id'];
+      });
       
       this.setState({
         selectMembers: selects
@@ -267,8 +307,12 @@ class CompetitionInscribe extends Component {
         }
       });
 
+      mem = selectMembers.concat(mem).sort(function(a, b) {
+        return a['role_id'] - b['role_id'] || a['weight_id'] - b['weight_id'];
+      });
+
       this.setState({
-        selectMembers: selectMembers.concat(mem).reverse()
+        selectMembers: mem
       });
     } else {
       selectMembers.map(item => {
@@ -304,8 +348,12 @@ class CompetitionInscribe extends Component {
         }
       });
 
+      mem = selectMembers.concat(mem).sort(function(a, b) {
+        return a['role_id'] - b['role_id'] || a['weight_id'] - b['weight_id'];
+      });
+
       this.setState({
-        selectMembers: selectMembers.concat(mem).reverse()
+        selectMembers: mem
       });
     } else {
       selectMembers.map(item => {
@@ -347,8 +395,37 @@ class CompetitionInscribe extends Component {
     }
   }
 
+  handleDeleteMember(id) {
+    const { members, judokas, selectMembers } = this.state;
+    let mem = [];
+
+    let member = selectMembers.filter(item => item.id == id)[0];
+    if (member['role_id'] == 4) {
+      mem = judokas.concat(member).sort(function(a, b) {
+        return a['weight_id'] - b['weight_id'] || a['name'] - b['name'];
+      });
+
+      this.setState({
+        judokas: mem
+      });
+    } else {
+      mem = members.concat(member).sort(function(a, b) {
+        return a['role_id'] - b['role_id'] || a['name'] - b['name'];
+      });
+
+      this.setState({
+        members: mem
+      });
+    }
+
+    this.setState({
+      selectMembers: selectMembers.filter(item => item.id !== id)
+    });
+  }
+
   render() {
     const { 
+      expire,
       name, from, to, place,
       members, judokas, selectMembers,
       filter, status
@@ -381,35 +458,36 @@ class CompetitionInscribe extends Component {
               </Col>
             </Row>
           </Container>
+          <Container>
           {
-            selectMembers && selectMembers.length > 0 && (
-              <Container>
-              {
-                status == 2 && (
-                  <div>
-                    <h2 className="text-center text-danger">
-                      Congratulations!
-                    </h2>
-                    <h3 className="text-center text-success mt-3">
-                      Your club's members are regisetered in competition successfully!
-                    </h3>
-                  </div>
-                )
-              }
-              {
-                status == 1 && (
-                <Row className="mt-2">
-                  <Col sm="12" className="table-responsive">
-                    <CompetitionSelectTable
-                      items={selectMembers}
-                    />
-                  </Col>
-                </Row>
-                )
-              }
-              </Container>
+            expire && (
+              <h4 className="text-center text-danger">{expire}</h4>
             )
           }
+          {
+            selectMembers && selectMembers.length > 0 && status == 2 && (
+              <div>
+                <h2 className="text-center text-danger">
+                  Congratulations!
+                </h2>
+                <h3 className="text-center text-success mt-3">
+                  Your club's members are regisetered in competition successfully!
+                </h3>
+              </div>
+            )
+          }
+          {
+            selectMembers && selectMembers.length > 0 && status == 1 && (
+            <Row className="mt-2">
+              <Col sm="12" className="table-responsive">
+                <CompetitionSelectTable
+                  items={selectMembers}
+                />
+              </Col>
+            </Row>
+            )
+          }
+          </Container>
           {
             status != 1 && ((members && members.length > 0) || (judokas && judokas.length > 0))  && (
               <Container>
@@ -527,6 +605,8 @@ class CompetitionInscribe extends Component {
                       <Col sm="12" className="table-responsive">
                         <CompetitionSelectTable
                           items={selectMembers}
+                          delCol={true}
+                          onDelete={this.handleDeleteMember.bind(this)}
                         />
                       </Col>
                     </Row>
