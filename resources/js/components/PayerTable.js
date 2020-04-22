@@ -113,7 +113,8 @@ class PayerTable extends Component {
       onSelect,
       onSelectAll,
       onDetail,
-      items
+      items,
+      is_nf
     } = this.props;
 
     const {
@@ -136,6 +137,13 @@ class PayerTable extends Component {
               onClick={this.handleSort.bind(this, 'name')}
             >
               Name
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              className="text-center"
+              sorted={column === 'role' ? direction : null}
+              onClick={this.handleSort.bind(this, 'role')}
+            >
+              Role
             </Table.HeaderCell>
             <Table.HeaderCell
               className="text-center"
@@ -190,14 +198,18 @@ class PayerTable extends Component {
             <Table.HeaderCell className="text-center">
               Status
             </Table.HeaderCell>
-            <Table.HeaderCell className="text-center" width="2">
-              <CustomInput
-                id="selectAll"
-                type="checkbox"
-                checked={data.filter(item => item.checked === true).length === data.length}
-                onChange={(event) => { onSelectAll(data, event); this.setState({ checkedAll: event.target.checked }); }}
-              />
-            </Table.HeaderCell>
+            {
+              !is_nf && (
+                <Table.HeaderCell className="text-center" width="2">
+                  <CustomInput
+                    id="selectAll"
+                    type="checkbox"
+                    checked={data.filter(item => item.checked === true).length === data.length}
+                    onChange={(event) => { onSelectAll(data, event); this.setState({ checkedAll: event.target.checked }); }}
+                  />
+                </Table.HeaderCell>
+              )
+            }
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -215,6 +227,9 @@ class PayerTable extends Component {
                       {' '}
                       {item.name}
                     </a>
+                  </Table.Cell>
+                  <Table.Cell className="text-center">
+                    {item.role_name}
                   </Table.Cell>
                   <Table.Cell>
                     {item.region}
@@ -247,14 +262,18 @@ class PayerTable extends Component {
                       </Table.Cell>
                     )
                   }
-                  <Table.Cell className="text-center">
-                    <CustomInput
-                      id={item.id}
-                      type="checkbox"
-                      checked={!!item.checked}
-                      onChange={(event) => { onSelect(item.id, event.target.checked); }}
-                    />
-                  </Table.Cell>
+                  {
+                    !is_nf && (
+                      <Table.Cell className="text-center">
+                        <CustomInput
+                          id={item.id}
+                          type="checkbox"
+                          checked={!!item.checked}
+                          onChange={(event) => { onSelect(item.id, event.target.checked); }}
+                        />
+                      </Table.Cell>
+                    )
+                  }
                 </Table.Row>
               ))
             )
@@ -278,7 +297,7 @@ class PayerTable extends Component {
                 }}
               />
             </Table.HeaderCell>
-            <Table.HeaderCell colSpan="9">
+            <Table.HeaderCell colSpan="10">
               <Menu floated="right" pagination>
                 <Pagination
                   activePage={activePage}

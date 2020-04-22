@@ -248,7 +248,7 @@ class Payment extends Component {
           pay_status: true
         });
       } else {
-        window.alert('You should select at least one judoka!');
+        window.alert('You should select at least one member!');
       }
     } else {
       window.alert('Your National Federation manager should set per price!');
@@ -603,7 +603,7 @@ class Payment extends Component {
                   {
                     (members !== null && members.length === 0) && (
                       <h3 className="text-center text-danger">
-                        There is no player for pay now.
+                        There is no member for pay now.
                       </h3>
                     )
                   }
@@ -710,6 +710,7 @@ class Payment extends Component {
                       <PayerTable
                         items={members}
                         filter={filter_members}
+                        is_nf={is_nf}
                         onSelect={this.handleSelectPlayer.bind(this)}
                         onSelectAll={this.handleSelectAll.bind(this)}
                         onDetail={this.handleDetailPlayer.bind(this)}

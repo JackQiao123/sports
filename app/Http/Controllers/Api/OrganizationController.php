@@ -637,17 +637,17 @@ class OrganizationController extends Controller
     if ($org->is_club) {
       array_push($clubs, $org->id);
     } else {
+      array_push($clubs, $org->id);
+
       $orgs = Organization::where('parent_id', $id)->get();
 
       foreach ($orgs as $row) {
-        if ($org->parent_id == 0) {
-          $result = Organization::where('parent_id', $row->id)->get();
+        array_push($clubs, $row->id);
 
-          foreach ($result as $res) {
-              array_push($clubs, $res->id);
-          }
-        } else {
-          array_push($clubs, $row->id);
+        $result = Organization::where('parent_id', $row->id)->get();
+
+        foreach ($result as $res) {
+          array_push($clubs, $res->id);
         }
       }
     }
@@ -658,9 +658,14 @@ class OrganizationController extends Controller
                     ->leftJoin('weights', 'weights.id', '=', 'players.weight_id')
                     ->leftJoin('organizations AS org1', 'org1.id', '=', 'members.organization_id')
                     ->leftJoin('organizations AS org2', 'org2.id', '=', 'org1.parent_id')
+                    ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
                     ->whereIn('members.organization_id', $clubs)
+                    ->where('members.role_id', '!=', 1)
                     ->where('members.active', '!=', 1)
-                    ->select('members.*', 'org2.name_o AS region', 'org1.name_o AS club', 'weights.weight', 'players.dan')
+                    ->select('members.*', 'org2.name_o AS region', 'org1.name_o AS club', 
+                             'roles.name AS role_name', 'weights.weight', 'players.dan')
+                    ->orderBy('members.role_id')
+                    ->orderBy('members.name')
                     ->get();
 
     return response()->json($members);
