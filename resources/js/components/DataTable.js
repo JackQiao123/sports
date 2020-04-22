@@ -254,7 +254,6 @@ class DataTable extends Component {
               data.map((item, index) => (
                 <Table.Row
                   key={index}
-                  disabled={(stype.value === 'member' || init) && item.active == 0}
                 >
                   <Table.Cell>
                     <span className="text-primary mr-2">
@@ -265,26 +264,25 @@ class DataTable extends Component {
                           </Fragment>
                         ) : (
                           <Fragment>
-                            <img src={item.profile_image ? item.profile_image : (item.gender == 1 ? Bitmaps.maleAvatar : Bitmaps.femaleAvatar)} className="table-avatar mr-2" />
+                            <img
+                              src={
+                                item.profile_image 
+                                  ? item.profile_image 
+                                  : (item.gender == 1 ? Bitmaps.maleAvatar : Bitmaps.femaleAvatar)
+                                } 
+                              className="table-avatar mr-2"
+                            />
                           </Fragment>
                         )
                       }
                     </span>
                     {
                       (stype.value === 'member' || init) ? (
-                        item.active == 0 ? (
-                          <a>
-                            {item.name}
-                            {' '}
-                            {item.surname && item.surname.toUpperCase()}
-                          </a>
-                        ) : (
-                          <a className="detail-link" onClick={() => onSelect(item.id)}>
-                            {item.name}
-                            {' '}
-                            {item.surname && item.surname.toUpperCase()}
-                          </a>
-                        )
+                        <a className="detail-link" onClick={() => onSelect(item.id)}>
+                          {item.name}
+                          {' '}
+                          {item.surname && item.surname.toUpperCase()}
+                        </a>
                       ) : (
                         <a className="detail-link" onClick={() => onSelect(item.id)}>{item.name_o}</a>
                       )
