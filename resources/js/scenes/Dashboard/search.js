@@ -252,7 +252,7 @@ class Search extends Component {
       search_gender: search.gender
         ? (search_genders.find(gender => gender.value == search.gender) || search_genders[0])
         : search_genders[0],
-      search_weight: search.weight ? (this.state.weight_list.body.find(weight => weight.id == search.weight) || '') : '',
+      search_weight: search.weight ? (this.state.weights.find(weight => weight.id == search.weight) || '') : '',
       search_dan: search.dan ? (Dans.find(dan => dan.value == search.dan) || '') : '',
       search_data: null
     });
