@@ -40,7 +40,7 @@ class Detail extends Component {
 
         let barChart = {
           series: [{
-            data: [400, 30, 0]
+            data: body.total
           }],
           options: {
             chart: {
