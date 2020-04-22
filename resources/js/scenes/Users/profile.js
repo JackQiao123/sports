@@ -127,7 +127,6 @@ class Profile extends Component {
             children: body.message
           });
         }
-        bags.setErrors(body.errors);
         break;
       case 422:
         this.setState({
