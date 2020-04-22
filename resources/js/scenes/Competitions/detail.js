@@ -67,9 +67,12 @@ class CompetitionDetail extends Component {
     switch (data.response.status) {
       case 200:
         let competition = data.body.competition;
-        this.setState({
-          competition
-        });
+        let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        let from = competition.from.match(/\d+/g);
+        let to = competition.to.match(/\d+/g);
+        let register_from = competition.register_from.match(/\d+/g);
+        let register_to = competition.register_to.match(/\d+/g);
 
         let now = new Date().getTime();
         let start = new Date(competition.register_from).getTime();
@@ -82,6 +85,18 @@ class CompetitionDetail extends Component {
             intervalId
           });
         }
+
+        competition.from = parseInt(from[2]) + ', ' + months[parseInt(from[1]) - 1] + ', ' + from[0];
+        competition.to = parseInt(to[2]) + ', ' + months[parseInt(to[1]) - 1] + ', ' + to[0];
+        competition.register_from = parseInt(register_from[2]) + ', ' 
+              + months[parseInt(register_from[1]) - 1] + ', ' + register_from[0];
+        competition.register_to = parseInt(register_to[2]) + ', '
+              + months[parseInt(register_to[1]) - 1] + ', ' + register_to[0];
+
+        this.setState({
+          competition
+        });
+
         break;
       default:
         break;
@@ -324,11 +339,11 @@ class CompetitionDetail extends Component {
                   >
                     <div className="mt-2 px-2 py-2">
                       <Row>
-                        <Col sm="4" className="d-flex align-items-center justify-content-center">
-                          <img src={Bitmaps.logo} alt="Sports logo" width='80%' />
+                        <Col sm="3" className="d-flex align-items-center justify-content-center">
+                          <img src={Bitmaps.logo} alt="Sports logo" width='100%' />
                         </Col>
-                        <Col sm="8">
-                          <h3 className="text-center text-danger"><b>{competition.name}</b></h3>
+                        <Col sm="9">
+                          <h4 className="text-center text-danger"><b>{competition.name}</b></h4>
                           <h5 className="text-center text-danger">{competition.from} ~ {competition.to}</h5>
                         </Col>
                       </Row>
@@ -360,9 +375,9 @@ class CompetitionDetail extends Component {
                           cell={cellWithBackGround}
                         />
                         <Column headerClassName="text-center" className="text-center" field="M / F" width="40px" />
-                        <Column headerClassName="text-center" field="Name" width="150px" />
+                        <Column headerClassName="text-center" field="Name" width="190px" />
                         <Column headerClassName="text-center" className="text-center" field="Date of Birth" width="90px" />
-                        <Column headerClassName="text-center" field="ID" width="100px" />
+                        <Column headerClassName="text-center" field="ID" width="60px" />
                         <Column headerClassName="text-center" className="text-center" field="" width="40px" />
                       </Grid>
                     </div>
