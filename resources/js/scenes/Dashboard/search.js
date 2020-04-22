@@ -554,7 +554,7 @@ class Search extends Component {
           this.setState({
             alertVisible: true,
             messageStatus: false,
-            isOpenEditModal: true,
+            isOpenEditModal: false,
             failMessage: updateOrg.body.message
           });
           break;
