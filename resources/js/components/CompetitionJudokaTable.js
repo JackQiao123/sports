@@ -167,7 +167,7 @@ class CompetitionJudokaTable extends Component {
               <CustomInput
                 id="selectAllJudoka"
                 type="checkbox"
-                checked={data.filter(item => item.checked === true).length === data.length}
+                checked={data.length > 0 && data.filter(item => item.checked === true).length === data.length}
                 onChange={(event) => { onSelectAll(data, event); this.setState({ checkedAll: event.target.checked }); }}
               />
             </Table.HeaderCell>
@@ -175,7 +175,7 @@ class CompetitionJudokaTable extends Component {
         </Table.Header>
         <Table.Body>
           {
-            data && data.length > 0 && (
+            data && data.length > 0 ? (
               data.map((item, index) => (
                 <Table.Row
                   key={index}
@@ -212,6 +212,12 @@ class CompetitionJudokaTable extends Component {
                   </Table.Cell>
                 </Table.Row>
               ))
+            ) : (
+              <Table.Row>
+                <Table.Cell className="text-center" colSpan="6">
+                  <span className="text-center">No Judokas.</span>
+                </Table.Cell>
+              </Table.Row>
             )
           }
         </Table.Body>
@@ -233,7 +239,7 @@ class CompetitionJudokaTable extends Component {
                 }}
               />
             </Table.HeaderCell>
-            <Table.HeaderCell colSpan="6">
+            <Table.HeaderCell colSpan="5">
               <Menu floated="right" pagination>
                 <Pagination
                   activePage={activePage}

@@ -511,7 +511,7 @@ class CompetitionInscribe extends Component {
             <Row>
               <Col md="6" sm="12">
                 {
-                  status != 1 && members && members.length > 0 && (
+                  status != 1 && (
                     <Row className="mb-3">
                       <Col sm="4">
                         <FormGroup>
@@ -541,7 +541,7 @@ class CompetitionInscribe extends Component {
                   )
                 }
                 {
-                  status != 1 && judokas && judokas.length > 0 && (
+                  status != 1 && (
                     <Row>
                       <Col sm="4">
                         <FormGroup>
