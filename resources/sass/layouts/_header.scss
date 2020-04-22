@@ -63,7 +63,8 @@
     display: none;
     position: absolute;
     right: 20px;
-    top: 20px;
+    top: 10px;
+
     &.toggle-opened {
       &>span {
         opacity: 0;
@@ -132,12 +133,11 @@
 
         .right-nav-bar {
           position: absolute;
-          top: 0;
           right: 20px;
           padding: 0;
 
           .nav-item {
-            margin-right: 20px !important;
+            margin-right: 0px !important;
           }
         }
       }

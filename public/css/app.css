@@ -71617,7 +71617,7 @@ body {
   display: none;
   position: absolute;
   right: 20px;
-  top: 20px;
+  top: 10px;
 }
 
 .dashboard-top-bar.top-header .navbar-toggler.toggle-opened {
@@ -71710,13 +71710,12 @@ body {
 
   .dashboard-top-bar.top-header .navbar-collapse .nav .right-nav-bar {
     position: absolute;
-    top: 0;
     right: 20px;
     padding: 0;
   }
 
   .dashboard-top-bar.top-header .navbar-collapse .nav .right-nav-bar .nav-item {
-    margin-right: 20px !important;
+    margin-right: 0px !important;
   }
 }
 
