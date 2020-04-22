@@ -590,7 +590,7 @@ class Payment extends Component {
               <Container fluid>
                 <div className="text-center mb-4">
                   {
-                    members && members.length > 0 && !is_nf ? (
+                    members && members.length > 0 && is_nf != 1 ? (
                       <Button
                         type="button"
                         color="success"
@@ -619,7 +619,7 @@ class Payment extends Component {
                     </FormGroup>
                   </Col>
                   {
-                    !is_club_member && (
+                    is_club_member != 1 && (
                       <Col lg="2" md="3" sm="4">
                         <FormGroup>
                           <Input
@@ -639,7 +639,7 @@ class Payment extends Component {
                     )
                   }
                   {
-                    !is_club_member && (
+                    is_club_member != 1 && (
                       <Col lg="2" md="3" sm="4">
                         <FormGroup>
                           <Input

@@ -199,7 +199,7 @@ class PayerTable extends Component {
               Status
             </Table.HeaderCell>
             {
-              !is_nf && (
+              is_nf != 1 && (
                 <Table.HeaderCell className="text-center" width="2">
                   <CustomInput
                     id="selectAll"
@@ -263,7 +263,7 @@ class PayerTable extends Component {
                     )
                   }
                   {
-                    !is_nf && (
+                    is_nf != 1 && (
                       <Table.Cell className="text-center">
                         <CustomInput
                           id={item.id}
