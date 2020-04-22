@@ -89,10 +89,9 @@ class Search extends Component {
     this.handleSaveItem = this.handleSaveItem.bind(this);
     this.getWeights = this.getWeights.bind(this);
     this.search = this.search.bind(this);
-    this.searchAction = this.searchAction.bind(this);
   }
 
-  async searchAction() {
+  async componentDidMount() {
     const search = QueryString.parse(this.props.location.search, { ignoreQueryPrefix: true });
 
     if (this.isEmpty(search)) {
@@ -223,15 +222,11 @@ class Search extends Component {
 
       this.search(params);
     }
-  }
 
-  componentDidMount() {
     this.componentWillReceiveProps();
   }
 
   async componentWillReceiveProps() {
-    this.searchAction();
-    
     const role_list = await Api.get('roles');
     switch (role_list.response.status) {
       case 200:
