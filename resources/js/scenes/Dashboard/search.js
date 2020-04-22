@@ -36,10 +36,18 @@ class Search extends Component {
     const user = JSON.parse(localStorage.getItem('auth'));
     const me = user.user.member_info.organization_id;
 
+    if (member_type_options.length === 5) {
+      member_type_options.shift();
+    }
+
+    if (referee_type_options.length == 3) {
+      referee_type_options.splice(0, 0, { label: 'All Referee', value: 'all' });
+    }
+
     this.state = {
       me,
-      level: '',
-      user_is_club: false,
+      level: user.user.level,
+      user_is_club: user.user.is_club_member == 1 ? true : false,
       org_list: [],
       orgs: [],
       weights: [],
@@ -81,77 +89,149 @@ class Search extends Component {
     this.handleSaveItem = this.handleSaveItem.bind(this);
     this.getWeights = this.getWeights.bind(this);
     this.search = this.search.bind(this);
+    this.searchAction = this.searchAction.bind(this);
+  }
 
-    if (member_type_options.length === 5) {
-      member_type_options.shift();
-    }
+  async searchAction() {
+    const search = QueryString.parse(this.props.location.search, { ignoreQueryPrefix: true });
 
-    if (referee_type_options.length == 3) {
-      referee_type_options.splice(0, 0, { label: 'All Referee', value: 'all' });
+    if (this.isEmpty(search)) {
+      if (this.state.level == 1) {
+        let params = {
+          stype: 'org',
+          org: '',
+          club: '',
+          mtype: '',
+          rtype: 'all',
+          gender: 0,
+          weight: '',
+          dan: ''
+        }
+
+        this.search(params);
+      } else if (this.state.user_is_club != 1) {
+        let params = {
+          stype: 'club',
+          org: this.state.me,
+          club: '',
+          mtype: '',
+          rtype: 'all',
+          gender: 0,
+          weight: '',
+          dan: ''
+        }
+
+        this.search(params);
+      } else if (this.state.user_is_club == 1) {
+        let params = {
+          stype: 'member',
+          org: this.state.me,
+          club: '',
+          mtype: 'judoka',
+          rtype: 'all',
+          gender: 0,
+          weight: '',
+          dan: ''
+        }
+
+        this.setState({
+          init: true
+        });
+
+        this.search(params);
+      }
+    } else {
+      let params = {
+        stype: search.stype,
+        org: this.state.level == 1 ? search.org : this.state.me,
+        club: search.club,
+        mtype: search.stype == 'member' ? search.mtype : '',
+        rtype: search.stype == 'member' ? search.rtype : '',
+        gender: search.stype == 'member' ? search.gender : '',
+        weight: search.mtype == 'judoka' ? search.weight : '',
+        dan: search.mtype == 'judoka' ? search.dan : ''
+      }
+
+      const user = JSON.parse(localStorage.getItem('auth'));
+      const parent_id = user.user.member_info.organization_id;
+
+      const org_response = await Api.get(`organization-list/${parent_id}`);
+      const { response, body } = org_response;
+      switch (response.status) {
+        case 200:
+          if (body.length > 0 && body[0].parent_id == 0)
+            body[0].name_o = "National Federation";
+
+          this.setState({
+            orgs: body.filter(org => org.parent_id != 0),
+            org_list: body
+          });
+          break;
+        default:
+          break;
+      }
+      
+      const club_list = await Api.get(`club-list/${parent_id}`);
+      switch (club_list.response.status) {
+        case 200:
+          const search = QueryString.parse(this.props.location.search, { ignoreQueryPrefix: true });
+
+          if (search.org == '') {
+            this.setState({
+              original_clubs: club_list.body,
+              clubs: club_list.body,
+              club_list: club_list.body
+            });
+          } else {
+            this.setState({
+              original_clubs: club_list.body,
+              clubs: club_list.body.filter(club => club.parent_id == search.org),
+              club_list: club_list.body
+            });
+          }
+          break;
+        default:
+          break;
+      }
+
+      const weight_list = await Api.get('weights');
+      switch (weight_list.response.status) {
+        case 200:
+          this.setState({
+            weights: weight_list.body
+          });
+          break;
+        default:
+          break;
+      }
+
+      this.setState({
+        search_type: search.stype ? (search_type_options.find(type => type.value == search.stype) || '') : '',
+        search_org: search.org ? (org_response.body.find(org => org.id == search.org) || '') : '',
+        search_club: search.club ? (club_list.body.find(club => club.id == search.club) || '') : '',
+        member_type: search.mtype ? (member_type_options.find(option => option.value == search.mtype) || '') : '',
+        referee_type: search.rtype 
+          ? (referee_type_options.find(option => option.value == search.rtype) || referee_type_options[0]) 
+          : referee_type_options[0],
+        search_gender: search.gender
+          ? (search_genders.find(gender => gender.value == search.gender) || search_genders[0])
+          : search_genders[0],
+        search_weight: search.weight ? (weight_list.body.find(weight => weight.id == search.weight) || '') : '',
+        search_dan: search.dan ? (Dans.find(dan => dan.value == search.dan) || '') : '',
+        search_data: null
+      });
+
+      this.search(params);
     }
   }
 
-  async componentDidMount() {
-    const user = JSON.parse(localStorage.getItem('auth'));
-    const level = user.user.level;
-    const user_is_club = user.user.is_club_member == 1 && true;
-
-    this.setState({
-      level,
-      user_is_club
-    });
-
-    let params = [];
-    params.user_id = user.user.member_info.id;
-    params.org_id = user.user.member_info.organization_id;
-    params.level = user.user.level;
-
-    const member_list = await Api.post('members', params);
-    const { response, body } = member_list;
-    switch (response.status) {
-      case 200:
-        this.setState({
-          members: body
-        });
-        break;
-      default:
-        break;
-    }
-
+  componentDidMount() {
     this.componentWillReceiveProps();
   }
 
   async componentWillReceiveProps() {
-    const user = JSON.parse(localStorage.getItem('auth'));
-    const parent_id = user.user.member_info.organization_id;
-
-    const org_response = await Api.get(`organization-list/${parent_id}`);
-    const { response, body } = org_response;
-    switch (response.status) {
-      case 200:
-        if (body.length > 0 && body[0].parent_id == 0)
-          body[0].name_o = "National Federation";
-
-        this.setState({
-          orgs: body.filter(org => org.parent_id != 0),
-          org_list: body
-        });
-        break;
-      default:
-        break;
-    }
-
-    const weight_list = await Api.get('weights');
-    switch (weight_list.response.status) {
-      case 200:
-        this.setState({
-          weights: weight_list.body
-        });
-        break;
-      default:
-        break;
-    }
-
+    this.searchAction();
+    
     const role_list = await Api.get('roles');
     switch (role_list.response.status) {
       case 200:
@@ -165,88 +245,17 @@ class Search extends Component {
       default:
         break;
     }
-
-    const club_list = await Api.get(`club-list/${parent_id}`);
-    switch (club_list.response.status) {
-      case 200:
-        const search = QueryString.parse(this.props.location.search, { ignoreQueryPrefix: true });
-
-        if (search.org == '') {
-          this.setState({
-            original_clubs: club_list.body,
-            clubs: club_list.body,
-            club_list: club_list.body
-          });
-        } else {
-          this.setState({
-            original_clubs: club_list.body,
-            clubs: club_list.body.filter(club => club.parent_id == search.org),
-            club_list: club_list.body
-          });
-        }
-        break;
-      default:
-        break;
-    }
-
-    const search = QueryString.parse(this.props.location.search, { ignoreQueryPrefix: true });
-    if (this.state.level == 2) {
-      search.org = this.state.me;
-    }
-
-    this.setState({
-      search_type: search.stype ? (search_type_options.find(type => type.value == search.stype) || '') : '',
-      search_org: search.org ? (org_response.body.find(org => org.id == search.org) || '') : '',
-      search_club: search.club ? (club_list.body.find(club => club.id == search.club) || '') : '',
-      member_type: search.mtype ? (member_type_options.find(option => option.value == search.mtype) || '') : '',
-      referee_type: search.rtype 
-        ? (referee_type_options.find(option => option.value == search.rtype) || referee_type_options[0]) 
-        : referee_type_options[0],
-      search_gender: search.gender
-        ? (search_genders.find(gender => gender.value == search.gender) || search_genders[0])
-        : search_genders[0],
-      search_weight: search.weight ? (weight_list.body.find(weight => weight.id == search.weight) || '') : '',
-      search_dan: search.dan ? (Dans.find(dan => dan.value == search.dan) || '') : '',
-      search_data: null
-    });
-
-    if (search.stype) {
-      this.search(search);
-    } else if (this.state.level == 1) {
-      let params = {
-        stype: 'org',
-        org: '',
-        club: '',
-        mtype: '',
-        rtype: 'all',
-        gender: 0,
-        weight: '',
-        dan: ''
-      }
-
-      this.search(params);
-    } else if (this.state.user_is_club != 1) {
-      let params = {
-        stype: 'club',
-        org: this.state.me,
-        club: '',
-        mtype: '',
-        rtype: 'all',
-        gender: 0,
-        weight: '',
-        dan: ''
-      }
-
-      this.search(params);
-    } else if (this.state.user_is_club == 1) {
-      this.setState({
-        search_data: this.state.members,
-        init: true
-      });
-    }
   }
 
-  handleSearchFilter(type, value) {
+  isEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+  }
+
+  async handleSearchFilter(type, value) {
     switch (type) {
       case 'search_type':
         this.setState({
@@ -257,6 +266,51 @@ class Search extends Component {
           member_type: '',
           search_data: null
         });
+
+        const user = JSON.parse(localStorage.getItem('auth'));
+        const parent_id = user.user.member_info.organization_id;
+
+        const org_response = await Api.get(`organization-list/${parent_id}`);
+        const { response, body } = org_response;
+        switch (response.status) {
+          case 200:
+            if (body.length > 0 && body[0].parent_id == 0)
+              body[0].name_o = "National Federation";
+
+            this.setState({
+              orgs: body.filter(org => org.parent_id != 0),
+              org_list: body
+            });
+            break;
+          default:
+            break;
+        }
+
+        if (value.value == 'club' || value.value == 'member') {
+          const club_list = await Api.get(`club-list/${parent_id}`);
+          switch (club_list.response.status) {
+            case 200:
+              const search = QueryString.parse(this.props.location.search, { ignoreQueryPrefix: true });
+
+              if (search.org === undefined || search.org == '') {
+                this.setState({
+                  original_clubs: club_list.body,
+                  clubs: club_list.body,
+                  club_list: club_list.body
+                });
+              } else {
+                this.setState({
+                  original_clubs: club_list.body,
+                  clubs: club_list.body.filter(club => club.parent_id == search.org),
+                  club_list: club_list.body
+                });
+              }
+              break;
+            default:
+              break;
+          }
+        }
+
         break;
       case 'search_org':
         let filtered = [];
@@ -295,6 +349,19 @@ class Search extends Component {
         });
         break;
       case 'member_type':
+        if (value.value == 'judoka') {
+          const weight_list = await Api.get('weights');
+          switch (weight_list.response.status) {
+            case 200:
+              this.setState({
+                weights: weight_list.body
+              });
+              break;
+            default:
+              break;
+          }
+        }
+
         this.setState({
           member_type: value,
           search_required: true,
@@ -338,15 +405,15 @@ class Search extends Component {
       search_type, search_org, search_club,
       member_type, referee_type, 
       search_gender, search_weight, search_dan,
-      user_is_club
+      level, me, user_is_club
     } = this.state;
 
     const search_params = {
       stype: search_type ? search_type.value : user_is_club ? 'member' : '',
-      org: search_org ? search_org.id : '',
+      org: level == 1 ? (search_org ? search_org.id : '') : me,
       club: search_club ? search_club.id : '',
       mtype: member_type ? member_type.value : '',
-      rtype: referee_type ? referee_type.value : '',
+      rtype: referee_type ? referee_type.value : 'all',
       gender: search_gender ? search_gender.value : search_genders[0],
       weight: search_weight && search_weight.id && search_weight.weight !== 'All' ? search_weight.id : '',
       dan: search_dan ? search_dan.value : ''
@@ -365,6 +432,8 @@ class Search extends Component {
       });
       return;
     }
+
+    this.search(search_params);
 
     this.props.history.push(`/search${QueryString.stringify(search_params, { addQueryPrefix: true })}`);
   }
@@ -714,7 +783,8 @@ class Search extends Component {
                 )
               }
               {
-                search_type.value == 'club' && (
+                (search_type.value == 'club' || search_type.value == 'member') &&
+                !user_is_club && (
                   <Col xl="2" lg="4" md="4" sm="6" xs="12">
                     <FormGroup>
                       <Select
