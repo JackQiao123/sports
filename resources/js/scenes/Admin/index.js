@@ -59,7 +59,7 @@ class Admin extends Component {
     const trans = await Api.get('finance');
     const { response, body } = trans;
     switch (response.status) {
-      case 200:
+      case 200:console.log(body);
         const sum = [];
 
         for (let i = 0; i < body.nfs.length; i++) {
@@ -127,9 +127,9 @@ class Admin extends Component {
           let pend = 0;
 
           if (body.players[i].length > 0) {
-            confirm = parseInt(body.players[i][1].player);
-            notpay = parseInt(body.players[i][0].player);
-            pend = parseInt(body.players[i][2].player);
+            confirm = body.players[i][1] !== undefined ? parseInt(body.players[i][1].player) : 0;
+            notpay = body.players[i][0] !== undefined ? parseInt(body.players[i][0].player) : 0;
+            pend = body.players[i][2] !== undefined ? parseInt(body.players[i][2].player) : 0;
           }
 
           confirmed.push(confirm);
