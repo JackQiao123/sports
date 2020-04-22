@@ -45,8 +45,14 @@ class TransactionController extends Controller
 
       $players[$i] = Member::whereIn('organization_id', $clubs[$i])
                     ->where('role_id', 4)
-                    ->select(DB::raw('count(id) as player'))
+                    ->select('active', DB::raw('count(id) as player'))
                     ->groupBy('active')
+                    ->get();
+
+      $subtotal[$i] = Transaction::whereIn('club_id', $clubs[$i])
+                    ->where('created_at', 'like', date('Y') . '%')
+                    ->select(DB::raw('DATE_FORMAT(created_at, "%m") month'), DB::raw('sum(amount) as amount'))
+                    ->groupBy('month')
                     ->get();
     }
 
@@ -66,6 +72,7 @@ class TransactionController extends Controller
     return response()->json([
       'status' => 'success',
       'total' => $total,
+      'subtotal' => $subtotal,
       'nfs' => $nfs,
       'players' => $players
     ], 200);
