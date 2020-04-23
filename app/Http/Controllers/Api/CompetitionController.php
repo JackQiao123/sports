@@ -191,25 +191,6 @@ class CompetitionController extends Controller
 
       foreach ($comps  as $comp) {
         array_push($club_ids, $comp->club_id);
-        // $org = Organization::find($comp->club_id);
-
-        // if ($org->is_club) {
-        //   array_push($club_ids, $comp->club_id);
-        // } else {
-        //   $orgs = Organization::where('parent_id', $comp->club_id)->get();
-
-        //   foreach ($orgs as $row) {
-        //     if ($row->is_club) {
-        //       array_push($club_ids, $row->id);
-        //     } else {
-        //       $clubs = Organization::where('parent_id', $row->id)->get();
-
-        //       foreach ($clubs as $club) {
-        //         array_push($club_ids, $club->id);
-        //       }
-        //     }
-        //   }
-        // }
       }
 
       $clubs = Organization::leftJoin('organizations AS org', 'org.id', '=', 'organizations.parent_id')
