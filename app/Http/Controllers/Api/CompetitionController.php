@@ -191,6 +191,25 @@ class CompetitionController extends Controller
 
       foreach ($comps  as $comp) {
         array_push($club_ids, $comp->club_id);
+        // $org = Organization::find($comp->club_id);
+
+        // if ($org->is_club) {
+        //   array_push($club_ids, $comp->club_id);
+        // } else {
+        //   $orgs = Organization::where('parent_id', $comp->club_id)->get();
+
+        //   foreach ($orgs as $row) {
+        //     if ($row->is_club) {
+        //       array_push($club_ids, $row->id);
+        //     } else {
+        //       $clubs = Organization::where('parent_id', $row->id)->get();
+
+        //       foreach ($clubs as $club) {
+        //         array_push($club_ids, $club->id);
+        //       }
+        //     }
+        //   }
+        // }
       }
 
       $clubs = Organization::leftJoin('organizations AS org', 'org.id', '=', 'organizations.parent_id')
@@ -230,7 +249,6 @@ class CompetitionController extends Controller
                     ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
                     ->leftJoin('weights', 'weights.id', '=', 'players.weight_id')
                     ->whereIn('members.id', $ids)
-                    ->where('members.active', 1)
                     ->select('members.*', 'roles.name as role_name', 'weights.id as weight_id', 'weights.weight', 'players.dan')
                     ->orderBy('players.weight_id')
                     ->orderBy('members.surname')
@@ -277,7 +295,7 @@ class CompetitionController extends Controller
         $members = Member::whereIn('id', $member_ids)->get();
 
         foreach ($members as $member) {
-          if ($member->role_id == 3) {
+          if ($member->role_id == 4) {
             if ($member->gender == 1)
                 $male++;
             else

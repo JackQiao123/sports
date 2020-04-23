@@ -219,6 +219,14 @@ body {
       height: 100%;
     }
 
+    &.compdetail {
+      .content {
+        div.segment {
+          height: initial;
+        }
+      }
+    }
+
     .table-responsive {
       /* width */
       &::-webkit-scrollbar {

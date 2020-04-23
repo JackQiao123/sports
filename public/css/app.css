@@ -72464,6 +72464,10 @@ body .admin-dashboard div.segment {
   height: 100%;
 }
 
+body .admin-dashboard.compdetail .content div.segment {
+  height: initial;
+}
+
 body .admin-dashboard .table-responsive {
   /* width */
   /* Track */

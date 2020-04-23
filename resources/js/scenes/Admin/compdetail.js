@@ -57,7 +57,12 @@ class CompetitionDetail extends Component {
         break;
     }
 
-    const clubs = await Api.get(`competition-clubs/${competition_id}`);
+    const params = {};
+
+    params.competition_id = competition_id;
+    params.club_id = '';
+
+    const clubs = await Api.post('competition-clubs', params);
     switch (clubs.response.status) {
       case 200:
         this.setState({
@@ -205,7 +210,7 @@ class CompetitionDetail extends Component {
         <div className="d-flex">
           <AdminBar />
 
-          <div className="admin-dashboard">
+          <div className="admin-dashboard compdetail">
             <div className="content">
               <div className="mt-3 w-100 d-flex justify-content-end">
                 <a className="detail-link mr-4" onClick={this.handleBack.bind(this)}>

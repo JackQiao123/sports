@@ -228,29 +228,6 @@ class CompetitionClubTable extends Component {
                       </Table.Cell>
                     )
                   }
-                  {
-                    is_super != 1 && inscribe && (
-                      <Table.Cell>
-                        <div className="actions d-flex w-100 justify-content-center align-items-center">
-                          <Button
-                            color="success"
-                            type="button"
-                            onClick={() => onSelect(item.id, 'edit')}
-                            style={{ marginRight: '20px' }}
-                          >
-                            <i className="fa fa-pencil-alt fa-lg" />
-                          </Button>
-                          <Button
-                            color="danger"
-                            type="button"
-                            onClick={() => onDelete(item.id, 'club')}
-                          >
-                            <i className="fa fa-trash-alt fa-lg" />
-                          </Button>
-                        </div>
-                      </Table.Cell>
-                    )
-                  }
                 </Table.Row>
               ))
             )
