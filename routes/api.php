@@ -17,9 +17,6 @@ Route::namespace('Api')->group(function () {
 	Route::post('login', 'UserController@login');
 	Route::post('forgot', 'ForgotPasswordController@forgot');
 	Route::post('reset/{token}', 'ForgotPasswordController@reset');
-
-	Route::get('invite-accept', 'UserController@invite_accept');
-	Route::post('reg-user', 'UserController@store');
 	
 	Route::group(['middleware' => ['jwt.verify']], function () {
 		// Super Admin APIs
@@ -68,8 +65,6 @@ Route::namespace('Api')->group(function () {
 		Route::get('allsetting', 'SettingController@allsetting');
 		Route::get('setting', 'UserController@setting');
 		Route::put('setting/{id}', 'SettingController@update');
-		Route::get('invite-users', 'UserController@invite');
-		Route::get('invite-send', 'UserController@invite_send');
 
 		// Financial APIs
 		Route::get('cost/{id}', 'TransactionController@cost');

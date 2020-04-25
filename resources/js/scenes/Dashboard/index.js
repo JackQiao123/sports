@@ -143,42 +143,28 @@ class Dashboard extends Component {
                   </CardTitle>
                   <CardText>Browse</CardText>
                 </Card>
-                <div className="two-column">
-                  {
-                    is_club_member != 1 && (
-                      <Card body inverse
-                        onClick={this.handleURL.bind(this, '/organization/create')}
-                        style={{ backgroundColor: '#7e6c92', borderColor: '#7e6c92' }}
-                      >
-                        <CardTitle>
-                          <i className="fa fa-building"></i>
-                        </CardTitle>
-                        <CardText>Organization Registration</CardText>
-                      </Card>
-                    )
-                  }
-                  <Card body inverse
-                    onClick={this.handleURL.bind(this, '/member/register')}
-                    style={{ backgroundColor: '#499797', borderColor: '#499797' }}
-                  >
-                    <CardTitle>
-                      <i className="fa fa-user-plus"></i>
-                    </CardTitle>
-                    <CardText>Member Registration</CardText>
-                  </Card>
-                </div>
                 {
-                  is_nf == 1 && (
+                  is_club_member != 1 && (
                     <Card body inverse
-                      onClick={this.handleURL.bind(this, '/membership')}
-                      style={{ backgroundColor: '#262228', borderColor: '#262228' }}>
+                      onClick={this.handleURL.bind(this, '/organization/create')}
+                      style={{ backgroundColor: '#7e6c92', borderColor: '#7e6c92' }}
+                    >
                       <CardTitle>
-                        <i className="fa fa-address-card"></i>
+                        <i className="fa fa-building"></i>
                       </CardTitle>
-                      <CardText>Admin Membership</CardText>
+                      <CardText>Organization Registration</CardText>
                     </Card>
                   )
                 }
+                <Card body inverse
+                  onClick={this.handleURL.bind(this, '/member/register')}
+                  style={{ backgroundColor: '#499797', borderColor: '#499797' }}
+                >
+                  <CardTitle>
+                    <i className="fa fa-user-plus"></i>
+                  </CardTitle>
+                  <CardText>Member Registration</CardText>
+                </Card>
               </Col>
               <Col md="3" sm="6" xs="12">
                 <h3 className="ml-3">

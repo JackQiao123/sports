@@ -4,15 +4,12 @@ namespace App\Http\Controllers\Api;
 use App\User;
 use App\Member;
 use App\Organization;
-use App\Invitation;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
-
-use DB;
 
 class UserController extends Controller
 {
@@ -104,42 +101,6 @@ class UserController extends Controller
 		}
 	}
 
-	public function store(Request $request)
-	{
-		$data = $request->all();
-
-		$exist = Invitation::where('email', $data['email'])->first();
-
-		if ($data['code'] == $exist->vcode) {
-			$member = Member::where('email', $data['email'])->first();
-
-			User::create(array(
-				'member_id' => $member->id,
-				'password' => Hash::make($data['pass']),
-				'email' => $data['email'],
-				'is_nf' => 0
-			));
-
-			Member::where('email', $data['email'])->update(['active' => 1]);
-
-			Invitation::where('email', $data['email'])->delete();
-
-			return response()->json([
-				'status' => 'success'
-			], 200);
-		} else {
-			$errArr['code'] = 'Invalid Verification Code.';
-
-			return response()->json(
-				[
-					'status' => 'error',
-					'data' => $errArr
-				],
-				422
-			);
-		}
-	}
-
 	public function profile()
 	{
 		$user = JWTAuth::parseToken()->authenticate();
@@ -206,160 +167,5 @@ class UserController extends Controller
 			],
 			200
 		);
-	}
-
-	public function invite()
-	{
-		$user = JWTAuth::parseToken()->authenticate();
-		$me = Member::find($user->member_id);
-
-		$myOrg = Organization::find($me->organization_id);
-
-		$allOrgs = array();
-
-		if ($myOrg->is_club == 1) {
-			array_push($allOrgs, $myOrg->id);
-		} else {
-			array_push($allOrgs, $myOrg->id);
-
-			$orgs = Organization::where('parent_id', $myOrg->id)->get();
-
-			foreach ($orgs as $org) {
-				if ($org->is_club == 1) {
-					array_push($allOrgs, $org->id);
-				} else {
-					array_push($allOrgs, $org->id);
-
-					$clubs = Organization::where('parent_id', $org->id)->get();
-
-					foreach ($clubs as $club) {
-							array_push($allOrgs, $club->id);
-					}
-				}
-			}
-		}
-
-		$members = Member::leftJoin('organizations', 'organizations.id', 'members.organization_id')
-										->leftJoin('invitations', 'members.email', '=', 'invitations.email')
-										->whereIn('members.organization_id', $allOrgs)
-										->where('members.role_id', 1)
-										->where('members.active', '!=', 1)
-										->select('members.*', 'invitations.created_at AS invited',
-														'organizations.name_o', 'organizations.parent_id', 'organizations.is_club')
-										->orderBy('members.name')
-										->get();
-										
-		for ($i = 0; $i < sizeof($members); $i++) {
-			if (is_null($members[$i]->invited))
-				$members[$i]->invited = 0;
-			else
-				$members[$i]->invited = 1;
-		}
-
-		$users = User::leftJoin('members', 'members.id', '=', 'users.member_id')
-									->leftJoin('organizations', 'organizations.id', 'members.organization_id')
-									->where('members.id', '!=', $me->id)
-									->whereIn('members.organization_id', $allOrgs)
-									->select('members.*', 'organizations.name_o', 'organizations.parent_id', 'organizations.is_club')
-									->orderBy('members.name')
-									->get();
-
-		$result = array(
-			'members' => $members,
-			'users' => $users
-		);
-
-		return response()->json($result);
-	}
-
-	public function invite_send(Request $request)
-	{
-		$data = $request->all();
-
-		$token = Hash::make($data['email']);
-		
-		$msg = "You have an invitation to register as a manager in our system.\r\n";
-		$msg .= "Please confirm the below url.\r\n";
-		$msg .= url('/invite-accept?token=' . $token);
-		
-		$headers = "From: administrator@sports.org";
-
-		mail($data['email'], "Invitation from LiveMedia", $msg, $headers);
-		
-		$exist = Invitation::where('email', $data['email'])->count();
-		
-		if ($exist == 0) {
-			Invitation::create(array(
-				'email' => $data['email'],
-				'token' => $token,
-				'created_at' => date('Y-m-d H:i:s')
-			));
-		} else {
-			Invitation::where('email', $data['email'])->update(array(
-				'email' => $data['email'],
-				'token' => $token,
-				'created_at' => date('Y-m-d H:i:s')
-			));
-		}        
-		
-		return response()->json([
-			'status' => 'success',
-			'message' => 'Invite sent successfully.'
-		], 200);
-	}
-
-	public function invite_accept(Request $request)
-	{
-		$token = $request->input('token');
-		
-		if (is_null($token) || $token == '') {
-			return response()->json(
-				[
-					'status' => 'error',
-					'message' => 'Empty token.'
-				],
-				406
-			);
-		} else {
-			$exist = Invitation::where('token', $token)->get();
-
-			if (sizeof($exist) == 1) {
-				$code = '';
-
-				$characters = '0123456789';
-				$charactersLength = strlen($characters);
-
-				for ($j = 0; $j < 6; $j++) {
-						$code .= $characters[rand(0, $charactersLength - 1)];
-				}
-
-				$msg = "Please use the below verification code to register now.\r\n";
-				$msg .= "Verification Code: " . $code;
-				
-				$headers = "From: administrator@sports.org";
-
-				mail($exist[0]->email, "Invitation from LiveMedia", $msg, $headers);
-
-				Invitation::where('token', $token)->update(array(
-					'email' => $exist[0]->email,
-					'token' => $token,
-					'vcode' => $code,
-					'codesent_at' => date('Y-m-d H:i:s')
-				));
-
-				return response()->json([
-					'status' => 'success',
-					'member' => $exist[0]
-				], 200);
-			} else {
-				return response()->json(
-					[
-						'status' => 'error',
-						'message' => 'Invalid token.'
-					],
-					406
-				);
-			}
-		}
 	}
 }

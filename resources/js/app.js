@@ -19,8 +19,6 @@ import {
   AuthRoute, AuthenticatedRoute
 } from './components/PrivateRoutes';
 
-import InviteAccept from './scenes/Users/invite';
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -50,7 +48,6 @@ class App extends Component {
             <AuthenticatedRoute path="/forgot" name="Forgot" component={Forgot} />
             <AuthenticatedRoute path="/login" name="Login" component={Login} />
             <AuthenticatedRoute path="/reset/:token" name="Reset" component={Reset} />
-            <Route path="/invite-accept" name="InviteAccept" component={InviteAccept} />
             <AuthRoute path="/" name="Main" component={Main} />
           </Switch>
         </Router>
