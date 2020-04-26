@@ -563,6 +563,7 @@ class MemberAdd extends Component {
                           value={values.gender}
                           onChange={(value) => {
                             setFieldValue('gender', value);
+                            setFieldValue('weight_id', '');
                             this.setState({
                               weights: init_weights.filter(obj => obj.gender == value.id)
                             })
