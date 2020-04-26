@@ -162,14 +162,28 @@ class MemberController extends Controller
       
     $role = DB::table('roles')->where('id', $data['role_id'])->first();
 
-    if ($role->is_player && $validPlayer->fails()) {
-      return response()->json(
-        [
-          'status' => 'fail',
-          'data' => $validPlayer->errors(),
-        ],
-        422
-      );
+    if ($role->is_player) {
+      if ($validPlayer->fails()) {
+        return response()->json(
+          [
+            'status' => 'fail',
+            'data' => $validPlayer->errors(),
+          ],
+          422
+        );
+      }
+
+      $org = Organization::find($data['organization_id']);
+
+      if ($org->parent_id == 0) {
+        return response()->json(
+          [
+            'status' => 'error',
+            'message' => 'Judoka can\'t be registered in National Federation.'
+          ],
+          406
+        );
+      }
     }
 
     $data['profile_image'] = "";

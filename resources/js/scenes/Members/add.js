@@ -170,7 +170,7 @@ class MemberAdd extends Component {
     }
     
     if (values.role_id && values.role_id.is_player == 1 && 
-        (!values.club_id || !values.weight_id || !values.dan || (values.dan && values.dan.value == ''))) {
+        (!values.weight_id || !values.dan || (values.dan && values.dan.value == ''))) {
       bags.setSubmitting(false);
       return;
     }
@@ -190,10 +190,10 @@ class MemberAdd extends Component {
       country: this.state.country,
       weight_id: values.weight_id ? values.weight_id.id : '',
       dan: values.dan ? values.dan.value : '',
-      role_id: values.role_id ? values.role_id.id : 4,
+      role_id: values.role_id.id,
       profile_image: imagePreviewUrl || '',
       position: values.position ? (values.position.value || values.position) : '',
-      active: values.is_club || 0,
+      active: 0,
       register_date: values.register_date
     };
 
@@ -219,7 +219,6 @@ class MemberAdd extends Component {
             children: body.message
           });
         }
-        bags.setErrors(body.errors);
         break;
       case 422:
         this.setState({
