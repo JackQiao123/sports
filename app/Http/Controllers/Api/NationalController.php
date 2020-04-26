@@ -53,6 +53,20 @@ class NationalController extends Controller
         422
       );
     } else {
+      $validMember = Validator::make($data, [
+        'email' => 'required|string|email|max:255|unique:members'
+      ]);
+  
+      if ($validMember->fails()) {
+        return response()->json(
+          [
+            'status' => 'fail',
+            'data' => $validMember->errors()
+          ],
+          422
+        );
+      }
+      
       $data['logo'] = "";
 
       $base64_image = $request->input('logo');
@@ -104,20 +118,6 @@ class NationalController extends Controller
           'level' => 1,
           'is_club' => 0
       ));
-
-      $validMember = Validator::make($data, [
-        'email' => 'required|string|email|max:255|unique:members'
-      ]);
-
-      if ($validMember->fails()) {
-        return response()->json(
-          [
-            'status' => 'fail',
-            'data' => $validMember->errors()
-          ],
-          422
-        );
-      }
 
       $member = Member::create(array(
           'organization_id' => $nf->id,

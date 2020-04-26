@@ -10,6 +10,7 @@ use App\User;
 use JWTAuth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -123,6 +124,20 @@ class OrganizationController extends Controller
         422
       );
     } else {
+      $validMember = Validator::make($data, [
+        'email' => 'required|string|email|max:255|unique:members'
+      ]);
+  
+      if ($validMember->fails()) {
+        return response()->json(
+          [
+            'status' => 'fail',
+            'data' => $validMember->errors()
+          ],
+          422
+        );
+      }
+
       $data['logo'] = "";
 
       $base64_image = $request->input('logo');
@@ -169,7 +184,7 @@ class OrganizationController extends Controller
         $data['addressline2'] = "";
       }
             
-      Organization::create(array(
+      $org = Organization::create(array(
         'parent_id' => $data['parent_id'],
         'register_no' => $data['register_no'],
         'name_o' => $data['name_o'],
@@ -186,6 +201,58 @@ class OrganizationController extends Controller
         'level' => $data['level'],
         'is_club' => $data['is_club']
       ));
+
+      $identity = '';
+
+      $exist = Member::leftJoin('organizations', 'organizations.id', '=', 'members.organization_id')
+                ->where('organizations.country', $data['country'])
+                ->select('members.*')
+                ->count();
+
+      for ($i = 0; $i < 8 - strlen($exist + 1); $i++) {
+          $identity .= '0';
+      }
+
+      $identity .= ($exist + 1);
+
+      $member = Member::create(array(
+        'organization_id' => $org->id,
+        'role_id' => 1,
+        'name' => $data['name_o'],
+        'surname' => 'Manager',
+        'profile_image' => '',
+        'gender' => 1,
+        'birthday' => date('Y-m-d'),
+        'email' => $data['email'],
+        'position' => $data['level'] == 2 ? 'Reg manager' : 'Club manager',
+        'identity' => $identity,
+        'active' => 1,
+        'register_date' => date('Y-m-d')
+      ));
+
+      $password = '';
+
+      $characters = '0123456789?abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      $charactersLength = strlen($characters);
+
+      for ($j = 0; $j < 8; $j++) {
+          $password .= $characters[rand(0, $charactersLength - 1)];
+      }
+
+      User::create(array(
+        'member_id' => $member->id,
+        'password' => Hash::make($password),
+        'email' => $data['email'],
+        'is_nf' => 1
+      ));
+  
+      $msg = "You were registered into Judo Federation system as a manager.\r\n";
+      $msg .= "Please confirm the below url with the default password '" . $password . "'.\r\n";
+      $msg .= url('/login');
+      
+      $headers = "From: administrator@sports.org";
+
+      mail($data['email'], "Invitation from LiveMedia", $msg, $headers);
 
       return response()->json([
         'status' => 'success'
