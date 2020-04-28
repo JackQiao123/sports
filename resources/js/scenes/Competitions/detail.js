@@ -31,6 +31,7 @@ class CompetitionDetail extends Component {
       end: '',
       competition_id: '',
       competition: [],
+      comp_init: [],
       clubs: [],
       selectMembers: [],
       exportMembers: [],
@@ -139,8 +140,11 @@ class CompetitionDetail extends Component {
     competition.register_to = parseInt(register_to[2]) + ', '
           + months[parseInt(register_to[1]) - 1] + ', ' + register_to[0];
 
+    let comp_init = {...competition};
+
     this.setState({
-      competition
+      competition,
+      comp_init
     });
   }
 
@@ -293,7 +297,7 @@ class CompetitionDetail extends Component {
     let { competition } = this.state;
 
     competition.from = data.value;
-
+    
     this.setState({
       competition
     });
@@ -410,10 +414,34 @@ class CompetitionDetail extends Component {
   }
 
   handleCancel() {
+    const { comp_init } = this.state;
+
+    let newData = {
+      id: comp_init.id,
+      creator_id: comp_init.creator_id,
+      name: comp_init.name,
+      short_name: comp_init.short_name,
+      place: comp_init.place,
+      type: comp_init.type,
+      level: comp_init.level,
+      from: this.convertDate(new Date(comp_init.from)),
+      to: this.convertDate(new Date(comp_init.to)),
+      register_from: this.convertDate(new Date(comp_init.register_from)),
+      register_to: this.convertDate(new Date(comp_init.register_to)),
+      legal_birth_from: comp_init.legal_birth_from,
+      legal_birth_to: comp_init.legal_birth_to,
+      gender: comp_init.gender,
+      weights: comp_init.weights,
+      reg_ids: comp_init.reg_ids,
+      club_ids: comp_init.club_ids
+    }
+
     this.setState({
       alertVisible: false,
       edit: false
     });
+
+    this.convertCompetition(newData);
   }
 
   render() {
