@@ -106,7 +106,7 @@ class OrganizationAdd extends Component {
       state: values.state,
       city: values.city,
       zip_code: values.zip_code,
-      level: values.is_club && values.is_club.value == 1 ? 3 : 2,
+      level: values.is_club === null || (values.is_club && values.is_club.value) == 1 ? 3 : 2,
       is_club: values.is_club === null || (values.is_club && values.is_club.value) == 1 ? 1 : 0
     };
 
