@@ -237,20 +237,6 @@ class Dashboard extends Component {
                   </CardTitle>
                   <CardText>Change password</CardText>
                 </Card>
-                  {/* <Card body inverse
-                    onClick={this.handleURL.bind(this, '/notifications')}
-                    style={{ backgroundColor: '#696969', borderColor: '#696969' }}
-                  >
-                    <CardTitle>
-                      {
-                        notification.length > 0 && (
-                          <span className="count">{notification.length}</span>
-                        )
-                      }
-                      <i className="fa fa-bell"></i>
-                    </CardTitle>
-                    <CardText>Notification</CardText>
-                  </Card> */}
                   {
                     is_nf == 1 && (
                       <Card body inverse
