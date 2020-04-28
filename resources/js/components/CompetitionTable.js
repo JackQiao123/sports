@@ -74,7 +74,7 @@ class CompetitionTable extends Component {
 
   render() {
     const {
-      inscribe,
+      attend,
       start,
       onSelect
     } = this.props;
@@ -129,7 +129,7 @@ class CompetitionTable extends Component {
                   }
                   <Table.Cell width="2" className="text-center">
                     {
-                      inscribe && expire[index] != 'Expired.' && (start[index] - (new Date().getTime()) < 0) ? (
+                      attend[index] && expire[index] != 'Expired.' && (start[index] - (new Date().getTime()) < 0) ? (
                         <a onClick={() => onSelect(item.id, 'inscribe')}>
                           Inscribe
                         </a>

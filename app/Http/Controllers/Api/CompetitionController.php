@@ -144,6 +144,60 @@ class CompetitionController extends Controller
     }
   }
 
+  public function update($id, Request $request)
+  {
+    $data = $request->all();
+
+    if ($data['from'] > $data['to']) {
+      return response()->json(
+        [
+          'status' => 'fail',
+          'message' => 'Competition period is not valid'
+        ],
+        406
+      );
+    }
+
+    if ($data['register_from'] > $data['register_to']) {
+      return response()->json(
+        [
+          'status' => 'fail',
+          'message' => 'Registration period is not valid'
+        ],
+        406
+      );
+    }
+
+    if ($data['register_to'] > $data['from']) {
+      return response()->json(
+        [
+          'status' => 'fail',
+          'message' => 'Registration period is not valid'
+        ],
+        406
+      );
+    }
+
+    if ($data['legal_birth_from'] > $data['legal_birth_to']) {
+      return response()->json(
+        [
+          'status' => 'fail',
+          'message' => 'Registration period is not valid'
+        ],
+      406
+      );
+    }
+
+    unset($data['reg_ids']);
+    unset($data['club_ids']);
+
+    Competition::where('id', $id)->update($data);
+
+    return response()->json([
+      'status' => 200
+    ]);
+  }
+
   public function show($id)
   {
     $competition = Competition::find($id);

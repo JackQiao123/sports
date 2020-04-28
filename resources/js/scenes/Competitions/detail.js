@@ -1,8 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import {
-  Container, Row, Col
+  Container, Row, Col,
+  FormGroup, FormFeedback,
+  Input, Label,
+  Alert
 } from 'reactstrap';
 import { Segment } from 'semantic-ui-react';
+import Select from 'react-select';
+import SemanticDatepicker from 'react-semantic-ui-datepickers';
 
 import { PDFExport } from '@progress/kendo-react-pdf';
 import { Grid, GridColumn as Column } from '@progress/kendo-react-grid';
@@ -14,7 +19,7 @@ import CompetitionClubTable from '../../components/CompetitionClubTable';
 import CompetitionSelectTable from '../../components/CompetitionSelectTable';
 import Bitmaps from '../../theme/Bitmaps';
 
-import { CompetitionType, CompetitionLevel } from '../../configs/data';
+import { CompetitionType } from '../../configs/data';
 
 class CompetitionDetail extends Component {
   constructor(props) {
@@ -29,6 +34,11 @@ class CompetitionDetail extends Component {
       clubs: [],
       selectMembers: [],
       exportMembers: [],
+      editable: false,
+      edit: false,
+      alertVisible: false,
+      messageStatus: false,
+      message: '',
       detail: false,
       exportPDF: false,
       pageSize: 5,
@@ -60,6 +70,7 @@ class CompetitionDetail extends Component {
     const competition_id = this.props.location.state;
 
     this.setState({
+      is_nf: user.user.is_nf,
       competition_id
     });
 
@@ -67,35 +78,12 @@ class CompetitionDetail extends Component {
     switch (data.response.status) {
       case 200:
         let competition = data.body.competition;
-        let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-        let from = competition.from.match(/\d+/g);
-        let to = competition.to.match(/\d+/g);
-        let register_from = competition.register_from.match(/\d+/g);
-        let register_to = competition.register_to.match(/\d+/g);
-
-        let now = new Date().getTime();
-        let start = new Date(competition.register_from).getTime();
-        this.end = new Date(competition.register_to).getTime() + 86400000;
-
-        if (now > start && now < this.end) {
-          let intervalId = setInterval(this.timer.bind(this), 1000);
-
-          this.setState({
-            intervalId
-          });
-        }
-
-        competition.from = parseInt(from[2]) + ', ' + months[parseInt(from[1]) - 1] + ', ' + from[0];
-        competition.to = parseInt(to[2]) + ', ' + months[parseInt(to[1]) - 1] + ', ' + to[0];
-        competition.register_from = parseInt(register_from[2]) + ', ' 
-              + months[parseInt(register_from[1]) - 1] + ', ' + register_from[0];
-        competition.register_to = parseInt(register_to[2]) + ', '
-              + months[parseInt(register_to[1]) - 1] + ', ' + register_to[0];
 
         this.setState({
-          competition
+          editable: (competition.creator_id == user_org)
         });
+
+        this.convertCompetition(competition);
 
         break;
       default:
@@ -122,6 +110,38 @@ class CompetitionDetail extends Component {
         default:
           break;
       }
+  }
+
+  async convertCompetition(competition) {
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    let from = competition.from.match(/\d+/g);
+    let to = competition.to.match(/\d+/g);
+    let register_from = competition.register_from.match(/\d+/g);
+    let register_to = competition.register_to.match(/\d+/g);
+
+    let now = new Date().getTime();
+    let start = new Date(competition.register_from).getTime();
+    this.end = new Date(competition.register_to).getTime() + 86400000;
+
+    if (now > start && now < this.end) {
+      let intervalId = setInterval(this.timer.bind(this), 1000);
+
+      this.setState({
+        intervalId
+      });
+    }
+
+    competition.from = parseInt(from[2]) + ', ' + months[parseInt(from[1]) - 1] + ', ' + from[0];
+    competition.to = parseInt(to[2]) + ', ' + months[parseInt(to[1]) - 1] + ', ' + to[0];
+    competition.register_from = parseInt(register_from[2]) + ', ' 
+          + months[parseInt(register_from[1]) - 1] + ', ' + register_from[0];
+    competition.register_to = parseInt(register_to[2]) + ', '
+          + months[parseInt(register_to[1]) - 1] + ', ' + register_to[0];
+
+    this.setState({
+      competition
+    });
   }
 
   async handleSelectClub(club_id, action) {
@@ -240,65 +260,411 @@ class CompetitionDetail extends Component {
     this.gridPDFExport.save();
   }
 
+  handleEdit() {
+    this.setState({
+      edit: true
+    });
+  }
+
+  handleChange(type, data) {
+    let { competition } = this.state;
+
+    switch (type) {
+      case 'name':
+      case 'short_name':
+      case 'place':
+        competition[type] = data.target.value;
+        break;
+      case 'type':
+      case 'legal_birth_from':
+      case 'legal_birth_to':
+        competition[type] = data.value;
+        break;
+      default:
+        break;
+    }
+
+    this.setState({
+      competition
+    });
+  }
+
+  onChangeFrom(event, data) {
+    let { competition } = this.state;
+
+    competition.from = data.value;
+
+    this.setState({
+      competition
+    });
+  }
+
+  onChangeTo(event, data) {
+    let { competition } = this.state;
+
+    competition.to = data.value;
+
+    this.setState({
+      competition
+    });
+  }
+
+  onChangeRegisterFrom(event, data) {
+    let { competition } = this.state;
+
+    competition.register_from = data.value;
+
+    this.setState({
+      competition
+    });
+  }
+
+  onChangeRegisterTo(event, data) {
+    let { competition } = this.state;
+
+    competition.register_to = data.value;
+
+    this.setState({
+      competition
+    });
+  }
+
+  convertDate(d) {
+    let year = d.getFullYear();
+
+    let month = d.getMonth() + 1;
+    if (month < 10)
+      month = '0' + month;
+
+    let day = d.getDate();
+    if (day < 10)
+      day = '0' + day;
+
+    return (year + '-' + month + '-' + day);
+  }
+
+  async handleSave() {
+    let { competition } = this.state;
+    
+    if (!competition.from || !competition.to) {
+      return;
+    }
+
+    if (!competition.register_from || !competition.register_to) {
+      return;
+    }
+
+    let newData = {
+      id: competition.id,
+      creator_id: competition.creator_id,
+      name: competition.name,
+      short_name: competition.short_name,
+      place: competition.place,
+      type: competition.type,
+      level: competition.level,
+      from: this.convertDate(new Date(competition.from)),
+      to: this.convertDate(new Date(competition.to)),
+      register_from: this.convertDate(new Date(competition.register_from)),
+      register_to: this.convertDate(new Date(competition.register_to)),
+      legal_birth_from: competition.legal_birth_from,
+      legal_birth_to: competition.legal_birth_to,
+      gender: competition.gender,
+      weights: competition.weights,
+      reg_ids: competition.reg_ids,
+      club_ids: competition.club_ids
+    }
+    
+    const data = await Api.put(`competition/${competition.id}`, newData);
+    const { response, body } = data;
+    switch (response.status) {
+      case 200:
+        this.setState({
+          alertVisible: true,
+          messageStatus: true,
+          message: 'Updated Successfully!'
+        });
+
+        this.convertCompetition(newData);
+
+        setTimeout(() => {
+          this.setState({ 
+            alertVisible: false,
+            edit: false
+          });
+        }, 2000);
+        break;
+      case 406:
+        if (body.message) {
+          this.setState({
+            alertVisible: true,
+            messageStatus: false,
+            message: body.message
+          });
+        }
+
+        this.convertCompetition(newData);
+        break;
+      default:
+        break;
+    }
+  }
+
+  handleCancel() {
+    this.setState({
+      alertVisible: false,
+      edit: false
+    });
+  }
+
   render() {
     const {
+      editable, edit,
+      is_nf,
       expire,
       competition, clubs,
       selectMembers, detail,
       exportMembers, exportPDF,
     } = this.state;
 
+    let d = new Date();
+    let year = d.getFullYear();
+
+    let years = [];
+    for (let i = year - 10; i > 1950 ; i--) {
+      years.push({label: i, value: i});
+    }
+
     return (
       <Fragment>
         <MainTopBar />
 
-        <div className="main-content detail">
+        <div className="main-content">
           <Container>
             <Segment>
-              <Row>
-                <Col sm="12">
-                  <h3 className="text-center text-primary">{competition.name}</h3>
-                </Col>
-                <Col sm="12" className="mt-5">
-                  <h4>
-                    Competition Type: 
+              <div className="w-100 mb-5">
+                <Alert color={this.state.messageStatus ? 'success' : 'warning'} isOpen={this.state.alertVisible}>
+                  {this.state.message}
+                </Alert>
+              </div>
+              {
+                !edit &&  (
+                  <Row>
+                    <Col sm="12">
+                      <h3 className="text-center text-primary">{competition.name}</h3>
+                    </Col>
+                    <Col sm="12" className="mt-5">
+                      <h4>
+                        Competition Type: 
+                        {
+                          ' ' +
+                          (competition.type && 
+                            CompetitionType.filter(type => type.value == competition.type)[0]['label'])
+                        }
+                      </h4>
+                    </Col>
+                    <Col sm="12" className="mt-3">
+                      <h4>Competition Place: {competition.place}</h4>
+                    </Col>
+                    <Col sm="12" className="mt-3">
+                      <h4>Competition Time: {competition.from} ~ {competition.to}</h4>
+                    </Col>
+                    <Col sm="12" className="mt-3">
+                      <h4>Registration Period: {competition.register_from} ~ {competition.register_to}</h4>
+                    </Col>
+                    <Col sm="12" className="mt-3">
+                      <h4>
+                        Federations and Clubs: {competition.reg_ids} Regions, {competition.club_ids} Clubs
+                        {
+                          expire && (
+                            <b className="text-danger"> ( {expire} )</b>
+                          )
+                        }
+                      </h4>
+                    </Col>
                     {
-                      ' ' +
-                      (competition.type && 
-                        CompetitionType.filter(type => type.value == competition.type)[0]['label'])
-                    }
-                  </h4>
-                </Col>
-                <Col sm="12" className="mt-3">
-                  <h4>
-                    Competition Level:
-                    {
-                      ' ' +
-                      (competition.level && 
-                        CompetitionLevel.filter(level => level.value == competition.level)[0]['label'])
-                    }
-                  </h4>
-                </Col>
-                <Col sm="12" className="mt-3">
-                  <h4>Competition Place: {competition.place}</h4>
-                </Col>
-                <Col sm="12" className="mt-3">
-                  <h4>Competition Time: {competition.from} ~ {competition.to}</h4>
-                </Col>
-                <Col sm="12" className="mt-3">
-                  <h4>Registration Period: {competition.register_from} ~ {competition.register_to}</h4>
-                </Col>
-                <Col sm="12" className="mt-3">
-                  <h4>
-                    Federations and Clubs: {competition.reg_ids} Regions, {competition.club_ids} Clubs
-                    {
-                      expire && (
-                        <b className="text-danger"> ( {expire} )</b>
+                      editable && (
+                        <Col sm="12" className="mt-3">
+                          <div className="text-right">
+                            <button
+                              className="btn btn-success"
+                              onClick={this.handleEdit.bind(this)}
+                            >
+                              <i className="fa fa-pencil mr-2"></i>
+                              Edit
+                            </button>
+                          </div>
+                        </Col>
                       )
                     }
-                  </h4>
-                </Col>
-              </Row>
+                  </Row>
+                )
+              }
+              {
+                edit && (
+                  <Row>
+                    {
+                      is_nf == 1 && (
+                        <Fragment>
+                          <Col xs="12" sm="6">
+                            <FormGroup>
+                              <Label>Competition Type</Label>
+                              <Select
+                                classNamePrefix={'react-select-lg'}
+                                indicatorSeparator={null}
+                                options={CompetitionType.filter(type => type.value == 'inter' || type.value == 'nf')}
+                                getOptionValue={option => option.value}
+                                getOptionLabel={option => option.label}
+                                value={CompetitionType.filter(type => type.value == competition.type)[0]}
+                                onChange={this.handleChange.bind(this, 'type')}
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col xs="12" sm="6"></Col>
+                        </Fragment>
+                      )
+                    }
+                    <Col xs="12" sm="6">
+                      <FormGroup>
+                        <Label>Competition Name</Label>
+                        <Input
+                          type="text"
+                          className={competition.name == '' ? 'is-invalid' : ''}
+                          value={competition.name}
+                          onChange={this.handleChange.bind(this, 'name')}
+                        />
+                      </FormGroup>
+                      {competition.name == '' && (
+                        <FormFeedback className="d-block">This field is required!</FormFeedback>
+                      )}
+                    </Col>
+                    <Col xs="12" sm="6">
+                      <FormGroup>
+                        <Label>Competition Short Name</Label>
+                        <Input
+                          type="text"
+                          className={competition.short_name == '' ? 'is-invalid' : ''}
+                          value={competition.short_name}
+                          onChange={this.handleChange.bind(this, 'short_name')}
+                        />
+                      </FormGroup>
+                      {competition.short_name == '' && (
+                        <FormFeedback className="d-block">This field is required!</FormFeedback>
+                      )}
+                    </Col>
+                    <Col xs="12" sm="12">
+                      <FormGroup>
+                        <Label>Competition Place</Label>
+                        <Input
+                          type="text"
+                          className={competition.place == '' ? 'is-invalid' : ''}
+                          value={competition.place}
+                          onChange={this.handleChange.bind(this, 'place')}
+                        />
+                      </FormGroup>
+                      {competition.place == '' && (
+                        <FormFeedback className="d-block">This field is required!</FormFeedback>
+                      )}
+                    </Col>
+                    <Col xs="12" sm="6">
+                      <FormGroup className={!competition.from ? 'invalid calendar' : 'calendar'}>
+                        <Label>From</Label>
+                        <SemanticDatepicker
+                          placeholder="From"
+                          value={competition.from ? new Date(competition.from) : ''}
+                          onChange={this.onChangeFrom.bind(this)}
+                        />
+                        {!competition.from && (
+                          <FormFeedback className="d-block">This field is required!</FormFeedback>
+                        )}
+                      </FormGroup>
+                    </Col>
+                    <Col xs="12" sm="6">
+                      <FormGroup className={!competition.to ? 'invalid calendar' : 'calendar'}>
+                        <Label>To</Label>
+                        <SemanticDatepicker
+                          placeholder="To"
+                          value={competition.to ? new Date(competition.to) : ''}
+                          onChange={this.onChangeTo.bind(this)}
+                        />
+                        {!competition.to && (
+                          <FormFeedback className="d-block">This field is required!</FormFeedback>
+                        )}
+                      </FormGroup>
+                    </Col>
+                    <Col xs="12" sm="6">
+                      <FormGroup className={!competition.register_from ? 'invalid calendar' : 'calendar'}>
+                        <Label>Registration From</Label>
+                        <SemanticDatepicker
+                          placeholder="Registration From"
+                          value={competition.register_from ? new Date(competition.register_from) : ''}
+                          onChange={this.onChangeRegisterFrom.bind(this)}
+                        />
+                        {!competition.register_from && (
+                          <FormFeedback className="d-block">This field is required!</FormFeedback>
+                        )}
+                      </FormGroup>
+                    </Col>
+                    <Col xs="12" sm="6">
+                      <FormGroup className={!competition.register_to ? 'invalid calendar' : 'calendar'}>
+                        <Label>Registration To</Label>
+                        <SemanticDatepicker
+                          placeholder="Registration To"
+                          value={competition.register_to ? new Date(competition.register_to) : ''}
+                          onChange={this.onChangeRegisterTo.bind(this)}
+                        />
+                        {!competition.register_to && (
+                          <FormFeedback className="d-block">This field is required!</FormFeedback>
+                        )}
+                      </FormGroup>
+                    </Col>
+                    <Col sm="6">
+                      <FormGroup>
+                        <Label>Legal Date of Birth (Min)</Label>
+                        <Select
+                          classNamePrefix={'react-select-lg'}
+                          indicatorSeparator={null}
+                          options={years}
+                          getOptionValue={option => option.value}
+                          getOptionLabel={option => option.label}
+                          value={years.filter(year => year.value == competition.legal_birth_from)[0]}
+                          onChange={this.handleChange.bind(this, 'legal_birth_from')}
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col sm="6">
+                      <FormGroup>
+                        <Label>Legal Date of Birth (Max)</Label>
+                        <Select
+                          classNamePrefix={'react-select-lg'}
+                          indicatorSeparator={null}
+                          options={years}
+                          getOptionValue={option => option.value}
+                          getOptionLabel={option => option.label}
+                          value={years.filter(year => year.value == competition.legal_birth_to)[0]}
+                          onChange={this.handleChange.bind(this, 'legal_birth_from')}
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <div className="text-right">
+                        <button
+                          className="btn btn-primary mr-2"
+                          onClick={this.handleSave.bind(this)}
+                        >
+                          Save
+                        </button>
+                        <button
+                          className="btn btn-secondary"
+                          onClick={this.handleCancel.bind(this)}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </Col>
+                  </Row>
+                )
+              }
+
             </Segment>
             {
               clubs && clubs.length > 0 && (
