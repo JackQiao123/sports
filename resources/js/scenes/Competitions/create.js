@@ -21,7 +21,7 @@ import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 import MainTopBar from '../../components/TopBar/MainTopBar';
 import Api from '../../apis/app';
 
-import { CompetitionType, CompetitionLevel, search_genders } from '../../configs/data';
+import { CompetitionType, search_genders } from '../../configs/data';
 
 class CreateComp extends Component {
   constructor(props) {
@@ -161,7 +161,6 @@ class CreateComp extends Component {
       short_name: values.short_name,
       place: values.place,
       type: this.state.is_nf == 1 ? values.type.value : CompetitionType.filter(type => type.value == 'reg')[0].value,
-      level: values.level.value,
       from: this.state.from,
       to: this.state.to,
       register_from: this.state.register_from,
@@ -268,7 +267,6 @@ class CreateComp extends Component {
               initialValues={{
                 creator_id: null,
                 type: '',
-                level: '',
                 name: '',
                 short_name: '',
                 place: '',
@@ -284,7 +282,6 @@ class CreateComp extends Component {
 
               validationSchema={
                 Yup.object().shape({
-                  level: Yup.mixed().required('This field is required!'),
                   name: Yup.mixed().required('This field is required!'),
                   short_name: Yup.mixed().required('This field is required!'),
                   place: Yup.mixed().required('This field is required!'),
@@ -308,7 +305,7 @@ class CreateComp extends Component {
                   {status && <UncontrolledAlert {...status} />}
                   <Row>
                     {
-                      is_nf == 1 ? (
+                      is_nf == 1 && (
                         <Fragment>
                           <Col xs="12" sm="6">
                             <FormGroup>
@@ -327,79 +324,6 @@ class CreateComp extends Component {
                                 onBlur={this.handleBlur}
                               />
                               {!values.type && touched.type && (
-                                <FormFeedback className="d-block">This field is required!</FormFeedback>
-                              )}
-                            </FormGroup>
-                          </Col>
-                          <Col xs="12" sm="6">
-                            <FormGroup>
-                              <Label for="level">Competition Level</Label>
-                              <Select
-                                name="level"
-                                classNamePrefix={!values.level && touched.level ? 'invalid react-select-lg' : 'react-select-lg'}
-                                indicatorSeparator={null}
-                                options={CompetitionLevel}
-                                getOptionValue={option => option.value}
-                                getOptionLabel={option => option.label}
-                                value={values.level}
-                                onChange={(level) => {
-                                  setFieldValue('level', level);
-
-                                  setFieldValue('weights', '');
-
-                                  let weight_list = [];
-
-                                  if (level.value == 'senior' || level.value == 'junior') {
-                                    weight_list = weight_origin.filter(weight => weight.type == 'senior-junior');
-                                  } else {
-                                    weight_list = weight_origin.filter(weight => weight.type == 'cadet');
-                                  }
-                                  
-                                  this.setState({
-                                    weight_list
-                                  });
-                                }}
-                                onBlur={this.handleBlur}
-                              />
-                              {!values.level && touched.level && (
-                                <FormFeedback className="d-block">This field is required!</FormFeedback>
-                              )}
-                            </FormGroup>
-                          </Col>
-                        </Fragment>
-                      ) : (
-                        <Fragment>
-                          <Col xs="12" sm="6">
-                            <FormGroup>
-                              <Label for="level">Competition Level</Label>
-                              <Select
-                                name="level"
-                                classNamePrefix={!values.level && touched.level ? 'invalid react-select-lg' : 'react-select-lg'}
-                                indicatorSeparator={null}
-                                options={CompetitionLevel}
-                                getOptionValue={option => option.value}
-                                getOptionLabel={option => option.label}
-                                value={values.level}
-                                onChange={(level) => {
-                                  setFieldValue('level', level);
-                                  
-                                  setFieldValue('weights', '');
-
-                                  let weight_list = [];
-
-                                  if (level.value == 'senior' || level.value == 'junior') {
-                                    weight_list = weight_origin.filter(weight => weight.type == 'senior-junior');
-                                  } else {
-                                    weight_list = weight_origin.filter(weight => weight.type == 'cadet');
-                                  }
-                                  
-                                  this.setState({
-                                    weight_list
-                                  });
-                                }}
-                                onBlur={this.handleBlur}
-                              />
-                              {!values.level && touched.level && (
                                 <FormFeedback className="d-block">This field is required!</FormFeedback>
                               )}
                             </FormGroup>

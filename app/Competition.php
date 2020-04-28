@@ -20,7 +20,6 @@ class Competition extends Model
     'short_name',
     'place',
     'type',
-    'level',
     'from',
     'to',
     'register_from',

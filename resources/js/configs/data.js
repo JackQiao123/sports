@@ -311,9 +311,3 @@ export const CompetitionType = [
   { label: 'National Tournament', value: 'nf' },
   { label: 'International Competition', value: 'inter' }
 ];
-
-export const CompetitionLevel = [
-  { label: 'Senior', value: 'senior' },
-  { label: 'Junior', value: 'junior' },
-  { label: 'Cadet under 18', value: 'cadet' }
-];

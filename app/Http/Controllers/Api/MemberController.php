@@ -578,24 +578,25 @@ class MemberController extends Controller
     $result = array();
 
     foreach ($members as $member) {
-      if ($member->role_id == 3) {
-        $birthday = date_create($member->birthday);
-        $today = date_create(Date('Y-m-d'));
+      array_push($result, $member);
+      // if ($member->role_id == 3) {
+      //   $birthday = date_create($member->birthday);
+      //   $today = date_create(Date('Y-m-d'));
 
-        $diff = date_diff($birthday, $today);
+      //   $diff = date_diff($birthday, $today);
 
-        if ($competition->level == 'cadet') {
-          if ($diff->y < 18 || ($diff->y == 18 && $diff->m == 0 && $diff->d == 0)) {
-            array_push($result, $member);
-          }
-        } else {
-          if ($diff->y > 18 || ($diff->y == 18 && ($diff->m > 0 || $diff->d > 0))) {
-            array_push($result, $member);
-          }
-        }
-      } else {
-        array_push($result, $member);
-      }
+      //   if ($competition->level == 'cadet') {
+      //     if ($diff->y < 18 || ($diff->y == 18 && $diff->m == 0 && $diff->d == 0)) {
+      //       array_push($result, $member);
+      //     }
+      //   } else {
+      //     if ($diff->y > 18 || ($diff->y == 18 && ($diff->m > 0 || $diff->d > 0))) {
+      //       array_push($result, $member);
+      //     }
+      //   }
+      // } else {
+      //   array_push($result, $member);
+      // }
     }
 
     return response()->json([
