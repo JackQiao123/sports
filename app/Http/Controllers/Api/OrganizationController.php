@@ -595,7 +595,6 @@ class OrganizationController extends Controller
     $mtype = $request->input('mtype');
     $rtype = $request->input('rtype');
     $gender = $request->input('gender');
-    $weight = $request->input('weight');
     $dan = $request->input('dan');
 
     $result = array();
@@ -659,10 +658,6 @@ class OrganizationController extends Controller
         if ($mtype == 'judoka') {
           if ($gender == 2 || $gender == 1) {
             $result = $result->where('members.gender', $gender);
-          }
-
-          if ($weight != '') {
-            $result = $result->where('players.weight_id', $weight);
           }
 
           $result = $result->where('players.dan', 'like', '%' . $dan);

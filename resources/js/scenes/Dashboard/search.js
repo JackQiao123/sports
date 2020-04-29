@@ -64,7 +64,6 @@ class Search extends Component {
       search_org: '',
       search_club: '',
       search_gender: search_genders[0],
-      search_weight: '',
       search_dan: '',
       search_data: null,
       init: false,
@@ -229,7 +228,6 @@ class Search extends Component {
         search_gender: search.gender
           ? (search_genders.find(gender => gender.value == search.gender) || search_genders[0])
           : search_genders[0],
-        search_weight: search.weight ? (weight_list.body.find(weight => weight.id == search.weight) || '') : '',
         search_dan: search.dan ? (Dans.find(dan => dan.value == search.dan) || '') : '',
         search_data: null
       });
@@ -252,7 +250,6 @@ class Search extends Component {
       search_gender: search.gender
         ? (search_genders.find(gender => gender.value == search.gender) || search_genders[0])
         : search_genders[0],
-      search_weight: search.weight ? (this.state.weights.find(weight => weight.id == search.weight) || '') : '',
       search_dan: search.dan ? (Dans.find(dan => dan.value == search.dan) || '') : '',
       search_data: null
     });
@@ -446,12 +443,6 @@ class Search extends Component {
           search_data: null
         });
         break;
-      case 'search_weight':
-        this.setState({
-          search_weight: value,
-          search_data: null
-        });
-        break;
       case 'search_dan':
         this.setState({
           search_dan: value,
@@ -467,7 +458,7 @@ class Search extends Component {
     const {
       search_type, search_org, search_club,
       member_type, referee_type, 
-      search_gender, search_weight, search_dan,
+      search_gender, search_dan,
       level, me, user_is_club
     } = this.state;
 
@@ -478,7 +469,6 @@ class Search extends Component {
       mtype: member_type ? member_type.value : '',
       rtype: referee_type ? referee_type.value : 'all',
       gender: search_gender ? search_gender.value : search_genders[0],
-      weight: search_weight && search_weight.id && search_weight.weight !== 'All' ? search_weight.id : '',
       dan: search_dan ? search_dan.value : ''
     };
     
@@ -740,7 +730,6 @@ class Search extends Component {
       search_org,
       search_club,
       search_gender,
-      search_weight,
       search_dan,
       search_required,
       member_required,
@@ -943,23 +932,6 @@ class Search extends Component {
                           getOptionLabel={option => option.label}
                           onChange={(gender) => {
                             this.handleSearchFilter('search_gender', gender);
-                          }}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col xl="2" lg="4" md="4" sm="6" xs="12">
-                      <FormGroup>
-                        <Select
-                          name="search_weight"
-                          classNamePrefix="react-select-lg"
-                          placeholder="Weight"
-                          // isMulti
-                          value={search_weight}
-                          options={this.getWeights(search_gender ? search_gender.value : '')}
-                          getOptionValue={option => option.id}
-                          getOptionLabel={option => `${option.weight} Kg`}
-                          onChange={(weight) => {
-                            this.handleSearchFilter('search_weight', weight);
                           }}
                         />
                       </FormGroup>
