@@ -303,6 +303,17 @@
       margin: 8px 0;
     }
 
+    .weight {
+      .form-group {
+        display: flex;
+
+        button {
+          border-radius: 0;
+          padding: 10px 15px;
+        }
+      }
+    }
+
     .pdf-export {
       margin: 0 auto;
       width: 550px;

@@ -35,8 +35,10 @@ class CreateComp extends Component {
       to: null,
       register_from: null,
       register_to: null,
-      weight_list: [],
-      weight_origin: [],
+      mweights: [],
+      fweights: [],
+      mweight: '',
+      fweight: '',
       alertVisible: false,
       messageStatus: false,
       successMessage: '',
@@ -54,17 +56,6 @@ class CreateComp extends Component {
       is_nf: user.user.is_nf,
       user_level: user.user.level
     });
-
-    const weight_list = await Api.get('weights');
-    switch (weight_list.response.status) {
-      case 200:
-        this.setState({
-          weight_origin: weight_list.body
-        });
-        break;
-      default:
-        break;
-    }
   }
 
   onChangeFrom(event, data) {
@@ -138,6 +129,8 @@ class CreateComp extends Component {
   }
 
   async handleSubmit(values, bags) {
+    const {mweights, fweights} = this.state;
+    
     if (!this.state.from || !this.state.to) {
       bags.setSubmitting(false);
       return;
@@ -149,11 +142,6 @@ class CreateComp extends Component {
     }
     
     let newData = {};
-
-    let weight_ids = '';
-    for (let i = 0; i < values.weights.length; i++) {
-      weight_ids += values.weights[i].id + ',';
-    }
     
     newData = {
       creator_id: this.state.creator_id,
@@ -168,7 +156,7 @@ class CreateComp extends Component {
       legal_birth_from: values.legal_birth_from.value,
       legal_birth_to: values.legal_birth_to.value,
       gender: values.gender.value,
-      weights: weight_ids.substring(0, weight_ids.length - 1)
+      weights: mweights.toString() + '|' + fweights.toString()
     }
 
     const data = await Api.post('reg-competition', newData);
@@ -206,8 +194,11 @@ class CreateComp extends Component {
   render() {
     const {
       from, to, is_nf,
-      register_from, register_to,
-      weight_list, weight_origin
+      register_from, register_to
+    } = this.state;
+
+    let {
+      mweights, mweight, fweights, fweight
     } = this.state;
 
     let d = new Date();
@@ -216,37 +207,6 @@ class CreateComp extends Component {
     let years = [];
     for (let i = year - 10; i > 1950 ; i--) {
       years.push({label: i, value: i});
-    }
-
-    const colourStyles = {
-      control: styles => ({ ...styles, backgroundColor: 'white' }),
-      option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-        return {
-          ...styles,
-          backgroundColor: isDisabled
-            ? null
-            : isSelected
-            ? data.gender == 1 ? '#635FA3 !important' : '#DC3545 !important'
-            : isFocused
-            ? '#e2e2e2'
-            : null,
-          color: 'black'
-        };
-      },
-      multiValue: (styles, { data }) => {
-        return {
-          ...styles,
-          backgroundColor: data.gender == 1 ? '#635FA3 !important' : '#DC3545 !important'
-        };
-      },
-      multiValueLabel: (styles) => ({
-        ...styles,
-        color: 'white',
-      }),
-      multiValueRemove: (styles) => ({
-        ...styles,
-        color: 'white'
-      }),
     }
 
     return(
@@ -276,8 +236,7 @@ class CreateComp extends Component {
                 register_to: null,
                 legal_birth_from: null,
                 legal_birth_to: null,
-                gender: null,
-                weights: null
+                gender: null
               }}
 
               validationSchema={
@@ -472,7 +431,7 @@ class CreateComp extends Component {
                         )}
                       </FormGroup>
                     </Col>
-                    <Col sm="4">
+                    <Col sm="6">
                       <FormGroup>
                         <Label for="gender">Gender</Label>
                         <Select
@@ -485,11 +444,6 @@ class CreateComp extends Component {
                           value={values.gender}
                           onChange={(value) => {
                             setFieldValue('gender', value);
-
-                            value && value.value != 0 ? (
-                              setFieldValue('weights', weight_list.filter(weight => weight.gender == value.value))
-                            )
-                            : setFieldValue('weights', weight_list.filter(weight => weight.gender != 0));
                           }}
                           onBlur={this.handleBlur}
                         />
@@ -498,32 +452,183 @@ class CreateComp extends Component {
                         )}
                       </FormGroup>
                     </Col>
-                    <Col sm="8">
-                      <FormGroup>
-                        <Label for="weights">Weight Category</Label>
-                        <Select
-                          name="weights"
-                          classNamePrefix={!values.weights && touched.weights ? 'invalid react-select-lg' : 'react-select-lg'}
-                          placeholder="Weight"
-                          menuPlacement="auto"
-                          isMulti
-                          options={
-                            values.gender && values.gender.value != 0 ? 
-                              weight_list.filter(weight => weight.gender == values.gender.value) 
-                            : weight_list.filter(weight => weight.gender != 0)
+                    <Col className="weight" sm="3">
+                    {
+                      values.gender && (values.gender.value == 0 || values.gender.value == 1) && (
+                        <Fragment>
+                          <Label for="male">Male</Label>
+                          {
+                            mweights && mweights.length > 0 && (
+                              mweights.map((item, index) => (
+                                <FormGroup key={index}>
+                                  <Input
+                                    type="text"
+                                    placeholder="Weight"
+                                    value={item}
+                                    onChange={(weight) => {
+                                      mweights[index] = weight.target.value;
+
+                                      this.setState({
+                                        mweights
+                                      });
+                                    }}
+                                  />
+                                  <Button
+                                    color="danger"
+                                    type="button"
+                                    onClick={() => {
+                                      let filter = [];
+
+                                      for (var i = 0; i < mweights.length; i++) {
+                                        if (i != index) {
+                                          filter.push(mweights[i]);
+                                        }
+                                      }
+
+                                      this.setState({
+                                        mweights: filter
+                                      });
+                                    }}
+                                  >
+                                    <i className="fa fa-trash-alt" />
+                                  </Button>
+                                </FormGroup>
+                              ))
+                            )
                           }
-                          getOptionValue={option => option.id}
-                          getOptionLabel={option => `${option.weight} Kg`}
-                          value={values.weights}
-                          onChange={(weight) => {
-                            setFieldValue('weights', weight);
-                          }}
-                          styles={colourStyles}
-                        />
-                        {!values.weights && touched.weights && (
-                          <FormFeedback className="d-block">This field is required!</FormFeedback>
-                        )}
-                      </FormGroup>
+                          <FormGroup>
+                            <Input
+                              type="text"
+                              placeholder="Weight"
+                              value={mweight}
+                              onChange={(weight) => {
+                                this.setState({
+                                  mweight: weight.target.value
+                                });
+                              }}
+                            />
+                            <Button
+                              color="success"
+                              type="button"
+                              onClick={() => {
+                                let flag = true;
+
+                                if (mweight == '') {
+                                  flag = false;
+                                }
+
+                                mweights.map(weight => {
+                                  if (weight == '') {
+                                    flag = false;
+                                  }
+                                });
+
+                                if (flag) {
+                                  mweights.push(mweight);
+                                  mweight = '';
+
+                                  this.setState({
+                                    mweights,
+                                    mweight
+                                  });
+                                }
+                              }}
+                            >
+                              <i className="fa fa-plus-circle" />
+                            </Button>
+                          </FormGroup>
+                        </Fragment>
+                      )
+                    }
+                    </Col>
+                    <Col className="weight" sm="3">
+                    {
+                      values.gender && (values.gender.value == 0 || values.gender.value == 2) && (
+                        <Fragment>
+                          <Label for="female">Female</Label>
+                          {
+                            fweights && fweights.length > 0 && (
+                              fweights.map((item, index) => (
+                                <FormGroup key={index}>
+                                  <Input
+                                    type="text"
+                                    placeholder="Weight"
+                                    value={item}
+                                    onChange={(weight) => {
+                                      fweights[index] = weight.target.value;
+
+                                      this.setState({
+                                        fweights
+                                      });
+                                    }}
+                                  />
+                                  <Button
+                                    color="danger"
+                                    type="button"
+                                    onClick={() => {
+                                      let filter = [];
+
+                                      for (var i = 0; i < fweights.length; i++) {
+                                        if (i != index) {
+                                          filter.push(fweights[i]);
+                                        }
+                                      }
+
+                                      this.setState({
+                                        fweights: filter
+                                      });
+                                    }}
+                                  >
+                                    <i className="fa fa-trash-alt" />
+                                  </Button>
+                                </FormGroup>
+                              ))
+                            )
+                          }
+                          <FormGroup>
+                            <Input
+                              type="text"
+                              placeholder="Weight"
+                              value={fweight}
+                              onChange={(weight) => {
+                                this.setState({
+                                  fweight: weight.target.value
+                                });
+                              }}
+                            />
+                            <Button
+                              color="success"
+                              type="button"
+                              onClick={() => {
+                                let flag = true;
+
+                                if (fweight == '') {
+                                  flag = false;
+                                }
+
+                                fweights.map(weight => {
+                                  if (weight == '') {
+                                    flag = false;
+                                  }
+                                });
+
+                                if (flag) {
+                                  fweights.push(fweight);
+                                  fweight = '';
+
+                                  this.setState({
+                                    fweights,
+                                    fweight
+                                  });
+                                }
+                              }}
+                            >
+                              <i className="fa fa-plus-circle" />
+                            </Button>
+                          </FormGroup>
+                        </Fragment>
+                      )
+                    }
                     </Col>
                   </Row>
                   <div className="w-100 d-flex justify-content-end">

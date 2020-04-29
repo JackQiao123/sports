@@ -72107,6 +72107,15 @@ body .main-content {
   margin: 8px 0;
 }
 
+.main-content .container .weight .form-group {
+  display: flex;
+}
+
+.main-content .container .weight .form-group button {
+  border-radius: 0;
+  padding: 10px 15px;
+}
+
 .main-content .container .pdf-export {
   margin: 0 auto;
   width: 550px;
