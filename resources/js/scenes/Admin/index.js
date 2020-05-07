@@ -59,7 +59,7 @@ class Admin extends Component {
     const trans = await Api.get('finance');
     const { response, body } = trans;
     switch (response.status) {
-      case 200:console.log(body);
+      case 200:
         const sum = [];
 
         for (let i = 0; i < body.nfs.length; i++) {
