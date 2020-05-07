@@ -114,12 +114,12 @@ class CompetitionDetail extends Component {
   }
 
   async convertCompetition(competition) {
-    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    // let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    let from = competition.from.match(/\d+/g);
-    let to = competition.to.match(/\d+/g);
-    let register_from = competition.register_from.match(/\d+/g);
-    let register_to = competition.register_to.match(/\d+/g);
+    // let from = competition.from.match(/\d+/g);
+    // let to = competition.to.match(/\d+/g);
+    // let register_from = competition.register_from.match(/\d+/g);
+    // let register_to = competition.register_to.match(/\d+/g);
 
     let now = new Date().getTime();
     let start = new Date(competition.register_from).getTime();
@@ -133,12 +133,12 @@ class CompetitionDetail extends Component {
       });
     }
 
-    competition.from = parseInt(from[2]) + ', ' + months[parseInt(from[1]) - 1] + ', ' + from[0];
-    competition.to = parseInt(to[2]) + ', ' + months[parseInt(to[1]) - 1] + ', ' + to[0];
-    competition.register_from = parseInt(register_from[2]) + ', ' 
-          + months[parseInt(register_from[1]) - 1] + ', ' + register_from[0];
-    competition.register_to = parseInt(register_to[2]) + ', '
-          + months[parseInt(register_to[1]) - 1] + ', ' + register_to[0];
+    // competition.from = parseInt(from[2]) + ', ' + months[parseInt(from[1]) - 1] + ', ' + from[0];
+    // competition.to = parseInt(to[2]) + ', ' + months[parseInt(to[1]) - 1] + ', ' + to[0];
+    // competition.register_from = parseInt(register_from[2]) + ', ' 
+    //       + months[parseInt(register_from[1]) - 1] + ', ' + register_from[0];
+    // competition.register_to = parseInt(register_to[2]) + ', '
+    //       + months[parseInt(register_to[1]) - 1] + ', ' + register_to[0];
 
     let comp_init = {...competition};
 
