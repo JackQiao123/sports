@@ -129,7 +129,9 @@ class CompetitionTable extends Component {
                   }
                   <Table.Cell width="2" className="text-center">
                     {
-                      attend[index] && expire[index] != 'Expired.' && (start[index] - (new Date().getTime()) < 0) ? (
+                      (attend && attend[index]) && 
+                      (expire && expire[index] != 'Expired.') &&
+                      (start[index] - (new Date().getTime()) < 0) ? (
                         <a onClick={() => onSelect(item.id, 'inscribe')}>
                           Inscribe
                         </a>
