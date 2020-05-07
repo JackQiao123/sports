@@ -10,10 +10,12 @@ import {
   Form, FormGroup, FormFeedback,
   Input, Label,
   UncontrolledAlert,
-  UncontrolledTooltip ,
   Alert
 } from 'reactstrap';
 import Select from 'react-select';
+import SemanticDatepicker from 'react-semantic-ui-datepickers';
+import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
+
 import MainTopBar from '../../components/TopBar/MainTopBar';
 import Api from '../../apis/app';
 import { OrganizationType, referee_type_options, Genders, Dans } from '../../configs/data';
@@ -234,6 +236,20 @@ class MemberAdd extends Component {
     }
 
     bags.setSubmitting(false);
+  }
+
+  convertDate(d) {
+    let year = d.getFullYear();
+
+    let month = d.getMonth() + 1;
+    if (month < 10)
+      month = '0' + month;
+
+    let day = d.getDate();
+    if (day < 10)
+      day = '0' + day;
+
+    return (year + '-' + month + '-' + day);
   }
 
   render() {
@@ -576,9 +592,26 @@ class MemberAdd extends Component {
                       </FormGroup>
                     </Col>
                     <Col sm="4">
-                      <FormGroup>
+                      <FormGroup className={!!errors.birthday && touched.birthday ? 'invalid calendar' : 'calendar'}>
                         <Label for="birthday">Birthday</Label>
-                        <Input
+                        <SemanticDatepicker
+                          name="birthday"
+                          placeholder="YYYY-MM-DD"
+                          value={values.birthday ? new Date(values.birthday) : ''}
+                          onChange={(event, data) => {
+                            if (data.value) {
+                              let birthday = this.convertDate(data.value);
+                        
+                              values.birthday = birthday;
+                            } else {
+                              values.birthday = '';
+                            }
+                          }}
+                        />
+                        {!!errors.birthday && touched.birthday && (
+                          <FormFeedback className="d-block">{errors.birthday}</FormFeedback>
+                        )}
+                        {/* <Input
                           id="birthday"
                           name="birthday"
                           type="date"
@@ -591,7 +624,7 @@ class MemberAdd extends Component {
                         <UncontrolledTooltip placement="right" target="birthday">
                           Click triangle icon to select date
                         </UncontrolledTooltip>
-                        {!!errors.birthday && touched.birthday && <FormFeedback className="d-block">{errors.birthday}</FormFeedback> }
+                        {!!errors.birthday && touched.birthday && <FormFeedback className="d-block">{errors.birthday}</FormFeedback> } */}
                       </FormGroup>
                     </Col>
                     <Col sm="4">
