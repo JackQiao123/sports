@@ -596,7 +596,7 @@ class CompetitionDetail extends Component {
                         <Label>From</Label>
                         <SemanticDatepicker
                           placeholder="From"
-                          value={competition.from ? new Date(competition.from) : ''}
+                          value={competition.from ? competition.from : ''}
                           onChange={this.onChangeFrom.bind(this)}
                         />
                         {!competition.from && (
@@ -609,7 +609,7 @@ class CompetitionDetail extends Component {
                         <Label>To</Label>
                         <SemanticDatepicker
                           placeholder="To"
-                          value={competition.to ? new Date(competition.to) : ''}
+                          value={competition.to ? competition.to : ''}
                           onChange={this.onChangeTo.bind(this)}
                         />
                         {!competition.to && (
@@ -622,7 +622,7 @@ class CompetitionDetail extends Component {
                         <Label>Registration From</Label>
                         <SemanticDatepicker
                           placeholder="Registration From"
-                          value={competition.register_from ? new Date(competition.register_from) : ''}
+                          value={competition.register_from ? competition.register_from : ''}
                           onChange={this.onChangeRegisterFrom.bind(this)}
                         />
                         {!competition.register_from && (
@@ -635,7 +635,7 @@ class CompetitionDetail extends Component {
                         <Label>Registration To</Label>
                         <SemanticDatepicker
                           placeholder="Registration To"
-                          value={competition.register_to ? new Date(competition.register_to) : ''}
+                          value={competition.register_to ? competition.register_to : ''}
                           onChange={this.onChangeRegisterTo.bind(this)}
                         />
                         {!competition.register_to && (
