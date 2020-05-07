@@ -75,13 +75,13 @@ class MemberDetail extends Component {
                                 {member.club_name} ( Region: {member.org_name} )
                               </h5>
                             </Col>
-                            <Col md="6" lg="8">
+                            <Col sm="6">
                               <h5 className="py-2">
                                 <b className="mr-2">Name :</b>
                                 <span>{member.name}  {member.surname}</span>
                               </h5>
                             </Col>
-                            <Col md="6" lg="4">
+                            <Col sm="6">
                               <h5 className="py-2">
                                 <b className="mr-2">Gender :</b>
                                 <span>{ member.gender == 1 ? 'Male' : 'Female' }</span>
@@ -92,19 +92,7 @@ class MemberDetail extends Component {
                       ) : (
                         <Fragment>
                           <Row>
-                            <Col sm="6">
-                              <h5 className="pt-3 pb-2">
-                                <b className="mr-2">Name :</b>
-                                <span>{member.name} {member.surname}</span>
-                              </h5>
-                            </Col>
-                            <Col sm="6">
-                              <h5 className="py-2">
-                                <b className="mr-2">Register Date :</b>
-                                <span>{member.register_date}</span>
-                              </h5>
-                            </Col>
-                            <Col sm={member.role_id == 1 || member.role_id == 4 ? '6' : '12'}>
+                            <Col sm={member.role_id == 1 || member.role_id == 3 ? '6' : '12'}>
                               {member.level == 3 ? (
                                 <h5 className="py-2">
                                   <b className="mr-2">Club Name :</b>
@@ -117,6 +105,18 @@ class MemberDetail extends Component {
                                   <span>{member.club_name}</span>
                                 </h5>
                               )}
+                            </Col>
+                            <Col sm="6">
+                              <h5 className="py-2">
+                                <b className="mr-2">Register Date :</b>
+                                <span>{member.register_date}</span>
+                              </h5>
+                            </Col>
+                            <Col sm="6">
+                              <h5 className="py-2">
+                                <b className="mr-2">Name :</b>
+                                <span>{member.name} {member.surname}</span>
+                              </h5>
                             </Col>
                             {
                               (member.role_id == 1 || member.role_id == 4) && (
@@ -133,19 +133,13 @@ class MemberDetail extends Component {
                                 </Col>
                               )
                             }
-                            <Col sm="4">
-                              <h5 className="py-2">
-                                <b className="mr-2">Birthday :</b>
-                                <span>{member.birthday}</span>
-                              </h5>
-                            </Col>
-                            <Col sm="4">
+                            <Col sm="6">
                               <h5 className="py-2">
                                 <b className="mr-2">Gender :</b>
                                 <span>{member.gender == 1 ? 'Male' : 'Female'}</span>
                               </h5>
                             </Col>
-                            <Col sm="4">
+                            <Col sm="6">
                               <h5 className="py-2">
                                 <b className="mr-2">Role :</b>
                                 <span>{member.role_name}</span>
@@ -156,7 +150,13 @@ class MemberDetail extends Component {
                       )
                     }
                     <Row>
-                      <Col sm="12">
+                      <Col sm="6">
+                        <h5 className="py-2">
+                          <b className="mr-2">Birthday :</b>
+                          <span>{member.birthday}</span>
+                        </h5>
+                      </Col>
+                      <Col sm="6">
                         <h5 className="py-2">
                           <b className="mr-2">Email :</b>
                           <a href={`mailto:${member.email}`}>{member.email}</a>
@@ -165,13 +165,13 @@ class MemberDetail extends Component {
                     </Row>
                     {member.is_player == 1 ? (
                       <Row>
-                        <Col sm="8">
+                        <Col sm="6">
                           <h5 className="py-2">
                             <b className="mr-2">Weight :</b>
                             <span>{member.weight + ' Kg'}</span>
                           </h5>
                         </Col>
-                        <Col sm="4">
+                        <Col sm="6">
                           <h5 className="py-2">
                             <b className="mr-2">Dan :</b>
                             <span>{member.dan}</span>
