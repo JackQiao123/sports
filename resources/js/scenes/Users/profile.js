@@ -12,6 +12,9 @@ import {
   Alert
 } from 'reactstrap';
 import Select from 'react-select';
+import SemanticDatepicker from 'react-semantic-ui-datepickers';
+import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
+
 import MainTopBar from '../../components/TopBar/MainTopBar';
 import Api from '../../apis/app';
 
@@ -142,6 +145,20 @@ class Profile extends Component {
     }
 
     bags.setSubmitting(false);
+  }
+
+  convertDate(d) {
+    let year = d.getFullYear();
+
+    let month = d.getMonth() + 1;
+    if (month < 10)
+      month = '0' + month;
+
+    let day = d.getDate();
+    if (day < 10)
+      day = '0' + day;
+
+    return (year + '-' + month + '-' + day);
   }
 
   render() {
@@ -287,18 +304,25 @@ class Profile extends Component {
                       </FormGroup>
                     </Col>
                     <Col sm="4">
-                      <FormGroup>
+                      <FormGroup className={!!errors.birthday && touched.birthday ? 'invalid calendar' : 'calendar'}>
                         <Label for="birthday">Birthday</Label>
-                        <Input
+                        <SemanticDatepicker
                           name="birthday"
-                          type="date"
                           placeholder="YYYY-MM-DD"
-                          value={values.birthday || ''}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          invalid={!!errors.birthday && touched.birthday}
+                          value={values.birthday ? new Date(values.birthday) : ''}
+                          onChange={(event, data) => {
+                            if (data.value) {
+                              let birthday = this.convertDate(data.value);
+                        
+                              values.birthday = birthday;
+                            } else {
+                              values.birthday = '';
+                            }
+                          }}
                         />
-                        {!!errors.birthday && touched.birthday && <FormFeedback className="d-block">{errors.birthday}</FormFeedback> }
+                        {!!errors.birthday && touched.birthday && (
+                          <FormFeedback className="d-block">{errors.birthday}</FormFeedback>
+                        )}
                       </FormGroup>
                     </Col>
                     <Col sm="4">
