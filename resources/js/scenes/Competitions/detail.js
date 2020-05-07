@@ -114,13 +114,6 @@ class CompetitionDetail extends Component {
   }
 
   async convertCompetition(competition) {
-    // let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-    // let from = competition.from.match(/\d+/g);
-    // let to = competition.to.match(/\d+/g);
-    // let register_from = competition.register_from.match(/\d+/g);
-    // let register_to = competition.register_to.match(/\d+/g);
-
     let now = new Date().getTime();
     let start = new Date(competition.register_from).getTime();
     this.end = new Date(competition.register_to).getTime() + 86400000;
@@ -132,13 +125,6 @@ class CompetitionDetail extends Component {
         intervalId
       });
     }
-
-    // competition.from = parseInt(from[2]) + ', ' + months[parseInt(from[1]) - 1] + ', ' + from[0];
-    // competition.to = parseInt(to[2]) + ', ' + months[parseInt(to[1]) - 1] + ', ' + to[0];
-    // competition.register_from = parseInt(register_from[2]) + ', ' 
-    //       + months[parseInt(register_from[1]) - 1] + ', ' + register_from[0];
-    // competition.register_to = parseInt(register_to[2]) + ', '
-    //       + months[parseInt(register_to[1]) - 1] + ', ' + register_to[0];
 
     let comp_init = {...competition};
 
@@ -387,6 +373,15 @@ class CompetitionDetail extends Component {
           message: 'Updated Successfully!'
         });
 
+        competition.from = this.convertDate(new Date(competition.from));
+        competition.to = this.convertDate(new Date(competition.to));
+        competition.register_from = this.convertDate(new Date(competition.register_from));
+        competition.register_to = this.convertDate(new Date(competition.register_to));
+
+        this.setState({
+          competition
+        });
+
         this.convertCompetition(newData);
 
         setTimeout(() => {
@@ -459,8 +454,7 @@ class CompetitionDetail extends Component {
     for (let i = year - 10; i > 1950 ; i--) {
       years.push({label: i, value: i});
     }
-console.log((competition.from));
-console.log(new Date(competition.from));
+
     return (
       <Fragment>
         <MainTopBar />
