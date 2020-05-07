@@ -459,7 +459,7 @@ class CompetitionDetail extends Component {
     for (let i = year - 10; i > 1950 ; i--) {
       years.push({label: i, value: i});
     }
-
+console.log(new Date(competition.from));
     return (
       <Fragment>
         <MainTopBar />
