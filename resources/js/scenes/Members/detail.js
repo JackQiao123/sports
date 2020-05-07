@@ -65,91 +65,44 @@ class MemberDetail extends Component {
                     </div>
                   </Col>
                   <Col lg="9">
-                    {
-                      member.is_player == 1 ? (
-                        <Fragment>
-                          <Row>
-                            <Col sm="12">
-                              <h5 className="pt-3 py-2">
-                                <b className="mr-2">Club Name :</b>
-                                {member.club_name} ( Region: {member.org_name} )
-                              </h5>
-                            </Col>
-                            <Col sm="6">
-                              <h5 className="py-2">
-                                <b className="mr-2">Name :</b>
-                                <span>{member.name}  {member.surname}</span>
-                              </h5>
-                            </Col>
-                            <Col sm="6">
-                              <h5 className="py-2">
-                                <b className="mr-2">Gender :</b>
-                                <span>{ member.gender == 1 ? 'Male' : 'Female' }</span>
-                              </h5>
-                            </Col>
-                          </Row>
-                        </Fragment>
-                      ) : (
-                        <Fragment>
-                          <Row>
-                            <Col sm={member.role_id == 1 || member.role_id == 3 ? '6' : '12'}>
-                              {member.level == 3 ? (
-                                <h5 className="py-2">
-                                  <b className="mr-2">Club Name :</b>
-                                  <span className="mr-2">{member.club_name}</span>
-                                  <span>( Region: {member.org_name} )</span>
-                                </h5>
-                              ) : (
-                                <h5 className="py-2">
-                                  <b className="mr-2">Regional Federation Name :</b>
-                                  <span>{member.club_name}</span>
-                                </h5>
-                              )}
-                            </Col>
-                            <Col sm="6">
-                              <h5 className="py-2">
-                                <b className="mr-2">Register Date :</b>
-                                <span>{member.register_date}</span>
-                              </h5>
-                            </Col>
-                            <Col sm="6">
-                              <h5 className="py-2">
-                                <b className="mr-2">Name :</b>
-                                <span>{member.name} {member.surname}</span>
-                              </h5>
-                            </Col>
-                            {
-                              (member.role_id == 1 || member.role_id == 4) && (
-                                <Col sm="6">
-                                  <h5 className="py-2">
-                                    <b className="mr-2">{member.role_id == 1 ? 'Position :' : 'Referee Type :'} :</b>
-                                    <span>
-                                    {
-                                      member.role_id == 1 ? (member.position == '' ? '---' : member.position)
-                                      : referee_type_options.filter(item => item.value == member.position)[0].label
-                                    }
-                                    </span>
-                                  </h5>
-                                </Col>
-                              )
-                            }
-                            <Col sm="6">
-                              <h5 className="py-2">
-                                <b className="mr-2">Gender :</b>
-                                <span>{member.gender == 1 ? 'Male' : 'Female'}</span>
-                              </h5>
-                            </Col>
-                            <Col sm="6">
-                              <h5 className="py-2">
-                                <b className="mr-2">Role :</b>
-                                <span>{member.role_name}</span>
-                              </h5>
-                            </Col>
-                          </Row>
-                        </Fragment>
-                      )
-                    }
                     <Row>
+                      <Col sm="12">
+                        {
+                          member.is_player == 1 ? (
+                            <h5 className="pt-3 py-2">
+                              <b className="mr-2">Club Name :</b>
+                              {member.club_name} ( Region: {member.org_name} )
+                            </h5>
+                          ) : (
+                            member.level == 3 ? (
+                              <h5 className="py-2">
+                                <b className="mr-2">Club Name :</b>
+                                <span className="mr-2">{member.club_name}</span>
+                                <span>( Region: {member.org_name} )</span>
+                              </h5>
+                            ) : (
+                              <h5 className="py-2">
+                                <b className="mr-2">Regional Federation Name :</b>
+                                <span>{member.club_name}</span>
+                              </h5>
+                            )
+                          )
+                        }
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col sm="6">
+                        <h5 className="py-2">
+                          <b className="mr-2">Name :</b>
+                          <span>{member.name}  {member.surname}</span>
+                        </h5>
+                      </Col>
+                      <Col sm="6">
+                        <h5 className="py-2">
+                          <b className="mr-2">Gender :</b>
+                          <span>{ member.gender == 1 ? 'Male' : 'Female' }</span>
+                        </h5>
+                      </Col>
                       <Col sm="6">
                         <h5 className="py-2">
                           <b className="mr-2">Birthday :</b>
@@ -178,7 +131,37 @@ class MemberDetail extends Component {
                           </h5>
                         </Col>
                       </Row>
-                    ) : ''}
+                    ) : (
+                      <Row>
+                        <Col sm="6">
+                          <h5 className="py-2">
+                            <b className="mr-2">Register Date :</b>
+                            <span>{member.register_date}</span>
+                          </h5>
+                        </Col>
+                        <Col sm="6">
+                          <h5 className="py-2">
+                            <b className="mr-2">Role :</b>
+                            <span>{member.role_name}</span>
+                          </h5>
+                        </Col>
+                        {
+                          (member.role_id == 1 || member.role_id == 3) && (
+                            <Col sm="6">
+                              <h5 className="py-2">
+                                <b className="mr-2">{member.role_id == 1 ? 'Position :' : 'Referee Type :'} :</b>
+                                <span>
+                                {
+                                  member.role_id == 1 ? (member.position == '' ? '---' : member.position)
+                                  : referee_type_options.filter(item => item.value == member.position)[0].label
+                                }
+                                </span>
+                              </h5>
+                            </Col>
+                          )
+                        }
+                      </Row>
+                    )}
                   </Col>
                 </Row>
               </Segment>
