@@ -399,7 +399,7 @@ class DataTable extends Component {
                 }}
               />
             </Table.HeaderCell>
-            <Table.HeaderCell colSpan={stype.value === 'member' ? 7 : 3}>
+            <Table.HeaderCell colSpan={stype.value === 'member' ? 7 : 5}>
               <Menu floated="right" pagination>
                 <Pagination
                   activePage={activePage}
