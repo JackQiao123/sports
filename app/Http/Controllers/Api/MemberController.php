@@ -278,8 +278,6 @@ class MemberController extends Controller
           'surname' => 'required|string|max:255',
           'gender' => 'required|integer',
           'birthday' => 'required|date',
-          'email' => 'required|string|email|max:255',
-          'identity' => 'required|string|max:255',
           'register_date' => 'required|date'
         ]);
 
@@ -310,22 +308,6 @@ class MemberController extends Controller
               422
             );
           }
-        }
-
-        $exist = Member::where('email', $data['email'])->where('id', '!=', $id)->withTrashed()->count();
-
-        $errArr = array();
-
-        if ($exist > 0) {
-          $errArr['email'] = 'Email already exist.';
-          
-          return response()->json(
-            [
-              'status' => 'fail',
-              'data' => $errArr
-            ],
-            422
-          );
         }
 
         $current = Member::where('id', $id)->first();
@@ -359,7 +341,7 @@ class MemberController extends Controller
           $type = explode(':', substr($base64_image, 0, $pos))[1];
 
           if (substr($type, 0, 5) == 'image') {
-            $filename = $data['identity'] . '_' . date('Ymd');
+            $filename = preg_replace('/[^A-Za-z0-9\-]/', '', $data['name'] . '-' . $data['surname']) . '-' . date('Ymd');
 
             $type = str_replace('image/', '.', $type);
 
@@ -417,9 +399,7 @@ class MemberController extends Controller
           'profile_image' => $data['profile_image'],
           'gender' => $data['gender'],
           'birthday' => $data['birthday'],
-          'email' => $data['email'],
           'position' => $data['position'],
-          'identity' => $data['identity'],
           'register_date' => $data['register_date']
         ));
 
@@ -429,10 +409,6 @@ class MemberController extends Controller
           Player::where('member_id', $member_id)->update(array(
             'weight_id' => $data['weight_id'],
             'dan' => $data['dan']
-          ));
-        } else {
-          User::where('member_id', $member_id)->update(array(
-            'email' => $data['email']
           ));
         }
 

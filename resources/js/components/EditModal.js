@@ -13,6 +13,8 @@ import {
   UncontrolledAlert
 } from 'reactstrap';
 import Select from 'react-select';
+import SemanticDatepicker from 'react-semantic-ui-datepickers';
+import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 
 import Api from '../apis/app';
 import {
@@ -139,10 +141,8 @@ class EditModal extends React.Component {
         profile_image: values.profile_image,
         register_date: values.register_date,
         birthday: values.birthday,
-        email: values.email,
         weight_id: weights.filter(weight => weight.id == values.weight_id)[0],
         dan: Dans.filter(dan => dan.value == values.dan)[0],
-        identity: values.identity,
         position: values.role_id == 3 ? referee_type_options.filter(option => option.value == values.position) : values.position,
         level: values.level
       });
@@ -228,10 +228,8 @@ class EditModal extends React.Component {
         surname: values.surname,
         gender: values.gender.id,
         birthday: moment(values.birthday).format('YYYY-MM-DD'),
-        email: values.email,
         weight_id: values.role_id && values.role_id.is_player == 1 ? (values.weight_id && values.weight_id.id) : '',
         dan: values.role_id && values.role_id.is_player == 1 ? (values.dan && values.dan.value) : '',
-        identity: values.identity,
         org_id: values.org_id.id,
         club_id: (values.club_id && values.club_id.id) || '',
         role_id: values.role_id.id,
@@ -262,6 +260,20 @@ class EditModal extends React.Component {
 
     handleSave(id, newData);
     bags.setSubmitting(false);
+  }
+
+  convertDate(d) {
+    let year = d.getFullYear();
+
+    let month = d.getMonth() + 1;
+    if (month < 10)
+      month = '0' + month;
+
+    let day = d.getDate();
+    if (day < 10)
+      day = '0' + day;
+
+    return (year + '-' + month + '-' + day);
   }
 
   render() {
@@ -315,8 +327,6 @@ class EditModal extends React.Component {
                   surname: '',
                   gender: null,
                   birthday: null,
-                  email: '',
-                  identity: '',
                   weight_id: null,
                   dan: null,
                   position: ''
@@ -328,9 +338,7 @@ class EditModal extends React.Component {
                     name: Yup.string().required('This field is required!'),
                     surname: Yup.string().required('This field is required!'),
                     gender: Yup.mixed().required('This field is required!'),
-                    birthday: Yup.mixed().required('This field is required!'),
-                    email: Yup.string().email('Email is not valid!').required('This field is required!'),
-                    identity: Yup.string().required('This field is required!')
+                    birthday: Yup.mixed().required('This field is required!')
                   })
                 }
                 onSubmit={this.handleSubmit.bind(this)}
@@ -516,47 +524,25 @@ class EditModal extends React.Component {
                         </FormGroup>
                       </Col>
                       <Col sm="6">
-                        <FormGroup>
+                        <FormGroup className={!!errors.birthday && touched.birthday ? 'invalid calendar' : 'calendar'}>
                           <Label for="birthday">Birthday</Label>
-                          <Input
+                          <SemanticDatepicker
                             name="birthday"
-                            type="date"
                             placeholder="YYYY-MM-DD"
-                            value={values.birthday || ''}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            invalid={!!errors.birthday && touched.birthday}
+                            value={values.birthday ? new Date(values.birthday) : ''}
+                            onChange={(event, data) => {
+                              if (data.value) {
+                                let birthday = this.convertDate(data.value);
+                          
+                                values.birthday = birthday;
+                              } else {
+                                values.birthday = '';
+                              }
+                            }}
                           />
-                          {!!errors.birthday && touched.birthday && <FormFeedback className="d-block">{errors.birthday}</FormFeedback> }
-                        </FormGroup>
-                      </Col>
-                      <Col sm="6">
-                        <FormGroup>
-                          <Label for="email">Email</Label>
-                          <Input
-                            name="email"
-                            type="email"
-                            value={values.email || ''}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            invalid={!!errors.email && touched.email}
-                          />
-                          {!!errors.email && touched.email && (<FormFeedback className="d-block">{errors.email}</FormFeedback>)}
-                        </FormGroup>
-                      </Col>
-                      <Col sm="6">
-                        <FormGroup>
-                          <Label for="identity">Member ID</Label>
-                          <Input
-                            name="identity"
-                            type="text"
-                            readOnly
-                            value={values.identity || ''}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            invalid={!!errors.identity && touched.identity}
-                          />
-                          <FormFeedback>{errors.identity}</FormFeedback>
+                          {!!errors.birthday && touched.birthday && (
+                            <FormFeedback className="d-block">{errors.birthday}</FormFeedback>
+                          )}
                         </FormGroup>
                       </Col>
                       {

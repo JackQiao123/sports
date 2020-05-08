@@ -22,7 +22,7 @@
     font-size: 40px;
   }
   .modal-body {
-      padding: 2em;
+    padding: 2em;
   }
 }
 
@@ -51,5 +51,27 @@
   }
   .modal-body {
     padding: 20px;
+
+    .calendar {
+      &.invalid {
+        .field {
+          input {
+            border-color: #dc3545;
+          }
+        }
+      }
+
+      .field {
+        width: 100%;
+
+        input {
+          height: 48px;
+        }
+
+        i {
+          font-size: 1em;
+        }
+      }
+    }
   }
 }

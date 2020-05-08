@@ -71307,6 +71307,22 @@ body {
   padding: 20px;
 }
 
+.modal-edit-item .modal-body .calendar.invalid .field input {
+  border-color: #dc3545;
+}
+
+.modal-edit-item .modal-body .calendar .field {
+  width: 100%;
+}
+
+.modal-edit-item .modal-body .calendar .field input {
+  height: 48px;
+}
+
+.modal-edit-item .modal-body .calendar .field i {
+  font-size: 1em;
+}
+
 .nav-tabs .nav-item {
   width: 50%;
   cursor: pointer;
