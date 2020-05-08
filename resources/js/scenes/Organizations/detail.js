@@ -151,6 +151,9 @@ class OrganizationDetail extends Component {
       case 'referee':
         filtered = this.state.init_members.filter(obj => obj.role_id == 3);
         break;
+      case 'judoka':
+        filtered = this.state.init_members.filter(obj => obj.role_id == 4);
+        break;
       default:
         filtered = this.state.init_members;
     }
@@ -337,13 +340,13 @@ class OrganizationDetail extends Component {
                   <div className="mt-5">
                     <Row className="mb-2">
                       <Col sm="12">
-                        <h4>Search Federation Managers</h4>
+                        <h4>Search Members</h4>
                       </Col>
                     </Row>
                     <Row>
                       <Col sm="3">
                         <Select
-                          options={member_type_options.filter(item => item.value != 'judoka')}
+                          options={member_type_options}
                           onChange={this.handleSelectMemberType.bind(this)}
                         />
                       </Col>
