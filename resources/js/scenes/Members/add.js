@@ -32,8 +32,6 @@ class MemberAdd extends Component {
       fileKey: 1,
       org_list: [],
       club_list: [],
-      weights: [],
-      init_weights: [],
       roles: [],
       alertVisible: false,
       messageStatus: false,
@@ -86,19 +84,6 @@ class MemberAdd extends Component {
         break;
     }
 
-    const weight_list = await Api.get('weights');
-    switch (weight_list.response.status) {
-      case 200:
-        this.setState({
-          weights: weight_list.body,
-          init_weights: weight_list.body
-        });
-
-        break;
-      default:
-        break;
-    }
-
     const role_lists = JSON.parse(localStorage.getItem('roles'));
     if (role_lists && role_lists.length > 0) {
       this.setState({
@@ -144,14 +129,7 @@ class MemberAdd extends Component {
       return;
     }
     
-    if (values.role_id && values.role_id.id == 1 && values.organization_type.value == 'ref' && 
-        (!values.organization_id || values.position == '')) {
-      bags.setSubmitting(false);
-      return;
-    }
-    
-    if (values.role_id && values.role_id.id == 1 && values.organization_type.value == 'club' && 
-        (!values.organization_id || !values.club_id)) {
+    if (values.role_id && values.role_id.id == 1 && (!values.organization_id || values.position == '')) {
       bags.setSubmitting(false);
       return;
     }
@@ -166,13 +144,13 @@ class MemberAdd extends Component {
       return;
     }
     
-    if (!values.role_id && (!values.weight_id || !values.dan)) {
+    if (!values.role_id && (!values.weight || !values.dan)) {
       bags.setSubmitting(false);
       return;
     }
     
     if (values.role_id && values.role_id.is_player == 1 && 
-        (!values.weight_id || !values.dan || (values.dan && values.dan.value == ''))) {
+        (!values.weight || !values.dan || (values.dan && values.dan.value == ''))) {
       bags.setSubmitting(false);
       return;
     }
@@ -182,15 +160,14 @@ class MemberAdd extends Component {
     
     newData = {
       organization_id: values.club_id ? 
-        values.club_id.id : 
-        (values.organization_id ? values.organization_id.id : this.state.parent_id),
+        (values.club_id && values.club_id.id ? values.club_id.id : values.club_id) : 
+        (values.organization_id && values.organization_id.id ? values.organization_id.id : values.organization_id),
       name: values.name,
       surname: values.surname,
       gender: values.gender.id,
       birthday: moment(values.birthday).format('YYYY-MM-DD'),
-      email: values.email,
       country: this.state.country,
-      weight_id: values.weight_id ? values.weight_id.id : '',
+      weight: values.weight ? values.weight : '',
       dan: values.dan ? values.dan.value : '',
       role_id: values.role_id.id,
       profile_image: imagePreviewUrl || '',
@@ -198,7 +175,7 @@ class MemberAdd extends Component {
       active: 0,
       register_date: values.register_date
     };
-
+    
     const data = await Api.post('reg-member', newData);
     const { response, body } = data;
     switch (response.status) {
@@ -226,9 +203,7 @@ class MemberAdd extends Component {
         this.setState({
           alertVisible: true,
           messageStatus: false,
-          failMessage: body.data && 
-            (`${body.data.email !== undefined ? body.data.email : ''} 
-              ${body.data.identity !== undefined ? body.data.identity : ''}`)
+          failMessage: body.data
         });
         break;
       default:
@@ -259,9 +234,7 @@ class MemberAdd extends Component {
       imagePreviewUrl,
       org_list,
       club_list,
-      roles,
-      weights,
-      init_weights
+      roles
     } = this.state;
 
     let $imagePreview = null;
@@ -307,8 +280,7 @@ class MemberAdd extends Component {
                 surname: '',
                 gender: null,
                 birthday: null,
-                email: '',
-                weight_id: null,
+                weight: '',
                 dan: null,
                 position: ''
               }}
@@ -318,8 +290,7 @@ class MemberAdd extends Component {
                   name: Yup.string().required('This field is required!'),
                   surname: Yup.string().required('This field is required!'),
                   gender: Yup.mixed().required('This field is required!'),
-                  birthday: Yup.mixed().required('This field is required!'),
-                  email: Yup.string().email('Email is not valid!').required('This field is required!')
+                  birthday: Yup.mixed().required('This field is required!')
                 })
               }
 
@@ -342,39 +313,40 @@ class MemberAdd extends Component {
                     <Col xs="12" sm="6">
                       <Row>
                         <Col sm="12">
-                        {
-                          !user_is_club && (
-                            <FormGroup>
-                              <Label for="role_id">Role</Label>
-                              <Select
-                                name="role_id"
-                                classNamePrefix={!values.role_id && touched.role_id ? 'invalid react-select-lg' : 'react-select-lg'}
-                                indicatorSeparator={null}
-                                options={roles}
-                                getOptionValue={option => option.id}
-                                getOptionLabel={option => option.name}
-                                value={values.role_id}
-                                invalid={!!errors.role_id && touched.role_id}
-                                onChange={(value) => {
-                                  setFieldValue('role_id', value);
-      
-                                  setFieldValue('organization_id', null);
-                                  setFieldValue('club_id', null);
+                          <FormGroup>
+                            <Label for="role_id">Role</Label>
+                            <Select
+                              name="role_id"
+                              classNamePrefix={!values.role_id && touched.role_id ? 'invalid react-select-lg' : 'react-select-lg'}
+                              indicatorSeparator={null}
+                              options={roles}
+                              getOptionValue={option => option.id}
+                              getOptionLabel={option => option.name}
+                              value={values.role_id}
+                              invalid={!!errors.role_id && touched.role_id}
+                              onChange={(value) => {
+                                setFieldValue('role_id', value);
+    
+                                setFieldValue('organization_id', null);
+                                setFieldValue('club_id', null);
 
+                                if (user_is_club) {
+                                  setFieldValue('organization_id', this.state.parent_id);
+                                  setFieldValue('club_id', this.state.parent_id);
+                                } else {
                                   if (org_list.length == 1)
                                     setFieldValue('organization_id', org_list[0]);
+                                }
 
-                                  if (value.id == 1)
-                                    setFieldValue('position', '')
-                                }}
-                                onBlur={this.handleBlur}
-                              />
-                              {!values.role_id && touched.role_id && (
-                                <FormFeedback className="d-block">This field is required!</FormFeedback>
-                              )}
-                            </FormGroup>
-                          )
-                        }
+                                if (value.id == 1)
+                                  setFieldValue('position', '')
+                              }}
+                              onBlur={this.handleBlur}
+                            />
+                            {!values.role_id && touched.role_id && (
+                              <FormFeedback className="d-block">This field is required!</FormFeedback>
+                            )}
+                          </FormGroup>
                         </Col>
                         <Col sm="12">
                         {
@@ -409,8 +381,13 @@ class MemberAdd extends Component {
                                   setFieldValue('organization_id', null);
                                   setFieldValue('club_id', null);
 
-                                  if (org_list.length == 1)
-                                    setFieldValue('organization_id', org_list[0]);
+                                  if (user_is_club) {
+                                    setFieldValue('organization_id', this.state.parent_id);
+                                    setFieldValue('club_id', this.state.parent_id);
+                                  } else {
+                                    if (org_list.length == 1)
+                                      setFieldValue('organization_id', org_list[0]);
+                                  }
                                 }}
                                 onBlur={this.handleBlur}
                               />
@@ -566,7 +543,7 @@ class MemberAdd extends Component {
                         <FormFeedback>{errors.surname}</FormFeedback>
                       </FormGroup>
                     </Col>
-                    <Col sm="4">
+                    <Col sm="6">
                       <FormGroup>
                         <Label for="gender">Gender</Label>
                         <Select
@@ -579,10 +556,6 @@ class MemberAdd extends Component {
                           value={values.gender}
                           onChange={(value) => {
                             setFieldValue('gender', value);
-                            setFieldValue('weight_id', '');
-                            this.setState({
-                              weights: init_weights.filter(obj => obj.gender == value.id)
-                            })
                           }}
                           onBlur={this.handleBlur}
                         />
@@ -591,7 +564,7 @@ class MemberAdd extends Component {
                         )}
                       </FormGroup>
                     </Col>
-                    <Col sm="4">
+                    <Col sm="6">
                       <FormGroup className={!!errors.birthday && touched.birthday ? 'invalid calendar' : 'calendar'}>
                         <Label for="birthday">Birthday</Label>
                         <SemanticDatepicker
@@ -611,35 +584,7 @@ class MemberAdd extends Component {
                         {!!errors.birthday && touched.birthday && (
                           <FormFeedback className="d-block">{errors.birthday}</FormFeedback>
                         )}
-                        {/* <Input
-                          id="birthday"
-                          name="birthday"
-                          type="date"
-                          placeholder="YYYY-MM-DD"
-                          value={values.birthday || ''}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          invalid={!!errors.birthday && touched.birthday}
-                        />
-                        <UncontrolledTooltip placement="right" target="birthday">
-                          Click triangle icon to select date
-                        </UncontrolledTooltip>
-                        {!!errors.birthday && touched.birthday && <FormFeedback className="d-block">{errors.birthday}</FormFeedback> } */}
-                      </FormGroup>
-                    </Col>
-                    <Col sm="4">
-                      <FormGroup>
-                        <Label for="email">Email</Label>
-                        <Input
-                          name="email"
-                          type="email"
-                          value={values.email || ''}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          invalid={!!errors.email && touched.email}
-                        />
-                        <FormFeedback>{errors.email}</FormFeedback>
-                      </FormGroup>
+                        </FormGroup>
                     </Col>
                     {
                       values.role_id && (values.role_id.id == 1 || values.role_id.id == 3) && (
@@ -656,7 +601,9 @@ class MemberAdd extends Component {
                                   onBlur={handleBlur}
                                   invalid={!values.position && touched.position}
                                 />
-                                {!values.position && touched.position && (<FormFeedback className="d-block">This field is required!</FormFeedback>)}
+                                {!values.position && touched.position && (
+                                  <FormFeedback className="d-block">This field is required!</FormFeedback>
+                                )}
                               </FormGroup>
                             ) : (
                               <FormGroup>
@@ -684,24 +631,22 @@ class MemberAdd extends Component {
                       )
                     }
                     {
-                      (user_is_club || (values.role_id && values.role_id.is_player == 1)) && (
+                      (values.role_id && values.role_id.is_player == 1) && (
                         <Fragment>
                           <Col sm="6">
                             <FormGroup>
-                              <Label for="weight_id">Weight</Label>
-                              <Select
-                                name="weight_id"
-                                menuPlacement="top"
-                                classNamePrefix={!values.weight_id && touched.weight_id ? 'invalid react-select-lg' : 'react-select-lg'}
-                                value={values.weight_id}
-                                options={weights}
-                                getOptionValue={option => option.id}
-                                getOptionLabel={option => option.weight + " Kg"}
-                                onChange={(value) => {
-                                  setFieldValue('weight_id', value);
-                                }}
-                              />
-                              {!values.weight_id && touched.weight_id && <FormFeedback className="d-block">This field is required!</FormFeedback>}
+                              <Label for="weight">Weight</Label>
+                                <Input
+                                  name="weight"
+                                  type="text"
+                                  value={values.weight}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  invalid={!values.weight && touched.weight}
+                                />
+                                {!values.weight && touched.weight && (
+                                  <FormFeedback className="d-block">This field is required!</FormFeedback>
+                                )}
                             </FormGroup>
                           </Col>
                           <Col sm="6">
@@ -713,7 +658,7 @@ class MemberAdd extends Component {
                                 classNamePrefix={(!values.dan || (values.dan && values.dan.value == '')) && touched.dan ? 
                                   'invalid react-select-lg' : 'react-select-lg'}
                                 value={values.dan}
-                                options={Dans}
+                                options={Dans.filter(dan => dan.value != 'dan' && dan.value != 'kyu')}
                                 getOptionValue={option => option.value}
                                 getOptionLabel={option => option.label}
                                 onChange={(value) => {

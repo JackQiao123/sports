@@ -15,6 +15,6 @@ class Player extends Model
      * @var array
      */
     protected $fillable = [
-        'member_id', 'weight_id', 'dan'
+        'member_id', 'weight', 'dan'
     ];
 }

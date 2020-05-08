@@ -16,7 +16,7 @@ class CreatePlayersTable extends Migration
         Schema::create('players', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('member_id');
-            $table->integer('weight_id');
+            $table->char('weight', 10);
             $table->char('dan', 10);
 
             $table->dateTime('expired_date', 0)->nullable();

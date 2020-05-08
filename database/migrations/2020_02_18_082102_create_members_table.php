@@ -24,10 +24,8 @@ class CreateMembersTable extends Migration
             $table->string('profile_image', 100);
             $table->boolean('gender');
             $table->date('birthday');
-            $table->string('email')->unique();
             
             $table->string('position', 50);
-            $table->string('identity', 50);
             $table->boolean('active');
             $table->date('register_date', 0);
 

@@ -140,7 +140,6 @@ class MemberController extends Controller
       'surname' => 'required|string|max:255',
       'gender' => 'required|integer',
       'birthday' => 'required|date',
-      'email' => 'required|string|email|max:255|unique:members',
       'active' => 'required|boolean',
       'register_date' => 'required|date'
     ]);
@@ -156,7 +155,7 @@ class MemberController extends Controller
     }
       
     $validPlayer = Validator::make($data, [
-      'weight_id' => 'required',
+      'weight' => 'required',
       'dan' => 'required'
     ]);
       
@@ -195,7 +194,7 @@ class MemberController extends Controller
       $type = explode(':', substr($base64_image, 0, $pos))[1];
 
       if (substr($type, 0, 5) == 'image') {
-        $filename = $data['identity'] . '_' . date('Ymd');
+        $filename = preg_replace('/[^A-Za-z0-9\-]/', '', $data['name'] . '-' . $data['surname']) . '-' . date('Ymd');
 
         $type = str_replace('image/', '.', $type);
 
@@ -232,19 +231,6 @@ class MemberController extends Controller
       $data['position'] = "";
     }
 
-    $identity = '';
-
-    $exist = Member::leftJoin('organizations', 'organizations.id', '=', 'members.organization_id')
-              ->where('organizations.country', $data['country'])
-              ->select('members.*')
-              ->count();
-
-    for ($i = 0; $i < 8 - strlen($exist + 1); $i++) {
-        $identity .= '0';
-    }
-
-    $identity .= ($exist + 1);
-
     $member = Member::create(array(
       'organization_id' => $data['organization_id'],
       'role_id' => $data['role_id'],
@@ -253,9 +239,7 @@ class MemberController extends Controller
       'profile_image' => $data['profile_image'],
       'gender' => $data['gender'],
       'birthday' => $data['birthday'],
-      'email' => $data['email'],
       'position' => $data['position'],
-      'identity' => $identity,
       'active' => $data['active'],
       'register_date' => $data['register_date']
     ));
@@ -265,7 +249,7 @@ class MemberController extends Controller
     if ($role->is_player && !$validPlayer->fails()) {
       Player::create(array(
         'member_id' => $member_id,
-        'weight_id' => $data['weight_id'],
+        'weight' => $data['weight'],
         'dan' => $data['dan']
       ));
     }

@@ -22,9 +22,7 @@ class Member extends Model
         'profile_image',
         'gender',
         'birthday',
-        'email',
         'position',
-        'identity',
         'active',
         'register_date'
     ];
