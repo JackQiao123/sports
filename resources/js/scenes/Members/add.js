@@ -636,17 +636,17 @@ class MemberAdd extends Component {
                           <Col sm="6">
                             <FormGroup>
                               <Label for="weight">Weight</Label>
-                                <Input
-                                  name="weight"
-                                  type="text"
-                                  value={values.weight}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  invalid={!values.weight && touched.weight}
-                                />
-                                {!values.weight && touched.weight && (
-                                  <FormFeedback className="d-block">This field is required!</FormFeedback>
-                                )}
+                              <Input
+                                name="weight"
+                                type="text"
+                                value={values.weight}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                invalid={!values.weight && touched.weight}
+                              />
+                              {!values.weight && touched.weight && (
+                                <FormFeedback className="d-block">This field is required!</FormFeedback>
+                              )}
                             </FormGroup>
                           </Col>
                           <Col sm="6">

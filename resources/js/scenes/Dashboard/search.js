@@ -50,7 +50,6 @@ class Search extends Component {
       user_is_club: user.user.is_club_member == 1 ? true : false,
       org_list: [],
       orgs: [],
-      weights: [],
       roles: [],
       club_list: [],
       clubs: [],
@@ -86,7 +85,6 @@ class Search extends Component {
     this.handleDeleteMember = this.handleDeleteMember.bind(this);
     this.handleConfirmationClose = this.handleConfirmationClose.bind(this);
     this.handleSaveItem = this.handleSaveItem.bind(this);
-    this.getWeights = this.getWeights.bind(this);
     this.search = this.search.bind(this);
   }
 
@@ -187,17 +185,6 @@ class Search extends Component {
               club_list: club_list.body
             });
           }
-          break;
-        default:
-          break;
-      }
-
-      const weight_list = await Api.get('weights');
-      switch (weight_list.response.status) {
-        case 200:
-          this.setState({
-            weights: weight_list.body
-          });
           break;
         default:
           break;
@@ -409,19 +396,6 @@ class Search extends Component {
         });
         break;
       case 'member_type':
-        if (value.value == 'judoka') {
-          const weight_list = await Api.get('weights');
-          switch (weight_list.response.status) {
-            case 200:
-              this.setState({
-                weights: weight_list.body
-              });
-              break;
-            default:
-              break;
-          }
-        }
-
         this.setState({
           member_type: value,
           search_required: true,
@@ -705,15 +679,6 @@ class Search extends Component {
     }
   }
 
-  getWeights(gender) {
-    return this.state.weights.filter((weight) => {
-      if (`${gender}` == '0') {
-        return true;
-      }
-      return `${weight.gender}` == `${gender}`;
-    });
-  }
-
   render() {
     const {
       level,
@@ -724,7 +689,6 @@ class Search extends Component {
       search_type,
       member_type,
       referee_type,
-      weights,
       club_list,
       clubs,
       search_org,
@@ -1010,7 +974,6 @@ class Search extends Component {
             <EditModal
               id={edit_item}
               type={search_type}
-              weights={weights}
               orgs={org_list}
               clubs={club_list}
               roles={roles}

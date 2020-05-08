@@ -117,7 +117,7 @@ class EditModal extends React.Component {
   settingValues(props) {
     const { item, org_list, club_list } = this.state;
     const {
-      roles, weights, type
+      roles, type
     } = props;
     const {
       formikRef1, formikRef2
@@ -141,7 +141,7 @@ class EditModal extends React.Component {
         profile_image: values.profile_image,
         register_date: values.register_date,
         birthday: values.birthday,
-        weight_id: weights.filter(weight => weight.id == values.weight_id)[0],
+        weight: values.weight,
         dan: Dans.filter(dan => dan.value == values.dan)[0],
         position: values.role_id == 3 ? referee_type_options.filter(option => option.value == values.position) : values.position,
         level: values.level
@@ -228,7 +228,7 @@ class EditModal extends React.Component {
         surname: values.surname,
         gender: values.gender.id,
         birthday: moment(values.birthday).format('YYYY-MM-DD'),
-        weight_id: values.role_id && values.role_id.is_player == 1 ? (values.weight_id && values.weight_id.id) : '',
+        weight: values.role_id && values.role_id.is_player == 1 ? values.weight : '',
         dan: values.role_id && values.role_id.is_player == 1 ? (values.dan && values.dan.value) : '',
         org_id: values.org_id.id,
         club_id: (values.club_id && values.club_id.id) || '',
@@ -290,8 +290,7 @@ class EditModal extends React.Component {
     }
     const {
       type,
-      roles,
-      weights
+      roles
     } = this.props;
 
     var d = new Date(),
@@ -327,7 +326,7 @@ class EditModal extends React.Component {
                   surname: '',
                   gender: null,
                   birthday: null,
-                  weight_id: null,
+                  weight: null,
                   dan: null,
                   position: ''
                 }}
@@ -548,26 +547,18 @@ class EditModal extends React.Component {
                       {
                         values.role_id && values.role_id.is_player == 1 && (
                           <Col sm="6">
-                            <Label for="weight_id">Weight</Label>
-                            <Select
-                              name="weight_id"
-                              menuPlacement="top"
-                              classNamePrefix={
-                                values.role_id && values.role_id.is_player == 1 && !values.weight_id && touched.weight_id ? 
-                                  'invalid react-select-lg' : 'react-select-lg'
-                              }
-                              value={values.weight_id}
-                              options={weights.filter(weight => weight.id != 0)}
-                              getOptionValue={option => option.id}
-                              getOptionLabel={option => option.weight + ' Kg'}
-                              onChange={(value) => {
-                                setFieldValue('weight_id', value);
-                              }}
+                            <Label for="weight">Weight</Label>
+                            <Input
+                              name="weight"
+                              type="text"
+                              value={values.weight}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              invalid={!values.weight && touched.weight}
                             />
-                            {
-                              values.role_id && values.role_id.is_player == 1 && !values.weight_id && touched.weight_id && 
+                            {!values.weight && touched.weight && (
                               <FormFeedback className="d-block">This field is required!</FormFeedback>
-                            }
+                            )}
                           </Col>
                         )
                       }

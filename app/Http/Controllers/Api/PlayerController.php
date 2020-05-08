@@ -65,17 +65,4 @@ class PlayerController extends Controller
   {
       //
   }
-
-  /**
-   * Display a list of Player's weight.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
-  public function weights()
-  {
-    $weights = DB::table('weights')->get();
-
-    return response()->json($weights);
-  }
 }

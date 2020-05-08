@@ -280,10 +280,8 @@ class CompetitionController extends Controller
 
     $members = Member::leftJoin('players', 'players.member_id', '=', 'members.id')
                     ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
-                    ->leftJoin('weights', 'weights.id', '=', 'players.weight_id')
                     ->whereIn('members.id', $ids)
-                    ->select('members.*', 'roles.name as role_name', 'weights.id as weight_id', 'weights.weight', 'players.dan')
-                    ->orderBy('players.weight_id')
+                    ->select('members.*', 'roles.name as role_name', 'players.weight', 'players.dan')
                     ->orderBy('members.surname')
                     ->get();
 

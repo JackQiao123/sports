@@ -295,7 +295,7 @@ class MemberController extends Controller
 
         if ($role->is_player) {
           $validPlayer = Validator::make($data, [
-            'weight_id' => 'required',
+            'weight' => 'required',
             'dan' => 'required'
           ]);
 
@@ -323,7 +323,7 @@ class MemberController extends Controller
             if ($checkDeleted == 0) {                    
               Player::create(array(
                 'member_id' => $id,
-                'weight_id' => $data['weight_id'],
+                'weight' => $data['weight'],
                 'dan' => $data['dan']
               ));
             } else {
@@ -407,7 +407,7 @@ class MemberController extends Controller
 
         if ($role->is_player) {
           Player::where('member_id', $member_id)->update(array(
-            'weight_id' => $data['weight_id'],
+            'weight' => $data['weight'],
             'dan' => $data['dan']
           ));
         }
@@ -522,14 +522,12 @@ class MemberController extends Controller
 
     $members = Member::leftJoin('players', 'players.member_id', '=', 'members.id')
                     ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
-                    ->leftJoin('weights', 'weights.id', '=', 'players.weight_id')
                     ->whereNotIn('members.id', $memids)
                     ->whereIn('organization_id', $orgids)
                     ->where('members.active', 1)
                     ->where('members.role_id', '!=', 1)
-                    ->select('members.*', 'roles.name as role_name', 'weights.id as weight_id', 'weights.weight', 'players.dan')
+                    ->select('members.*', 'roles.name as role_name', 'players.weight', 'players.dan')
                     ->orderBy('members.role_id')
-                    ->orderBy('players.weight_id')
                     ->orderBy('members.name')
                     ->get();
 

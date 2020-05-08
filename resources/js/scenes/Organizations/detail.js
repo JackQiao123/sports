@@ -29,7 +29,6 @@ class OrganizationDetail extends Component {
       members:[],
       membertype: '',
       memtype: '',
-      weights: [],
       search_gender: search_genders[0],
       search_weight: '',
       search_dan: Dans[0],
@@ -66,17 +65,6 @@ class OrganizationDetail extends Component {
 
         break;
       case 406:
-        break;
-      default:
-        break;
-    }
-
-    const weight_list = await Api.get('weights');
-    switch (weight_list.response.status) {
-      case 200:
-        this.setState({
-          weights: weight_list.body
-        });
         break;
       default:
         break;
@@ -232,15 +220,6 @@ class OrganizationDetail extends Component {
     } else {
       this.props.history.push('/member/detail', id);
     }
-  }
-
-  getWeights(gender) {
-    return this.state.weights.filter((weight) => {
-      if (`${gender}` == '0') {
-        return true;
-      }
-      return `${weight.gender}` == `${gender}`;
-    });
   }
 
   render() {
@@ -424,23 +403,6 @@ class OrganizationDetail extends Component {
                                 data: filtered,
                                 search_gender: gender,
                                 search_weight: ''
-                              });
-                            }}
-                          />
-                        </Col>
-                        <Col sm="2">
-                          <Select
-                            placeholder="Weight"
-                            value={search_weight}
-                            options={this.getWeights(search_gender ? search_gender.value : '')}
-                            getOptionValue={option => option.id}
-                            getOptionLabel={option => `${option.weight}Kg`}
-                            onChange={(weight) => {
-                              const filtered = this.state.init_data.filter(obj => obj.weight == weight.weight);
-
-                              this.setState({
-                                data: filtered,
-                                search_weight: weight
                               });
                             }}
                           />

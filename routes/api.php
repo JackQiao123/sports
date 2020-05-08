@@ -57,9 +57,6 @@ Route::namespace('Api')->group(function () {
 		Route::put('member/{id}', 'MemberController@update');
 		Route::delete('member/{id}', 'MemberController@destroy');
 
-		// Judoka APIs
-		Route::get('weights', 'PlayerController@weights');
-
 		// User APIs
 		Route::get('profile', 'UserController@profile');
 		Route::post('resetpass/{token}', 'UserController@reset');

@@ -668,7 +668,6 @@ class OrganizationController extends Controller
     sort($clubs);
 
     $members = Member::leftJoin('players', 'members.id', '=','players.member_id')
-                    ->leftJoin('weights', 'weights.id', '=', 'players.weight_id')
                     ->leftJoin('organizations AS org1', 'org1.id', '=', 'members.organization_id')
                     ->leftJoin('organizations AS org2', 'org2.id', '=', 'org1.parent_id')
                     ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
@@ -676,7 +675,7 @@ class OrganizationController extends Controller
                     ->where('members.role_id', '!=', 1)
                     ->where('members.active', '!=', 1)
                     ->select('members.*', 'org2.name_o AS region', 'org1.name_o AS club', 
-                             'roles.name AS role_name', 'weights.weight', 'players.dan')
+                             'roles.name AS role_name', 'players.weight', 'players.dan')
                     ->orderBy('members.role_id')
                     ->orderBy('members.name')
                     ->get();

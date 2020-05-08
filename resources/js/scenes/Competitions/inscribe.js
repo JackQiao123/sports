@@ -274,7 +274,7 @@ class CompetitionInscribe extends Component {
       }
       
       selects.sort(function(a, b) {
-        return a['role_id'] - b['role_id'] || a['weight_id'] - b['weight_id'];
+        return a['role_id'] - b['role_id'] || a['weight'] - b['weight'];
       });
       
       this.setState({
@@ -308,7 +308,7 @@ class CompetitionInscribe extends Component {
       });
 
       mem = selectMembers.concat(mem).sort(function(a, b) {
-        return a['role_id'] - b['role_id'] || a['weight_id'] - b['weight_id'];
+        return a['role_id'] - b['role_id'] || a['weight'] - b['weight'];
       });
 
       this.setState({
@@ -349,7 +349,7 @@ class CompetitionInscribe extends Component {
       });
 
       mem = selectMembers.concat(mem).sort(function(a, b) {
-        return a['role_id'] - b['role_id'] || a['weight_id'] - b['weight_id'];
+        return a['role_id'] - b['role_id'] || a['weight'] - b['weight'];
       });
 
       this.setState({
@@ -402,7 +402,7 @@ class CompetitionInscribe extends Component {
     let member = selectMembers.filter(item => item.id == id)[0];
     if (member['role_id'] == 4) {
       mem = judokas.concat(member).sort(function(a, b) {
-        return a['weight_id'] - b['weight_id'] || a['name'] - b['name'];
+        return a['weight'] - b['weight'] || a['name'] - b['name'];
       });
 
       this.setState({
