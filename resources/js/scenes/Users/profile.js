@@ -71,9 +71,7 @@ class Profile extends Component {
       profile_image: values.profile_image,
       register_date: values.register_date,
       birthday: values.birthday,
-      email: values.email,
-      parent_id: values.parent_id,
-      identity: values.identity
+      parent_id: values.parent_id
     });
   }
 
@@ -104,9 +102,7 @@ class Profile extends Component {
       gender: values.gender.id,
       profile_image: imagePreviewUrl || '',
       birthday: moment(values.birthday).format('YYYY-MM-DD'),
-      email: values.email,
-      register_date: values.register_date,
-      identity: values.identity
+      register_date: values.register_date
     };
 
     const data = await Api.put(`member/${values.id}`, newData);
@@ -135,9 +131,7 @@ class Profile extends Component {
         this.setState({
           alertVisible: true,
           messageStatus: false,
-          failMessage: body.data && 
-          (`${body.data.email !== undefined ? body.data.email : ''}
-            ${body.data.identity !== undefined ? body.data.identity : ''}`)
+          failMessage: body.data
         });
         break;
       default:
@@ -194,9 +188,7 @@ class Profile extends Component {
                 name: '',
                 surname: '',
                 gender: null,
-                birthday: null,
-                email: '',
-                identity: ''
+                birthday: null
               }}
 
               validationSchema={
@@ -282,7 +274,7 @@ class Profile extends Component {
                         <FormFeedback className="d-block">{errors.surname}</FormFeedback>
                       </FormGroup>
                     </Col>
-                    <Col sm="4">
+                    <Col sm="6">
                       <FormGroup>
                         <Label for="gender">Gender</Label>
                         <Select
@@ -303,7 +295,7 @@ class Profile extends Component {
                         )}
                       </FormGroup>
                     </Col>
-                    <Col sm="4">
+                    <Col sm="6">
                       <FormGroup className={!!errors.birthday && touched.birthday ? 'invalid calendar' : 'calendar'}>
                         <Label for="birthday">Birthday</Label>
                         <SemanticDatepicker
@@ -323,31 +315,6 @@ class Profile extends Component {
                         {!!errors.birthday && touched.birthday && (
                           <FormFeedback className="d-block">{errors.birthday}</FormFeedback>
                         )}
-                      </FormGroup>
-                    </Col>
-                    <Col sm="4">
-                      <FormGroup>
-                        <Label for="email">Email</Label>
-                        <Input
-                          name="email"
-                          type="email"
-                          value={values.email || ''}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          invalid={!!errors.email && touched.email}
-                        />
-                        {!!errors.email && touched.email && (<FormFeedback className="d-block">{errors.email}</FormFeedback>)}
-                      </FormGroup>
-                    </Col>
-                    <Col sm="6">
-                      <FormGroup>
-                        <Label for="identity">Identity</Label>
-                        <Input
-                          name="identity"
-                          type="text"
-                          value={values.identity}
-                          readOnly
-                        />
                       </FormGroup>
                     </Col>
                   </Row>
