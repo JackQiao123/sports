@@ -151,7 +151,6 @@ class EditModal extends React.Component {
         name_o: values.name_o,
         name_s: values.name_s,
         parent_id: org_list.filter(org => org.id == values.parent_id)[0],
-        register_no: values.register_no,
         logo: values.logo,
         email: values.email,
         mobile_phone: values.mobile_phone,
@@ -211,7 +210,6 @@ class EditModal extends React.Component {
         name_o: values.name_o,
         name_s: values.name_s,
         parent_id: (values.parent_id && values.parent_id.id) || item.parent_id,
-        register_no: values.register_no,
         logo: imagePreviewUrl || '',
         email: values.email,
         mobile_phone: values.mobile_phone,
@@ -678,7 +676,6 @@ class EditModal extends React.Component {
                   name_o: '',
                   name_s: '',
                   parent_id: '',
-                  register_no: '',
                   email: '',
                   logo: null,
                   mobile_phone: '',
@@ -693,7 +690,6 @@ class EditModal extends React.Component {
                 validationSchema={
                   Yup.object().shape({
                     name_o: Yup.string().required('This field is required!'),
-                    register_no: Yup.string().required('This field is required!'),
                     email: Yup.string().email('Email is not valid!').required('This field is required!'),
                   })
                 }
@@ -806,23 +802,7 @@ class EditModal extends React.Component {
                           <FormFeedback>{errors.name_s}</FormFeedback>
                         </FormGroup>
                       </Col>
-                      <Col sm="3">
-                        <FormGroup>
-                          <Label for="register_no">
-                            Register Number
-                          </Label>
-                          <Input
-                            type="text"
-                            name="register_no"
-                            value={values.register_no}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            invalid={!!errors.register_no && touched.register_no}
-                          />
-                          <FormFeedback>{errors.register_no}</FormFeedback>
-                        </FormGroup>
-                      </Col>
-                      <Col sm="3">
+                      <Col sm="6">
                         <FormGroup>
                           <Label for="mobile_phone">
                             Mobile Phone

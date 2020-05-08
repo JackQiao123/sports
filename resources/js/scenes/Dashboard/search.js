@@ -621,7 +621,7 @@ class Search extends Component {
             alertVisible: true,
             messageStatus: false,
             isOpenEditModal: false,
-            failMessage: updateOrg.body.data && (`${updateOrg.body.data.email !== undefined ? updateOrg.body.data.email : ''} ${updateOrg.body.data.register_no !== undefined ? updateOrg.body.data.register_no : ''}`)
+            failMessage: updateOrg.body.data && (`${updateOrg.body.data.email !== undefined ? updateOrg.body.data.email : ''}`)
           });
           break;
         case 500:

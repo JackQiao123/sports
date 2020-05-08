@@ -240,7 +240,6 @@ class OrganizationController extends Controller
     $data = $request->all();
 
     $validator = Validator::make($data, [
-      'register_no' => 'required',
       'name_o' => 'required|string|max:255',
       'name_s' => 'required|string|max:255',
       'email' => 'required|string|email|max:255'
@@ -255,27 +254,13 @@ class OrganizationController extends Controller
         422
       );
     } else {
-      $exist1 = Organization::where('email', $data['email'])->where('id', '!=', $id)->withTrashed()->count();
-      $exist2 = Organization::where('register_no', $data['register_no'])->where('id', '!=', $id)->withTrashed()->count();
-
-      $errArr = array();
-      $exist = 0;
-
-      if ($exist1 > 0) {
-        $errArr['email'] = 'Email already exist.';
-        $exist += $exist1;
-      }
-
-      if ($exist2 > 0) {
-        $errArr['register_no'] = 'Register No already exist.';
-        $exist += $exist2;
-      }
+      $exist = Organization::where('email', $data['email'])->where('id', '!=', $id)->withTrashed()->count();
       
       if ($exist > 0) {
         return response()->json(
           [
               'status' => 'fail',
-              'data' => $errArr
+              'data' => 'Email already exist.'
           ],
           422
         );
@@ -290,7 +275,7 @@ class OrganizationController extends Controller
         $type = explode(':', substr($base64_image, 0, $pos))[1];
 
         if (substr($type, 0, 5) == 'image') {
-          $filename = date('Ymd') . '_' . $data['register_no'];
+          $filename = preg_replace('/[^A-Za-z0-9\-]/', '', $data['name_s']) . '-' . date('Ymd');
 
           $type = str_replace('image/', '.', $type);
 
