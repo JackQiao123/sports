@@ -40,8 +40,7 @@ class OrganizationController extends Controller
       $players = Member::where('organization_id', $id)
                   ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
                   ->leftJoin('players', 'players.member_id', '=', 'members.id')
-                  ->leftJoin('weights', 'weights.id', '=', 'players.weight_id')
-                  ->select('members.*', 'roles.name AS role_name', 'weights.weight', 'players.dan')
+                  ->select('members.*', 'roles.name AS role_name', 'players.weight', 'players.dan')
                   ->get();
 
       $org['table'] = $players;

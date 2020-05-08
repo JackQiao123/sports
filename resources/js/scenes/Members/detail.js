@@ -109,12 +109,7 @@ class MemberDetail extends Component {
                           <span>{member.birthday}</span>
                         </h5>
                       </Col>
-                      <Col sm="6">
-                        <h5 className="py-2">
-                          <b className="mr-2">Email :</b>
-                          <a href={`mailto:${member.email}`}>{member.email}</a>
-                        </h5>
-                      </Col>
+                      <Col sm="6"></Col>
                     </Row>
                     {member.is_player == 1 ? (
                       <Row>

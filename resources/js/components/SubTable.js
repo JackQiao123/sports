@@ -132,14 +132,6 @@ class SubTable extends Component {
                     Club Name
                   </Table.HeaderCell>
                   <Table.HeaderCell
-                    width="1"
-                    className="text-center"
-                    sorted={column === 'register_no' ? direction : null}
-                    onClick={this.handleSort.bind(this, 'register_no')}
-                  >
-                    Register No
-                  </Table.HeaderCell>
-                  <Table.HeaderCell
                     className="text-center"
                     sorted={column === 'mobile_phone' ? direction : null}
                     onClick={this.handleSort.bind(this, 'mobile_phone')}
@@ -171,7 +163,6 @@ class SubTable extends Component {
                         <Table.Cell>
                           <a className="detail-link" onClick={() => onSelect(item.id)}>{item.name_o}</a>
                         </Table.Cell>
-                        <Table.Cell className="text-center">{item.register_no}</Table.Cell>
                         <Table.Cell className="text-center">{item.mobile_phone}</Table.Cell>
                         <Table.Cell className="text-center">{item.email}</Table.Cell>
                         <Table.Cell>
@@ -241,7 +232,7 @@ class SubTable extends Component {
                         <Table.Cell>
                           <span className="text-primary mr-2">
                             <a className="detail-link" onClick={() => onSelect(item.id)}>
-                              {item.surname && item.surname.toUpperCase()} {item.patronymic != '-' && item.patronymic} {item.name}
+                              {item.surname && item.surname.toUpperCase()} {item.name}
                             </a>
                           </span>
                         </Table.Cell>
@@ -339,20 +330,11 @@ class SubTable extends Component {
                     data.map((item, index) => (
                       <Table.Row 
                         key={index}
-                        disabled={item.role_id == 4 && item.active == 0}
                       >
                         <Table.Cell>
-                          {
-                            item.active == 1 ? (
-                              <a className="detail-link" onClick={() => onSelect(item.id)}>
-                                {item.surname && item.surname.toUpperCase()} {item.name}
-                              </a>
-                            ) : (
-                              <span className="text-primary mr-2">
-                                {item.surname && item.surname.toUpperCase()} {item.name}
-                                </span>
-                            )
-                          }
+                          <a className="detail-link" onClick={() => onSelect(item.id)}>
+                            {item.surname && item.surname.toUpperCase()} {item.name}
+                          </a>
                         </Table.Cell>
                         <Table.Cell className="text-center">{item.role_name}</Table.Cell>
                         <Table.Cell className="text-center">{item.gender == 1 ? Genders[0].name : Genders[1].name}</Table.Cell>
