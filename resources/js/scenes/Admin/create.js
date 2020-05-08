@@ -54,7 +54,6 @@ class CreateNational extends Component {
     newData = {
       name_o: values.name_o,
       name_s: values.name_s,
-      register_no: values.register_no,
       logo: imagePreviewUrl || '',
       email: values.email,
       mobile_phone: values.mobile_phone,
@@ -94,7 +93,6 @@ class CreateNational extends Component {
           alertVisible: true,
           messageStatus: false,
           failMessage: body.data && (`${body.data.email !== undefined ? body.data.email : ''} 
-                        ${body.data.register_no !== undefined ? body.data.register_no : ''}
                         ${body.data.country !== undefined ? body.data.country : ''}`)
         });
         break;
@@ -144,7 +142,6 @@ class CreateNational extends Component {
                 initialValues={{
                   name_o: '',
                   name_s: '',
-                  register_no: '',
                   email: '',
                   logo: null,
                   mobile_phone: '',
@@ -159,7 +156,6 @@ class CreateNational extends Component {
                   Yup.object().shape({
                     name_o: Yup.string().required('This field is required!'),
                     name_s: Yup.string().max(3, 'Country Code is less than 3 characters!').required('This field is required!'),
-                    register_no: Yup.string().required('This field is required!'),
                     email: Yup.string().email('Email is not valid!').required('This field is required!'),
                     mobile_phone: Yup.string().matches(/^\+?[0-9]\s?[-]\s|[0-9]$/, 'Mobile phone is incorrect!').required('This field is required!'),
                     addressline1: Yup.string().required('This field is required!'),
@@ -253,23 +249,7 @@ class CreateNational extends Component {
                           <FormFeedback>{errors.name_s}</FormFeedback>
                         </FormGroup>
                       </Col>
-                      <Col sm="6" md="4">
-                        <FormGroup>
-                          <Label for="register_no">
-                            Register Number
-                          </Label>
-                          <Input
-                            type="text"
-                            name="register_no"
-                            value={values.register_no}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            invalid={!!errors.register_no && touched.register_no}
-                          />
-                          <FormFeedback>{errors.register_no}</FormFeedback>
-                        </FormGroup>
-                      </Col>
-                      <Col sm="6" md="4">
+                      <Col sm="6">
                         <FormGroup>
                           <Label for="mobile_phone">
                             Mobile Phone
@@ -285,7 +265,7 @@ class CreateNational extends Component {
                           <FormFeedback>{errors.mobile_phone}</FormFeedback>
                         </FormGroup>
                       </Col>
-                      <Col sm="6" md="4">
+                      <Col sm="6">
                         <FormGroup>
                           <Label for="email">
                             Email

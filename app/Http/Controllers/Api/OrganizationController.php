@@ -102,7 +102,6 @@ class OrganizationController extends Controller
 
     $validator = Validator::make($data, [
       'parent_id' => 'required|integer',
-      'register_no' => 'required|string|max:255|unique:organizations',
       'name_o' => 'required|string|max:255',
       'name_s' => 'required|string|max:255',
       'email' => 'required|string|email|max:255|unique:organizations',
@@ -124,20 +123,6 @@ class OrganizationController extends Controller
         422
       );
     } else {
-      $validMember = Validator::make($data, [
-        'email' => 'required|string|email|max:255|unique:members'
-      ]);
-  
-      if ($validMember->fails()) {
-        return response()->json(
-          [
-            'status' => 'fail',
-            'data' => $validMember->errors()
-          ],
-          422
-        );
-      }
-
       $data['logo'] = "";
 
       $base64_image = $request->input('logo');
@@ -147,7 +132,7 @@ class OrganizationController extends Controller
         $type = explode(':', substr($base64_image, 0, $pos))[1];
 
         if (substr($type, 0, 5) == 'image') {
-          $filename = date('Ymd') . '_' . $data['register_no'];
+          $filename = preg_replace('/[^A-Za-z0-9\-]/', '', $data['name_s']) . '-' . date('Ymd');
 
           $type = str_replace('image/', '.', $type);
 
@@ -186,7 +171,6 @@ class OrganizationController extends Controller
             
       $org = Organization::create(array(
         'parent_id' => $data['parent_id'],
-        'register_no' => $data['register_no'],
         'name_o' => $data['name_o'],
         'name_s' => $data['name_s'],
         'logo' => $data['logo'],
@@ -202,19 +186,6 @@ class OrganizationController extends Controller
         'is_club' => $data['is_club']
       ));
 
-      $identity = '';
-
-      $exist = Member::leftJoin('organizations', 'organizations.id', '=', 'members.organization_id')
-                ->where('organizations.country', $data['country'])
-                ->select('members.*')
-                ->count();
-
-      for ($i = 0; $i < 8 - strlen($exist + 1); $i++) {
-          $identity .= '0';
-      }
-
-      $identity .= ($exist + 1);
-
       $member = Member::create(array(
         'organization_id' => $org->id,
         'role_id' => 1,
@@ -223,9 +194,7 @@ class OrganizationController extends Controller
         'profile_image' => '',
         'gender' => 1,
         'birthday' => date('Y-m-d'),
-        'email' => $data['email'],
         'position' => $data['level'] == 2 ? 'Reg manager' : 'Club manager',
-        'identity' => $identity,
         'active' => 1,
         'register_date' => date('Y-m-d')
       ));
@@ -252,7 +221,7 @@ class OrganizationController extends Controller
       
       $headers = "From: administrator@sports.org";
 
-      mail($data['email'], "Invitation from LiveMedia", $msg, $headers);
+      // mail($data['email'], "Invitation from LiveMedia", $msg, $headers);
 
       return response()->json([
         'status' => 'success'

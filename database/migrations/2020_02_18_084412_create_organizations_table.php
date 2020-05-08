@@ -17,7 +17,6 @@ class CreateOrganizationsTable extends Migration
             $table->bigIncrements('id');
             $table->integer('parent_id');
 
-            $table->string('register_no', 50)->unique();
             $table->string('name_o', 50);
             $table->string('name_s', 10);
             $table->string('logo', 100);            
