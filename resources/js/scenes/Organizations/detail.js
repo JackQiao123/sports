@@ -277,10 +277,6 @@ class OrganizationDetail extends Component {
                           <span>{org.is_club ? (` (Regional Federation: ${org.parent}) `) : ''}</span>
                         </h5>
                         <h5 className="py-2">
-                          <b className="mr-2">Register No :</b>
-                          <span className="mr-2">{org.register_no}</span>
-                        </h5>
-                        <h5 className="py-2">
                           <b className="mr-2">Email :</b>
                           <a href={`mailto:${org.email}`}>{org.email}</a>
                         </h5>
