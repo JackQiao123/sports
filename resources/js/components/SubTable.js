@@ -247,8 +247,8 @@ class SubTable extends Component {
                         </Table.Cell>
                         <Table.Cell className="text-center">
                           {
-                            item.role_id == 1 ? item.role_name 
-                              : referee_type_options.filter(ref => ref.value == item.position)[0].label
+                            item.role_id == 3 ? referee_type_options.filter(ref => ref.value == item.position)[0].label
+                              : item.role_name
                           }
                         </Table.Cell>
                         <Table.Cell className="text-center">{item.gender == 1 ? Genders[0].name : Genders[1].name}</Table.Cell>
