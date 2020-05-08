@@ -152,17 +152,6 @@ class DataTable extends Component {
               Name
             </Table.HeaderCell>
             {
-              (stype.value === 'org' || stype.value === 'club') && (
-                <Table.HeaderCell
-                  className="text-center"
-                  sorted={column === 'register_no' ? direction : null}
-                  onClick={this.handleSort.bind(this, 'register_no')}
-                >
-                  Register No
-                </Table.HeaderCell>
-              )
-            }
-            {
               (stype.value === 'member' || init) && (
                 <Fragment>
                   {
@@ -198,20 +187,6 @@ class DataTable extends Component {
                     onClick={this.handleSort.bind(this, 'birthday')}
                   >
                     Birthday
-                  </Table.HeaderCell>
-                </Fragment>
-              )
-            }
-            {
-              mtype.value !== 'judoka' && (
-                <Fragment>
-                  <Table.HeaderCell
-                    className="text-center"
-                    width="3"
-                    sorted={column === 'email' ? direction : null}
-                    onClick={this.handleSort.bind(this, 'email')}
-                  >
-                    Email
                   </Table.HeaderCell>
                 </Fragment>
               )
@@ -289,13 +264,6 @@ class DataTable extends Component {
                     }
                   </Table.Cell>
                   {
-                    (stype.value === 'org' || stype.value === 'club') && (
-                      <Fragment>
-                        <Table.Cell className="text-center">{item.register_no}</Table.Cell>
-                      </Fragment>
-                    )
-                  }
-                  {
                     (stype.value === 'member' || init) && (
                       <Fragment>
                         {
@@ -313,11 +281,6 @@ class DataTable extends Component {
                         </Table.Cell>
                         <Table.Cell className="text-center">{item.birthday}</Table.Cell>
                       </Fragment>
-                    )
-                  }
-                  {
-                    mtype.value !== 'judoka' && (
-                      <Table.Cell className="text-center">{item.email}</Table.Cell>
                     )
                   }
                   {
@@ -417,7 +380,7 @@ class DataTable extends Component {
                 }}
               />
             </Table.HeaderCell>
-            <Table.HeaderCell colSpan={stype.value === 'member' ? 7 : 6}>
+            <Table.HeaderCell colSpan={stype.value === 'member' ? 7 : 2}>
               <Menu floated="right" pagination>
                 <Pagination
                   activePage={activePage}

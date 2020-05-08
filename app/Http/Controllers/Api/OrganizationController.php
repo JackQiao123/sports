@@ -598,8 +598,7 @@ class OrganizationController extends Controller
                         ->leftJoin('roles', 'roles.id', '=', 'members.role_id');
         
         if ($mtype == 'judoka')
-            $result = $result->leftJoin('players', 'players.member_id', '=', 'members.id')
-                            ->leftJoin('weights', 'weights.id', '=', 'players.weight_id');
+          $result = $result->leftJoin('players', 'players.member_id', '=', 'members.id');
 
         $result = $result->where('members.id', '!=', $me->id)
                         ->where('roles.description', $mtype);
@@ -631,9 +630,8 @@ class OrganizationController extends Controller
 
           $result = $result->where('players.dan', 'like', '%' . $dan);
 
-          $result = $result->select('members.*', 'organizations.name_o', 'organizations.level', 'weights.weight', 
+          $result = $result->select('members.*', 'organizations.name_o', 'organizations.level', 'players.weight', 
                                   'players.dan', 'players.expired_date')
-                          ->orderBy('players.weight_id')
                           ->orderBy('players.dan')
                           ->orderBy('members.name')
                           ->get();
