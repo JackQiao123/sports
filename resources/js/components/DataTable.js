@@ -192,6 +192,20 @@ class DataTable extends Component {
               )
             }
             {
+              stype.value !== 'member' && (
+                <Fragment>
+                  <Table.HeaderCell
+                    className="text-center"
+                    width="3"
+                    sorted={column === 'email' ? direction : null}
+                    onClick={this.handleSort.bind(this, 'email')}
+                  >
+                    Email
+                  </Table.HeaderCell>
+                </Fragment>
+              )
+            }
+            {
               stype.value === 'member' && mtype.value === 'judoka' && (
                 <Fragment>
                   <Table.HeaderCell
@@ -281,6 +295,11 @@ class DataTable extends Component {
                         </Table.Cell>
                         <Table.Cell className="text-center">{item.birthday}</Table.Cell>
                       </Fragment>
+                    )
+                  }
+                  {
+                    stype.value !== 'member' && (
+                      <Table.Cell className="text-center">{item.email}</Table.Cell>
                     )
                   }
                   {
@@ -380,7 +399,7 @@ class DataTable extends Component {
                 }}
               />
             </Table.HeaderCell>
-            <Table.HeaderCell colSpan={stype.value === 'member' ? 7 : 2}>
+            <Table.HeaderCell colSpan={stype.value === 'member' ? 7 : 3}>
               <Menu floated="right" pagination>
                 <Pagination
                   activePage={activePage}
