@@ -100,7 +100,6 @@ class Search extends Component {
           mtype: '',
           rtype: 'all',
           gender: 0,
-          weight: '',
           dan: ''
         }
 
@@ -113,7 +112,6 @@ class Search extends Component {
           mtype: '',
           rtype: 'all',
           gender: 0,
-          weight: '',
           dan: ''
         }
 
@@ -126,7 +124,6 @@ class Search extends Component {
           mtype: 'judoka',
           rtype: 'all',
           gender: 0,
-          weight: '',
           dan: ''
         }
 
@@ -144,7 +141,6 @@ class Search extends Component {
         mtype: search.stype == 'member' ? search.mtype : '',
         rtype: search.stype == 'member' ? search.rtype : '',
         gender: search.stype == 'member' ? search.gender : '',
-        weight: search.mtype == 'judoka' ? search.weight : '',
         dan: search.mtype == 'judoka' ? search.dan : ''
       }
 
@@ -252,7 +248,6 @@ class Search extends Component {
           mtype: '',
           rtype: 'all',
           gender: 0,
-          weight: '',
           dan: ''
         }
       } else if (this.state.user_is_club != 1) {
@@ -263,7 +258,6 @@ class Search extends Component {
           mtype: '',
           rtype: 'all',
           gender: 0,
-          weight: '',
           dan: ''
         }
       } else if (this.state.user_is_club == 1) {
@@ -274,7 +268,6 @@ class Search extends Component {
           mtype: 'judoka',
           rtype: 'all',
           gender: 0,
-          weight: '',
           dan: ''
         }
       }
@@ -286,7 +279,6 @@ class Search extends Component {
         mtype: search.stype == 'member' ? search.mtype : '',
         rtype: search.stype == 'member' ? search.rtype : '',
         gender: search.stype == 'member' ? search.gender : '',
-        weight: search.mtype == 'judoka' ? search.weight : '',
         dan: search.mtype == 'judoka' ? search.dan : ''
       }
     }
