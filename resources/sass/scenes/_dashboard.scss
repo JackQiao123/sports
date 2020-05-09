@@ -2,14 +2,46 @@
   background-image: url('../../img/background.jpg');
   background-position: center;
   background-size: cover;
-  height: auto;
+  height: calc(100vh - 75px);
 
-  @media screen and (min-width: 1280px) and (min-height: 800px) {
-    height: calc(100vh - 75px);
+  @media screen and (max-height: 750px) {
+    height: auto;
+  }
 
-    @media screen and (max-height: 900px) {
-      height: calc(100vh - 56px);
+  @media screen and (max-width: 1366px) {
+    height: calc(100vh - 58px);
+
+    @media screen and (max-height: 730px) {
+      height: auto;
     }
+  }
+
+  @media screen and (max-width: 1280px) {
+    height: calc(100vh - 56px);
+
+    @media screen and (max-height: 725px) {
+      height: auto;
+    }
+  }
+
+  @media screen and (max-width: 1024px) {
+    height: calc(100vh - 47px);
+
+    @media screen and (max-height: 725px) {
+      height: auto;
+    }
+  }
+
+  @include media-breakpoint-down('md') {
+    height: calc(100vh - 43px);
+
+    @media screen and (max-height: 725px) {
+      height: auto;
+    }
+  }
+
+  @include media-breakpoint-down('sm') {
+    height: auto;
   }
 
   marquee{
