@@ -143,14 +143,6 @@ class FederationTable extends Component {
               Country
             </Table.HeaderCell>
             <Table.HeaderCell
-              width="1"
-              className="text-center"
-              sorted={column === 'register_no' ? direction : null}
-              onClick={this.handleSort.bind(this, 'register_no')}
-            >
-              Register No
-            </Table.HeaderCell>
-            <Table.HeaderCell
               width="2"
               className="text-center"
               sorted={column === 'email' ? direction : null}
@@ -191,7 +183,6 @@ class FederationTable extends Component {
                   <Table.Cell className="text-center">
                     {countries.filter(country => country.countryCode == item.country)[0].name}
                   </Table.Cell>
-                  <Table.Cell className="text-center">{item.register_no}</Table.Cell>
                   <Table.Cell className="text-center">{item.email}</Table.Cell>
                   <Table.Cell className="text-center">{item.mobile_phone}</Table.Cell>
                   <Table.Cell>
@@ -224,7 +215,7 @@ class FederationTable extends Component {
                 }}
               />
             </Table.HeaderCell>
-            <Table.HeaderCell colSpan="6">
+            <Table.HeaderCell colSpan="5">
               <Menu floated="right" pagination>
                 <Pagination
                   activePage={activePage}

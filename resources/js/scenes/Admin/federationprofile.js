@@ -257,10 +257,6 @@ class NFProfile extends Component {
                           <span>{nf.is_club ? (` (Regional Federation: ${nf.parent}) `) : ''}</span>
                         </h5>
                         <h5 className="py-2">
-                          <b className="mr-2">Register No :</b>
-                          <span>{nf.register_no}</span>
-                        </h5>
-                        <h5 className="py-2">
                           <b className="mr-2">Email :</b>
                           <a href={`mailto:${nf.email}`}>{nf.email}</a>
                         </h5>
