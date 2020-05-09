@@ -72186,6 +72186,10 @@ body .main-content {
   overflow: hidden;
 }
 
+.main-content.has-hand-card .container {
+  background-color: initial;
+}
+
 .main-content .fixed-content {
   display: flex;
   justify-content: center;

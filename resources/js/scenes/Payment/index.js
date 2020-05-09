@@ -34,7 +34,6 @@ class Payment extends Component {
       members: null,
       player_list: null,
       filter_data: null,
-      weights: null,
       orgs: [],
       alertVisible: false,
       messageStatus: false,
@@ -46,7 +45,6 @@ class Payment extends Component {
         region: null,
         club: '',
         gender: null,
-        weight: null,
         dan: null
       },
       payMembers: [],
@@ -67,16 +65,6 @@ class Payment extends Component {
     const user = JSON.parse(localStorage.getItem('auth'));
     const user_info = user.user.member_info;
     this.loadStripe();
-    const weight_list = await Api.get('weights');
-    switch (weight_list.response.status) {
-      case 200:
-        this.setState({
-          weights: weight_list.body
-        });
-        break;
-      default:
-        break;
-    }
 
     const cost = await Api.get(`cost/${user_info.organization_id}`);
     switch (cost.response.status) {
@@ -171,7 +159,7 @@ class Payment extends Component {
               region: '',
               club: '',
               gender: null,
-              weight: null,
+              
               dan: null
             }
           });
@@ -271,7 +259,6 @@ class Payment extends Component {
         club: '',
         region: '',
         gender: null,
-        weight: null,
         dan: null
       }
     });
@@ -378,9 +365,6 @@ class Payment extends Component {
     let filtered = [];
     filter_members[type] = value;
 
-    if (filter_members.weight && filter_members.weight.weight === 'All') {
-      filter_members.weight = null;
-    }
     if (filter_members.gender && filter_members.gender.value === 0) {
       filter_members.gender = null;
     }
@@ -396,33 +380,13 @@ class Payment extends Component {
     if (filter_members.region === 'All' || filter_members.region === '') {
       if (!filter_members.search) {
         if (filter_members.gender) {
-          if (filter_members.weight && filter_members.weight.weight) {
-            if (filter_members.dan && filter_members.dan.value) {
-              this.setState({
-                members: filter_data.filter(player => player.gender == filter_members.gender.value && player.weight == filter_members.weight.weight && player.dan == filter_members.dan.value && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-              });
-            } else {
-              this.setState({
-                members: filter_data.filter(player => player.gender == filter_members.gender.value && player.weight == filter_members.weight.weight && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-              });
-            }
-          } else if (filter_members.dan && filter_members.dan.value) {
+          if (filter_members.dan && filter_members.dan.value) {
             this.setState({
               members: filter_data.filter(player => player.gender == filter_members.gender.value && player.dan == filter_members.dan.value && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
             });
           } else {
             this.setState({
               members: filter_data.filter(player => player.gender == filter_members.gender.value && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-            });
-          }
-        } else if (filter_members.weight && filter_members.weight.weight) {
-          if (filter_members.dan && filter_members.dan.value) {
-            this.setState({
-              members: filter_data.filter(player => player.weight == filter_members.weight.weight && player.dan == filter_members.dan.value && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-            });
-          } else {
-            this.setState({
-              members: filter_data.filter(player => player.weight == filter_members.weight.weight && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
             });
           }
         } else if (filter_members.dan && filter_members.dan.value) {
@@ -435,33 +399,13 @@ class Payment extends Component {
           });
         }
       } else if (filter_members.gender) {
-        if (filter_members.weight && filter_members.weight.weight) {
-          if (filter_members.dan && filter_members.dan.value) {
-            this.setState({
-              members: filtered.filter(player => player.gender == filter_members.gender.value && player.weight == filter_members.weight.weight && player.dan == filter_members.dan.value && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-            });
-          } else {
-            this.setState({
-              members: filtered.filter(player => player.gender == filter_members.gender.value && player.weight == filter_members.weight.weight && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-            });
-          }
-        } else if (filter_members.dan && filter_members.dan.value) {
+        if (filter_members.dan && filter_members.dan.value) {
           this.setState({
             members: filtered.filter(player => player.gender == filter_members.gender.value && player.dan == filter_members.dan.value && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
           });
         } else {
           this.setState({
             members: filtered.filter(player => player.gender == filter_members.gender.value && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-          });
-        }
-      } else if (filter_members.weight && filter_members.weight.weight) {
-        if (filter_members.dan && filter_members.dan.value) {
-          this.setState({
-            members: filtered.filter(player => player.weight == filter_members.weight.weight && player.dan == filter_members.dan.value && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-          });
-        } else {
-          this.setState({
-            members: filtered.filter(player => player.weight == filter_members.weight.weight && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
           });
         }
       } else if (filter_members.dan && filter_members.dan.value) {
@@ -475,33 +419,13 @@ class Payment extends Component {
       }
     } else if (!filter_members.search) {
       if (filter_members.gender) {
-        if (filter_members.weight && filter_members.weight.weight) {
-          if (filter_members.dan && filter_members.dan.value) {
-            this.setState({
-              members: filter_data.filter(player => player.gender == filter_members.gender.value && player.weight == filter_members.weight.weight && player.dan == filter_members.dan.value && player.region.toUpperCase().includes(filter_members.region.toUpperCase()) && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-            });
-          } else {
-            this.setState({
-              members: filter_data.filter(player => player.gender == filter_members.gender.value && player.weight == filter_members.weight.weight && player.region.toUpperCase().includes(filter_members.region.toUpperCase()) && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-            });
-          }
-        } else if (filter_members.dan && filter_members.dan.value) {
+        if (filter_members.dan && filter_members.dan.value) {
           this.setState({
             members: filter_data.filter(player => player.gender == filter_members.gender.value && player.dan == filter_members.dan.value && player.region.toUpperCase().includes(filter_members.region.toUpperCase()) && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
           });
         } else {
           this.setState({
             members: filter_data.filter(player => player.gender == filter_members.gender.value && player.region.toUpperCase().includes(filter_members.region.toUpperCase()) && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-          });
-        }
-      } else if (filter_members.weight && filter_members.weight.weight) {
-        if (filter_members.dan && filter_members.dan.value) {
-          this.setState({
-            members: filter_data.filter(player => player.weight == filter_members.weight.weight && player.dan == filter_members.dan.value && player.region.toUpperCase().includes(filter_members.region.toUpperCase()) && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-          });
-        } else {
-          this.setState({
-            members: filter_data.filter(player => player.weight == filter_members.weight.weight && player.region.toUpperCase().includes(filter_members.region.toUpperCase()) && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
           });
         }
       } else if (filter_members.dan && filter_members.dan.value) {
@@ -514,33 +438,13 @@ class Payment extends Component {
         });
       }
     } else if (filter_members.gender) {
-      if (filter_members.weight && filter_members.weight.weight) {
-        if (filter_members.dan && filter_members.dan.value) {
-          this.setState({
-            members: filtered.filter(player => player.gender == filter_members.gender.value && player.weight == filter_members.weight.weight && player.dan == filter_members.dan.value && player.region.toUpperCase().includes(filter_members.region.toUpperCase()) && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-          });
-        } else {
-          this.setState({
-            members: filtered.filter(player => player.gender == filter_members.gender.value && player.weight == filter_members.weight.weight && player.region.toUpperCase().includes(filter_members.region.toUpperCase()) && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-          });
-        }
-      } else if (filter_members.dan && filter_members.dan.value) {
+      if (filter_members.dan && filter_members.dan.value) {
         this.setState({
           members: filtered.filter(player => player.gender == filter_members.gender.value && player.dan == filter_members.dan.value && player.region.toUpperCase().includes(filter_members.region.toUpperCase()) && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
         });
       } else {
         this.setState({
           members: filtered.filter(player => player.gender == filter_members.gender.value && player.region.toUpperCase().includes(filter_members.region.toUpperCase()) && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-        });
-      }
-    } else if (filter_members.weight && filter_members.weight.weight) {
-      if (filter_members.dan && filter_members.dan.value) {
-        this.setState({
-          members: filtered.filter(player => player.weight == filter_members.weight.weight && player.dan == filter_members.dan.value && player.region.toUpperCase().includes(filter_members.region.toUpperCase()) && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
-        });
-      } else {
-        this.setState({
-          members: filtered.filter(player => player.weight == filter_members.weight.weight && player.region.toUpperCase().includes(filter_members.region.toUpperCase()) && player.club.toUpperCase().includes(filter_members.club.toUpperCase()))
         });
       }
     } else if (filter_members.dan && filter_members.dan.value) {
@@ -554,20 +458,9 @@ class Payment extends Component {
     }
   }
 
-  getWeights(gender) {
-    const { weights } = this.state;
-    return weights.filter((weight) => {
-      if (`${gender}` == '0') {
-        return true;
-      }
-      return `${weight.gender}` == `${gender}`;
-    });
-  }
-
   render() {
     const {
       user,
-      weights,
       orgs,
       payMembers,
       pay_status,
@@ -667,26 +560,6 @@ class Payment extends Component {
                       />
                     </FormGroup>
                   </Col>
-                  {
-                    weights && weights.length > 0 && (
-                      <Col lg="2" md="3" sm="4">
-                        <FormGroup>
-                          <Select
-                            name="search_weight"
-                            classNamePrefix="react-select-lg"
-                            placeholder="All Weight"
-                            value={filter_members && filter_members.weight}
-                            options={filter_members.gender ? (this.getWeights(filter_members.gender ? filter_members.gender.value : '')) : weights}
-                            getOptionValue={option => option.id}
-                            getOptionLabel={option => `${option.weight} Kg`}
-                            onChange={(weight) => {
-                              this.handleSearchFilter('weight', weight);
-                            }}
-                          />
-                        </FormGroup>
-                      </Col>
-                    )
-                  }
                   <Col lg="2" md="3" sm="4">
                     <FormGroup>
                       <Select

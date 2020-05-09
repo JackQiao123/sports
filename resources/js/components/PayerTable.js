@@ -175,14 +175,6 @@ class PayerTable extends Component {
             </Table.HeaderCell>
             <Table.HeaderCell
               className="text-center"
-              width="2"
-              sorted={column === 'email' ? direction : null}
-              onClick={this.handleSort.bind(this, 'email')}
-            >
-              Email
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              className="text-center"
               sorted={column === 'weight' ? direction : null}
               onClick={this.handleSort.bind(this, 'weight')}
             >
@@ -237,9 +229,10 @@ class PayerTable extends Component {
                   <Table.Cell>
                     {item.club}
                   </Table.Cell>
-                  <Table.Cell className="text-center">{item.gender && item.gender == 1 ? Genders[0].name : Genders[1].name}</Table.Cell>
+                  <Table.Cell className="text-center">
+                    {item.gender && item.gender == 1 ? Genders[0].name : Genders[1].name}
+                  </Table.Cell>
                   <Table.Cell className="text-center">{item.birthday}</Table.Cell>
-                  <Table.Cell>{item.email}</Table.Cell>
                   <Table.Cell className="text-center">
                     {item.weight && item.weight != '' && item.weight + ' Kg'}
                   </Table.Cell>
@@ -297,7 +290,7 @@ class PayerTable extends Component {
                 }}
               />
             </Table.HeaderCell>
-            <Table.HeaderCell colSpan="10">
+            <Table.HeaderCell colSpan="9">
               <Menu floated="right" pagination>
                 <Pagination
                   activePage={activePage}
