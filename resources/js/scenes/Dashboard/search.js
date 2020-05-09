@@ -640,9 +640,7 @@ class Search extends Component {
             alertVisible: true,
             messageStatus: false,
             isOpenEditModal: false,
-            failMessage: updateMem.body.data && 
-            (`${updateMem.body.data.email !== undefined ? updateMem.body.data.email : ''} 
-              ${updateMem.body.data.identity !== undefined ? updateMem.body.data.identity : ''}`)
+            failMessage: updateMem.body.data
           });
           break;
         case 500:
