@@ -120,7 +120,6 @@ class CompetitionDetail extends Component {
             "M / F": '',
             "Date of Birth": '',
             "Category": 'DELEGATION',
-            "ID": '',
             "#": ''
           }
   
@@ -142,7 +141,6 @@ class CompetitionDetail extends Component {
               "M / F": '',
               "Date of Birth": '',
               "Category": 'Seniors ' + gender_txt,
-              "ID": '',
               "#": ''
             }
     
@@ -160,7 +158,6 @@ class CompetitionDetail extends Component {
           "M / F": members[i].gender == 1 ? 'M' : 'F',
           "Date of Birth": datePart[2] + '-' + months[parseInt(datePart[1]) - 1] + '-' + datePart[0],
           "Category": members[i].weight == null ? members[i].role_name : members[i].weight + ' Kg',
-          "ID": members[i].identity.substring(0, 12),
           "#": j++
         }
 
@@ -311,20 +308,19 @@ class CompetitionDetail extends Component {
                             headerClassName="text-center"
                             className="text-center"
                             field="#"
-                            width="20px"
+                            width="30px"
                             cell={cellWithBackGround}
                           />
                           <Column 
                             headerClassName="text-center" 
                             className="text-center"
                             field="Category"
-                            width="90px"
+                            width="100px"
                             cell={cellWithBackGround}
                           />
-                          <Column headerClassName="text-center" className="text-center" field="M / F" width="40px" />
-                          <Column headerClassName="text-center" field="Name" width="150px" />
-                          <Column headerClassName="text-center" className="text-center" field="Date of Birth" width="90px" />
-                          <Column headerClassName="text-center" field="ID" width="100px" />
+                          <Column headerClassName="text-center" className="text-center" field="M / F" width="50px" />
+                          <Column headerClassName="text-center" field="Name" width="210px" />
+                          <Column headerClassName="text-center" className="text-center" field="Date of Birth" width="100px" />
                           <Column headerClassName="text-center" className="text-center" field="" width="40px" />
                         </Grid>
                       </div>
