@@ -282,6 +282,7 @@ class CompetitionController extends Controller
                     ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
                     ->whereIn('members.id', $ids)
                     ->select('members.*', 'roles.name as role_name', 'players.weight', 'players.dan')
+                    ->orderBy('members.role_id')
                     ->orderBy('members.surname')
                     ->get();
 
@@ -289,21 +290,6 @@ class CompetitionController extends Controller
       'status' => 200,
       'data' => $members
     ]);
-  }
-
-  public function weights(Request $request)
-  {
-    $input = $request->all();
-
-    $comp = Competition::find($input['competition_id']);
-
-    $ids = explode(',', $comp->weights);
-
-    array_push($ids, 0);
-    
-    $weights = DB::table('weights')->whereIn('id', $ids)->get();
-
-    return response()->json($weights);
   }
 
   public function getClubs($competition_id, $clubs)

@@ -31,7 +31,6 @@ Route::namespace('Api')->group(function () {
 		Route::put('competition/{id}', 'CompetitionController@update');
 		Route::post('competition-clubs', 'CompetitionController@clubs');
 		Route::post('competition-members', 'CompetitionController@members');
-		Route::post('competion-weights', 'CompetitionController@weights');
 		Route::post('check-competition', 'CompetitionController@check');
 		Route::post('attend-competition', 'CompetitionController@attend');
 

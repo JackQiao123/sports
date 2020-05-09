@@ -34,7 +34,6 @@ class CompetitionInscribe extends Component {
       from: '',
       to: '',
       place: '',
-      weights: [],
       filter_member: [],
       filter_judoka: [],
       members: [],
@@ -43,8 +42,7 @@ class CompetitionInscribe extends Component {
       filter: {
         search_type: '',
         search_name: '',
-        search_gender: search_genders[0],
-        search_weight: ''
+        search_gender: search_genders[0]
       },
       status: null
     }
@@ -155,35 +153,11 @@ class CompetitionInscribe extends Component {
       default:
         break;
     }
-
-    const weight_list = await Api.post('competion-weights', params);
-    switch (weight_list.response.status) {
-      case 200:
-        this.setState({
-          weights: weight_list.body
-        });
-        break;
-      default:
-        break;
-    }
-  }
-
-  getWeights(gender) {
-    return this.state.weights.filter((weight) => {
-      if (`${gender}` == '0') {
-        return true;
-      }
-      return `${weight.gender}` == `${gender}`;
-    });
   }
 
   handleSearchFilter(type, value) {
     const {filter, filter_member, filter_judoka} = this.state;
     filter[type] = value;
-
-    if (type == 'search_gender') {
-      filter['search_weight'] = '';
-    }
     
     this.setState({
       filter
@@ -210,10 +184,6 @@ class CompetitionInscribe extends Component {
   
       if (filter.search_gender.value != '') {
         filtered = filtered.filter(member => member.gender == filter.search_gender.value)
-      }
-      
-      if (filter.search_weight != '' && filter.search_weight.weight != 'All') {
-        filtered = filtered.filter(member => member.weight == filter.search_weight.weight);
       }
       
       this.setState({
@@ -274,7 +244,7 @@ class CompetitionInscribe extends Component {
       }
       
       selects.sort(function(a, b) {
-        return a['role_id'] - b['role_id'] || a['weight'] - b['weight'];
+        return a['role_id'] - b['role_id'];
       });
       
       this.setState({
@@ -308,7 +278,7 @@ class CompetitionInscribe extends Component {
       });
 
       mem = selectMembers.concat(mem).sort(function(a, b) {
-        return a['role_id'] - b['role_id'] || a['weight'] - b['weight'];
+        return a['role_id'] - b['role_id'];
       });
 
       this.setState({
@@ -349,7 +319,7 @@ class CompetitionInscribe extends Component {
       });
 
       mem = selectMembers.concat(mem).sort(function(a, b) {
-        return a['role_id'] - b['role_id'] || a['weight'] - b['weight'];
+        return a['role_id'] - b['role_id'];
       });
 
       this.setState({
@@ -402,7 +372,7 @@ class CompetitionInscribe extends Component {
     let member = selectMembers.filter(item => item.id == id)[0];
     if (member['role_id'] == 4) {
       mem = judokas.concat(member).sort(function(a, b) {
-        return a['weight'] - b['weight'] || a['name'] - b['name'];
+        return a['name'] - b['name'];
       });
 
       this.setState({
@@ -571,22 +541,7 @@ class CompetitionInscribe extends Component {
                           />
                         </FormGroup>
                       </Col>
-                      <Col sm="4">
-                        <FormGroup>
-                          <Select
-                            name="search_weight"
-                            classNamePrefix="react-select-lg"
-                            placeholder="Weight"
-                            value={filter.search_weight}
-                            options={this.getWeights(filter.search_gender ? filter.search_gender.value : '')}
-                            getOptionValue={option => option.id}
-                            getOptionLabel={option => `${option.weight} Kg`}
-                            onChange={(weight) => {
-                              this.handleSearchFilter('search_weight', weight);
-                            }}
-                          />
-                        </FormGroup>
-                      </Col>
+                      <Col sm="4"></Col>
                       <Col sm="12" className="table-responsive">
                         <CompetitionJudokaTable
                           items={judokas}
