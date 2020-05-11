@@ -203,7 +203,11 @@ class TransactionController extends Controller
     
     if ($myOrg->is_club == 1) {
       $org = Organization::find($myOrg->parent_id);
-      $nf = Organization::find($org->parent_id);
+
+      if ($org->parent_id == 0)
+        $nf = $org;
+      else
+        $nf = Organization::find($org->parent_id);
     } else {
       if ($myOrg->parent_id == 0)
         $nf = $myOrg;
