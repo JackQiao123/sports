@@ -134,14 +134,14 @@ class CompetitionDetail extends Component {
     });
   }
 
-  async handleSelectClub(club_id, action) {
+  async handleSelectClub(org_id, action) {
     const params = {};
     let members = [];
 
     params.competition_id = this.props.location.state;
-    params.club_id = club_id;
+    params.org_id = org_id;
     
-    const selects = await Api.post('competition-members', params);
+    const selects = await Api.post('competition-org-members', params);
     switch (selects.response.status) {
       case 200:
         members = selects.body.data

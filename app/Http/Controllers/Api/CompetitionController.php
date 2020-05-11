@@ -200,21 +200,29 @@ class CompetitionController extends Controller
   {
     $competition = Competition::find($id);
 
-    $clubs = CompetitionMembers::where('competition_id', $id)->get();
-    $club_ids = sizeof($clubs);
+    $orgs = CompetitionMembers::where('competition_id', $id)->get();
 
+    $clubs = array();
     $regs = array();
-    foreach ($clubs as $club) {
-      $clubObj = Organization::find($club->club_id);
 
-      if (!in_array($clubObj->parent_id, $regs)) {
-          array_push($regs, $clubObj->parent_id);
+    foreach ($orgs as $org) {
+      $orgObj = Organization::find($org->club_id);
+
+      if ($orgObj->is_club == 1) {
+        if (!in_array($orgObj->id, $clubs)) {
+          array_push($clubs, $orgObj->id);
+        }
+        
+        $orgObj = Organization::find($orgObj->parent_id);
+      }
+
+      if (!in_array($orgObj->id, $regs)) {
+        array_push($regs, $orgObj->id);
       }
     }
-    $reg_ids = sizeof($regs);
 
-    $competition->reg_ids = $reg_ids;
-    $competition->club_ids = $club_ids;
+    $competition->club_ids = sizeof($clubs);
+    $competition->reg_ids = sizeof($regs);
 
     return response()->json([
       'status' => 200,
@@ -268,20 +276,77 @@ class CompetitionController extends Controller
   {
     $data = $request->all();
 
-    $ids = array();
+    $myOrg = Organization::find($data['club_id']);
+
+    $orgids = array();
+
+    array_push($orgids, $myOrg->id);
+
+    if ($myOrg->parent_id == 0) {
+      $orgs = Organization::where('parent_id', $myOrg->id)->get();
+
+      foreach ($orgs as $org) {
+        array_push($orgids, $org->id);
+      
+        $children = Organization::where('parent_id', $org->id)->get();
+
+        foreach($children as $child) {
+          array_push($orgids, $child->id);
+        }
+      }
+    } else {
+      $orgs = Organization::where('parent_id', $myOrg->id)->get();
+
+      foreach ($orgs as $org) {
+        array_push($orgids, $org->id);
+      }
+    }
+
+    sort($orgids);
 
     $competition = CompetitionMembers::where('competition_id', $data['competition_id'])
-                    ->where('club_id', $data['club_id'])
+                    ->whereIn('club_id', $orgids)
                     ->get();
 
-    if (sizeof($competition) > 0) {
-      $ids = explode(',', $competition[0]->member_ids);
+    $memids = array();
+
+    for ($i = 0; $i < sizeof($competition); $i++) {
+      $ids = explode(',', $competition[$i]->member_ids);
+      $memids = array_merge($memids, $ids);
     }
 
     $members = Member::leftJoin('players', 'players.member_id', '=', 'members.id')
                     ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
-                    ->whereIn('members.id', $ids)
-                    ->select('members.*', 'roles.name as role_name', 'players.weight', 'players.dan')
+                    ->leftJoin('organizations', 'organizations.id', '=', 'members.organization_id')
+                    ->whereIn('members.id', $memids)
+                    ->select('members.*', 'organizations.name_o as org_name', 'roles.name as role_name',
+                              'players.weight', 'players.dan')
+                    ->orderBy('members.role_id')
+                    ->orderBy('members.surname')
+                    ->get();
+
+    return response()->json([
+      'status' => 200,
+      'data' => $members
+    ]);
+  }
+
+  public function org_members(Request $request)
+  {
+    $data = $request->all();
+
+    $competition = CompetitionMembers::where('competition_id', $data['competition_id'])
+                    ->where('club_id', $data['org_id'])
+                    ->get();
+
+    $memids = explode(',', $competition[0]->member_ids);
+
+    $members = Member::leftJoin('players', 'players.member_id', '=', 'members.id')
+                    ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
+                    ->leftJoin('organizations', 'organizations.id', '=', 'members.organization_id')
+                    ->whereIn('members.id', $memids)
+                    ->select('members.*', 'organizations.name_o as org_name', 'roles.name as role_name',
+                              'players.weight', 'players.dan')
                     ->orderBy('members.role_id')
                     ->orderBy('members.surname')
                     ->get();
@@ -360,29 +425,90 @@ class CompetitionController extends Controller
   {
     $data = $request->all();
 
-    $members = '';
+    $myOrg = Organization::find($data['org_id']);
 
-    foreach ($data['members'] as $member) {
-      $members .= $member . ',';
+    $orgids = array();
+
+    array_push($orgids, $myOrg->id);
+
+    if ($myOrg->parent_id == 0) {
+      $orgs = Organization::where('parent_id', $myOrg->id)->get();
+
+      foreach ($orgs as $org) {
+        array_push($orgids, $org->id);
+      
+        $children = Organization::where('parent_id', $org->id)->get();
+
+        foreach($children as $child) {
+          array_push($orgids, $child->id);
+        }
+      }
+    } else {
+      $orgs = Organization::where('parent_id', $myOrg->id)->get();
+
+      foreach ($orgs as $org) {
+        array_push($orgids, $org->id);
+      }
     }
 
-    $compMembers = CompetitionMembers::where('competition_id', $data['competition_id'])
-                    ->where('club_id', $data['club_id'])
+    sort($orgids);
+
+    $compClubs = CompetitionMembers::where('competition_id', $data['competition_id'])
+                    ->whereIn('club_id', $orgids)
+                    ->select('club_id')
                     ->get();
 
-    if (sizeof($compMembers) > 0) {
-      CompetitionMembers::where('competition_id', $data['competition_id'])
-                    ->where('club_id', $data['club_id'])
-                    ->update([
-                      'member_ids' => substr($members, 0, strlen($members) - 1)
-                    ]);
-    } else {
-      CompetitionMembers::create(array(
-        'competition_id' => $data['competition_id'],
-        'club_id' => $data['club_id'],
-        'member_ids' => substr($members, 0, strlen($members) - 1),
-        'status' => 0
-      ));
+    $clubs = Member::whereIn('id', $data['members'])
+                    ->select('organization_id as club_id')
+                    ->groupBy('organization_id')
+                    ->get();
+
+    $club_ids = array();
+
+    foreach ($clubs as $club) {
+      array_push($club_ids, $club->club_id);
+
+      $members = Member::whereIn('id', $data['members'])
+                      ->where('organization_id', $club->club_id)
+                      ->orderBy('organization_id')
+                      ->orderBy('role_id')
+                      ->orderBy('name')
+                      ->get();
+
+      $mem_ids = '';
+
+      foreach($members as $member) {
+        $mem_ids .= $member->id . ',';
+      }
+
+      $mem_ids = substr($mem_ids, 0, strlen($mem_ids) - 1);
+
+      $compMembers = CompetitionMembers::where('competition_id', $data['competition_id'])
+                      ->where('club_id', $club->club_id)
+                      ->get();
+
+      if (sizeof($compMembers) > 0) {
+        CompetitionMembers::where('competition_id', $data['competition_id'])
+                      ->where('club_id', $club->club_id)
+                      ->update([
+                        'member_ids' => $mem_ids
+                      ]);
+      } else {
+        CompetitionMembers::create(array(
+          'competition_id' => $data['competition_id'],
+          'club_id' => $club->club_id,
+          'member_ids' => $mem_ids,
+          'status' => 0
+        ));
+      }
+    }
+
+    foreach ($compClubs as $compClub) {
+      if (!in_array($compClub->club_id, $club_ids)) {
+        CompetitionMembers::where('competition_id', $data['competition_id'])
+                    ->where('club_id', $compClub->club_id)
+                    ->delete();
+      }
     }
 
     return response()->json([

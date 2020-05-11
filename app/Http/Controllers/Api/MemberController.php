@@ -481,17 +481,6 @@ class MemberController extends Controller
   {
     $data = $request->all();
 
-    $competition = Competition::find($data['competition_id']);
-
-    $compMember = CompetitionMembers::where('competition_id', $data['competition_id'])
-                        ->where('club_id', $data['club_id'])
-                        ->get();
-
-    $memids = array();
-    if (sizeof($compMember) > 0) {
-      $memids = explode(',', $compMember[0]->member_ids);
-    }
-
     $myOrg = Organization::find($data['club_id']);
 
     $orgids = array();
@@ -520,44 +509,33 @@ class MemberController extends Controller
 
     sort($orgids);
 
+    $compMember = CompetitionMembers::where('competition_id', $data['competition_id'])
+                        ->whereIn('club_id', $orgids)
+                        ->get();
+
+    $memids = array();
+
+    for ($i = 0; $i < sizeof($compMember); $i++) {
+      $ids = explode(',', $compMember[$i]->member_ids);
+      $memids = array_merge($memids, $ids);
+    }
+
     $members = Member::leftJoin('players', 'players.member_id', '=', 'members.id')
                     ->leftJoin('roles', 'roles.id', '=', 'members.role_id')
+                    ->leftJoin('organizations', 'organizations.id', '=', 'members.organization_id')
                     ->whereNotIn('members.id', $memids)
-                    ->whereIn('organization_id', $orgids)
+                    ->whereIn('members.organization_id', $orgids)
                     ->where('members.active', 1)
                     ->where('members.role_id', '!=', 1)
-                    ->select('members.*', 'roles.name as role_name', 'players.weight', 'players.dan')
+                    ->select('members.*', 'organizations.name_o as org_name', 'roles.name as role_name',
+                              'players.weight', 'players.dan')
                     ->orderBy('members.role_id')
                     ->orderBy('members.name')
                     ->get();
 
-    $result = array();
-
-    foreach ($members as $member) {
-      array_push($result, $member);
-      // if ($member->role_id == 3) {
-      //   $birthday = date_create($member->birthday);
-      //   $today = date_create(Date('Y-m-d'));
-
-      //   $diff = date_diff($birthday, $today);
-
-      //   if ($competition->level == 'cadet') {
-      //     if ($diff->y < 18 || ($diff->y == 18 && $diff->m == 0 && $diff->d == 0)) {
-      //       array_push($result, $member);
-      //     }
-      //   } else {
-      //     if ($diff->y > 18 || ($diff->y == 18 && ($diff->m > 0 || $diff->d > 0))) {
-      //       array_push($result, $member);
-      //     }
-      //   }
-      // } else {
-      //   array_push($result, $member);
-      // }
-    }
-
     return response()->json([
       'status' => 200,
-      'data' => $result
+      'data' => $members
     ]);
   }
 

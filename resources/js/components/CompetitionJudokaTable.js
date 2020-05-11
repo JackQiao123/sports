@@ -130,6 +130,13 @@ class CompetitionJudokaTable extends Component {
           <Table.Row>
             <Table.HeaderCell
               className="text-center"
+              sorted={column === 'org' ? direction : null}
+              onClick={this.handleSort.bind(this, 'org')}
+            >
+              Org
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              className="text-center"
               sorted={column === 'name' ? direction : null}
               onClick={this.handleSort.bind(this, 'name')}
             >
@@ -180,15 +187,16 @@ class CompetitionJudokaTable extends Component {
                 <Table.Row
                   key={index}
                 >
+                  <Table.Cell className="text-center">{item.org_name}</Table.Cell>
                   <Table.Cell>
                     <img src={item.profile_image ? item.profile_image : 
                       (item.gender == 1 ? Bitmaps.maleAvatar : Bitmaps.femaleAvatar)} className="table-avatar mr-2" />
-                      {' '}
-                      {item.surname && item.surname.toUpperCase()}
-                      {' '}
-                      {item.patronymic !== '-' && item.patronymic}
-                      {' '}
-                      {item.name}
+                    {' '}
+                    {item.surname && item.surname.toUpperCase()}
+                    {' '}
+                    {item.patronymic !== '-' && item.patronymic}
+                    {' '}
+                    {item.name}
                   </Table.Cell>
                   <Table.Cell className="text-center">
                     {item.gender && item.gender == 1 ? Genders[0].name : Genders[1].name}
@@ -239,7 +247,7 @@ class CompetitionJudokaTable extends Component {
                 }}
               />
             </Table.HeaderCell>
-            <Table.HeaderCell colSpan="5">
+            <Table.HeaderCell colSpan="6">
               <Menu floated="right" pagination>
                 <Pagination
                   activePage={activePage}

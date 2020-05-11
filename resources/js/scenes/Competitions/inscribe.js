@@ -345,7 +345,7 @@ class CompetitionInscribe extends Component {
       const params = {};
 
       params.competition_id = this.props.location.state;
-      params.club_id = this.state.org_id;
+      params.org_id = this.state.org_id;
       params.members = selectMembers.map(item => item.id);
 
       const data = await Api.post('attend-competition', params);
@@ -368,24 +368,37 @@ class CompetitionInscribe extends Component {
   handleDeleteMember(id) {
     const { members, judokas, selectMembers } = this.state;
     let mem = [];
+    let exist = [];
 
     let member = selectMembers.filter(item => item.id == id)[0];
     if (member['role_id'] == 4) {
-      mem = judokas.concat(member).sort(function(a, b) {
-        return a['name'] - b['name'];
-      });
+      exist = judokas.filter(item => item.id == member.id);
+      
+      if (exist.length == 0) {
+        mem = judokas.concat(member).sort(function(a, b) {
+          return a['name'] - b['name'];
+        });
 
-      this.setState({
-        judokas: mem
-      });
+        this.setState({
+          judokas: mem
+        });
+      } else {
+        judokas.filter(item => item.id == member.id)[0].checked = false;
+      }
     } else {
-      mem = members.concat(member).sort(function(a, b) {
-        return a['role_id'] - b['role_id'] || a['name'] - b['name'];
-      });
+      exist = members.filter(item => item.id == member.id);
 
-      this.setState({
-        members: mem
-      });
+      if (exist.length == 0) {
+        mem = members.concat(member).sort(function(a, b) {
+          return a['role_id'] - b['role_id'] || a['name'] - b['name'];
+        });
+
+        this.setState({
+          members: mem
+        });
+      } else {
+        members.filter(item => item.id == member.id)[0].checked = false;
+      }
     }
 
     this.setState({
@@ -483,7 +496,7 @@ class CompetitionInscribe extends Component {
                 {
                   status != 1 && (
                     <Row className="mb-3">
-                      <Col sm="4">
+                      <Col sm="6">
                         <FormGroup>
                           <Select
                             name="search_type"
@@ -499,8 +512,8 @@ class CompetitionInscribe extends Component {
                           />
                         </FormGroup>
                       </Col>
-                      <Col sm="8"></Col>
-                      <Col sm="12">
+                      <Col sm="6"></Col>
+                      <Col sm="12" className="table-responsive">
                         <CompetitionMemberTable
                           items={members}
                           onSelect={this.handleSelectMember.bind(this)}
@@ -513,7 +526,7 @@ class CompetitionInscribe extends Component {
                 {
                   status != 1 && (
                     <Row>
-                      <Col sm="4">
+                      <Col sm="6">
                         <FormGroup>
                           <Input
                             name="search_name"
@@ -525,7 +538,7 @@ class CompetitionInscribe extends Component {
                           />
                         </FormGroup>
                       </Col>
-                      <Col sm="4">
+                      <Col sm="6">
                         <FormGroup>
                           <Select
                             name="search_gender"
@@ -541,7 +554,6 @@ class CompetitionInscribe extends Component {
                           />
                         </FormGroup>
                       </Col>
-                      <Col sm="4"></Col>
                       <Col sm="12" className="table-responsive">
                         <CompetitionJudokaTable
                           items={judokas}
